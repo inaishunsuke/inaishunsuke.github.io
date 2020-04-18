@@ -1,0 +1,159 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SETAREA</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SETAREA<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">干渉チェックを行なうエリアを選択します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SETAREA &lt;干渉チェックエリア番号&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;干渉チェックエリア番号&gt;は、あらかじめ定義しておいた干渉チェックエリアを選択します。有効なエリア番号は、0～31です。AREAコマンドによって事前に宣言されていなければなりません。</div>
+            <div class="p">SETAREAコマンドを実行後、RESETAREAコマンドが実行されるまでの間、干渉チェックが行なわれます。いったん干渉が検出されると、RESETAREAコマンドを実行し、再度SETAREAするまでは、次の干渉を検出しません。</div>
+            <div class="p">干渉チェックは、SETAREAコマンドが実行されていれば、0～31までのエリア番号で表される、最大32個のエリアについて同時に行なえます。</div>
+            <div class="p">なお、SETAREAコマンドは、AREAコマンドで宣言した指定I/Oを初期化しません。入出力制御文によってI/Oを直接SETしている場合などは、RESETAREAコマンドで初期化する必要があります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc10900301.html" target="_top">AREA</a>、<a href="cmidc11200802.html" target="_top">RESETAREA</a>、<a href="cmidc11501501.html" target="_top">AREAPOS</a>、<a href="cmidc11501502.html" target="_top">AREASIZE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM lp1 As Position</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM lv1 As Vector</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Lp1 = (10, 10, 5, 0, 9, 0, 1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Lv1 = (50, 10, 50)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">AREA 2, lp1, lv1, 104, 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2番のエリアに、lp1で示されるポジションでlv1で示</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'されるエリアにI/O番号104を宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SETAREA 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2番のエリアチェックを有効にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">RESETAREA 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2番のエリアチェックを初期化します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

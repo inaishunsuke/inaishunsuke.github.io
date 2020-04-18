@@ -1,0 +1,236 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ndVput</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ndVput<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">外部機器へ位置姿勢を転送（RS232C入出力）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ndVput (&lt;格納変数型&gt;,&lt;格納変数番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">従来言語のVPUT命令と同等な機能を提供します。</div>
+            <div class="p">&lt;位置変数番号&gt;が負の場合：</div>
+            <div class="p">ロボットの現在位置座標（ツール定義をしているときは、ツール座標系の原点位置座標）と姿勢または位置変数の内容を外部機器へ転送します。</div>
+            <div class="p">&lt;位置変数番号&gt;が正の場合：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;格納変数型&gt;と&lt;格納変数番号&gt;で指定された位置変数の内容を外部機器へ転送します。</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;が必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20300113.html" target="_top">ndVcom</a>、<a href="cmidc20300112.html" target="_top">ndVType</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">#include &lt;pacman.h&gt;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM PRO65</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">FLUSH</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL dVType(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'プロトコルを設定（旧=0/新=1）</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL ndVrst</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'外部機器の初期化</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL ndVis(4)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'外部機器を起動(04を送信)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">P1 = (1,2,3,4,5,6,7)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">J1 = (11,12,13,14,15,16)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source02">
+                    <div class="p">T1 = (21,22,23,24,25,26,27,28,29,30)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL ndVput(pacPOS,1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'変数"P1"のデータを外部機器に送信</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL ndVput(pacJNT,1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'変数"J1"のデータを外部機器に送信</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CALL ndVput(pacTRN,1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'変数"T1"のデータを外部機器に送信</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

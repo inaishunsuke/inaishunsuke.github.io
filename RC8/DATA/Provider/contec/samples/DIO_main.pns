@@ -1,0 +1,52 @@
+#include <PanelMain.h> raw
+
+Dim g_ctrl as Object			' CaoControllerオブジェクト用
+Dim g_varIO0 As Object			' DIOボードにアクセスする変数オブジェクト用
+
+Sub Panel_INITIALIZE()
+	On Error Goto ErrorProc
+
+	' 接続処理
+	g_ctrl = cao.AddController("DIO", "CaoProv.CONTEC.DIO","","DeviceName=DIO000")
+
+	' 変数オブジェクト生成(データ長の指定(8bit))
+	g_varIO0 = g_ctrl.AddVariable("IO0", "Len=8" )
+
+	Exit Sub
+ErrorProc:
+
+End Sub
+
+Sub Panel_TERMINATE()
+	cao.Controllers.Remove g_ctrl.Index
+	g_ctrl = Nothing
+
+End Sub
+
+Sub OutputPort_CLICKED()
+	Dim vntOut as variant
+	
+	If OutputPort.State = 1 Then			' ONの場合
+		g_varIO0.Value = 0
+		OutputPort.State = 0				' 表示色(OFF)
+	Else									' OFFの場合
+		g_varIO0.Value = 255				
+		OutputPort.State = 1				' 表示色(ON)
+	End If
+
+End Sub
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION=""
+BG=&H754E3A
+FG=&H000000
+TIMEOUT=2000
+TIMEOUTMODE=1
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=1
+FONTTYPE=1
+BORDERSTYLE=0
+add_widget 17,"OutputPort",60,60,320,50,&H00FF00,&H000000,0,3,1,"Output Port",16,0,0,"MS UI Gothic";
+'<<--TPDESIGNER_RESERVED-->>
+#endif

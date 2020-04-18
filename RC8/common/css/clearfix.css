@@ -1,0 +1,50 @@
+﻿@charset "utf-8";
+/* Markuped by TERA.inc TechnicalTeam 2010.10.20 */
+/*-------------------------------------------*/
+.clearfix:before,.clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+
+/* layout
+---------------------------------------------*/
+#content:before,#content:after { content: ""; display: table; }
+#content:after { clear: both; }
+#content { zoom: 1; }
+
+/* header
+---------------------------------------------*/
+#header:before,#header:after { content: ""; display: table; }
+#header:after { clear: both; }
+#header { zoom: 1; }
+
+#header .searchArea:before,#header .searchArea:after { content: ""; display: table; }
+#header .searchArea:after { clear: both; }
+#header .searchArea { zoom: 1; }
+
+
+/* footer
+---------------------------------------------*/
+#footer:before,#footer:after { content: ""; display: table; }
+#footer:after { clear: both; }
+#footer { zoom: 1; }
+
+
+/* .content
+---------------------------------------------*/
+.content:after  { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
+.content        { display: inline-block; }
+* html .content { height: 1%; }
+.content        { display: block; }
+
+.content2:after  { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
+.content2        { display: inline-block; }
+* html .content2 { height: 1%; }
+.content2        { display: block; }
+
+
+/* .main
+---------------------------------------------*/
+.main:after  { content: " "; display: block; height: 0; clear: both; visibility: hidden; }
+.main        { display: inline-block; }
+* html .main { height: 1%; }
+.main        { display: block; }

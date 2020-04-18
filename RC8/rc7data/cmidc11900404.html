@@ -1,0 +1,404 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SYSSTATE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SYSSTATE<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.1.98 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">コントローラのステータスを取得します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SYSSTATE</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">コントローラステータスを取得します。I/O割付の設定により有効なデータは変化します。取得可能なデータを下記に示します。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">Bit</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">RC5コントローラの場合</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">RC7コントローラの場合</div>
+                  <div class="p">（Mini I/O使用時）</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">0</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット運転中</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット異常</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">サーボON中</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット初期化完了(I/O標準モード選択時)　/</div>
+                  <div class="p">ロボット電源入り完了(I/O互換モード選択時)</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット初期化完了</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">4</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">自動モード</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">5</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">外部モード</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">6</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">バッテリ切れ警告</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">7</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット警告</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">8</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">コンティニュースタート許可</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">9</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">SSモード</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">10</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ロボット停止</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">11</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">自動運転イネーブル</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">12～15</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">16</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">プログラムスタートリセット</div>
+                  <div class="p">（I/O互換モード選択時）</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">17</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">CAL完了（I/O互換モード選択時）</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">18</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">ティーチング中（I/O互換モード選択時）</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">19</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">1サイクル完了（I/O互換モード選択時）</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">20～23</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">24</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">コマンド処理完了（I/O標準モード選択時）</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">コマンド処理完了</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">25～31</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">予約</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">←</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">RC7コントローラ (Mini I/O使用時) についての注意</div>
+                  <div class="p">「運転準備完了」のステータスを取得するには、Bit 2の「サーボON中」とBit 5の「外部モード」の論理積(AND)を状態として使用してください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM  TSR1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">------------</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1 = SYSSTATE</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'システム状態取得</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF  (I1  AND  &amp;h0082)  THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'異常、または警告発生ならば</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CLRERR</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'エラークリア</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END  IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">------------</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

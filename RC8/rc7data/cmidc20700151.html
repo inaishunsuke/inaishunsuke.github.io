@@ -1,0 +1,173 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetMonitorCond</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetMonitorCond<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.5 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">サーボ単軸データモニタ機能のモニタ条件を設定します。(Ver. 1.5以降対応)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetMonitorCond(&lt;軸番号&gt;,&lt;モニタデータ１選択&gt;,&lt;モニタデータ２選択&gt;,</div>
+            <div class="p">&lt;サンプリング間隔&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">サーボ単軸データモニタ機能のモニタ条件として、モニタする軸番号、モニタするデータ（２種類）、サンプリング間隔(ms)を設定します。モニタ可能なデータは以下の５種類で、&lt;モニタデータ１選択&gt;,&lt;モニタデータ２選択&gt;の指定により一度に２種類のデータを選択できます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="ptxtnowrap">
+                    <div class="p">&lt;モニタデータ１選択&gt;</div>
+                  </div>
+                  <div class="ptxtnowrap">
+                    <div class="p">&lt;モニタデータ２選択&gt;</div>
+                  </div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">モニタするデータ</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">0</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ速度指令値 ［r/min］</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">1</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ速度現在値 (実速度)［r/min］</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">2</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータトルク指令値（トルクオフセットを除いた値）［定格比 %］</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">3</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ角度偏差 （モータ角度指令値-モータ実角度）［Pulse］</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">4</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ電流絶対値 (モータ３相の電流検出値の絶対値のうち、最大となる値) ［定格比 %］</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;サンプリング間隔&gt;は、１～８msの８刻みで設定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700154.html" target="_top">ClearSrvMonitor</a>、<a href="cmidc20700152.html" target="_top">StartSrvMonitor</a>、<a href="cmidc20700153.html" target="_top">StopSrvMonitor</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">モニタ開始命令(StartSrvMonitor)実行後、本命令を実行すると、エラー「6001実行できません」が発生します。必ずモニタ開始前に条件を設定してください。 </div>
+              </li>
+              <li class="item">
+                <div class="p">軸番号、データ種類、サンプリング間隔に誤った数値を設定した場合、エラー「範囲外です」が発生します。エラー発生時は指定値を確認ください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetMonitorCond(7,0,3,4)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'7軸の速度指令値、角度偏差、を4ms毎に取り込む設定を</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL StartSrvMonitor</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'データモニタを開始します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

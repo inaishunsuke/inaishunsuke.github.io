@@ -1,0 +1,2336 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>コンパイルエラーになるコマンド</title>
+<meta name="description" content="" />
+<meta name="keywords" content="コンパイルエラーになるコマンド" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="000672" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="21" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001102.html">プログラミング</a></li>
+<li><a href="000513.html">RC7Mのコマンド対応表</a></li>
+<li><span>コンパイルエラーになるコマンド</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="000513.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="000673.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 672</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>コンパイルエラーになるコマンド</h1>
+<p>RC7Mコマンド名の後ろに (ライブラリ)と記載があるコマンドはRC8では使用できません。</p>
+
+<p>&nbsp;</p>
+<!-- $RC7MCommand_CplErr_Start$ -->
+<table>
+	<tr>
+		<th>RC7Mコマンド名</th>
+		<th>RC8シリーズでの実装</th>
+		<th>RC8シリーズコマンド</th>
+		<th>備考</th>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800408.html" target="rc7">arrange_button_pos</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800407.html" target="rc7">arrange_button_size</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300101.html" target="rc7">aspACLD</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000216.html" class="xref">PayLoad</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300102.html" target="rc7">aspChange</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000217.html" class="xref">SpeedMode</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501602.html" target="rc7">BIN$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000276.html" class="xref">Bin</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100901.html" target="rc7">BLOB</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100904.html" target="rc7">BLOBCOPY</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100903.html" target="rc7">BLOBLABEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100902.html" target="rc7">BLOBMEASURE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800302.html" target="rc7">Build_Lamp_Screen</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800303.html" target="rc7">Build_Man_Screen</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800304.html" target="rc7">Build_Plan_Screen</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+	  <td><a href="rc7data/cmidc12100401.html" target="rc7">CAMIN</a></td>
+	  <td>コンパイルエラー</td>
+	  <td></td>
+	  <td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100403.html" target="rc7">CAMLEVEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100402.html" target="rc7">CAMMODE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300603.html" target="rc7">change_bCap</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300604.html" target="rc7">change_pCap</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900401.html" target="rc7">CHGEXTMODE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900402.html" target="rc7">CHGINTMODE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501603.html" target="rc7">CHR$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000277.html" class="xref">Chr</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700164.html" target="rc7">ClearCollisionForce</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700154.html" target="rc7">ClearSrvMonitor</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000399.html" class="xref">SysLog.Servo.Clear</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900306.html" target="rc7">CLEARTRACELOG</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000396.html" class="xref">SysLog.Trace.Clear</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900309.html" target="rc7">CLEARVARLOG</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300406.html" target="rc7">com_discom</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000371.html" class="xref">Comm.Close</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300405.html" target="rc7">com_encom</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000370.html" class="xref">Comm.Open</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300407.html" target="rc7">com_state</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000376.html" class="xref">Comm.State</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400301.html" target="rc7">CREATESEM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400505.html" target="rc7">CURERRSTATUS</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000107.html" class="xref">CurErr</a></td>
+		<td>コマンド名称変更<br />参考 CurErrStatus</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11700201.html" target="rc7">DATE$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000379.html" class="xref">Date</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900401.html" target="rc7">DEF FN</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000325.html" class="xref">Function...End Function</a></td>
+		<td>Functionプロシージャ化する</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400204.html" target="rc7">DEFEND</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400302.html" target="rc7">DELETESEM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20600102.html" target="rc7">dioConstantDistanceIoOut</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20600101.html" target="rc7">dioSync</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300605.html" target="rc7">disp_page</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11800201.html" target="rc7">ERRMSG$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000106.html" class="xref">ErrMsg</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201101.html" target="rc7">EXECAL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10901002.html" target="rc7">EXTERN</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+	  <td><a href="rc7data/cmidc11200302.html" target="rc7">FIGAPRL</a></td>
+	  <td>コンパイルエラー</td>
+	  <td></td>
+	  <td>Fig成分に"-2"を代入する。<br />参考 ロボットの形態(Fig)</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200303.html" target="rc7">FIGAPRP</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>Fig成分に"-2"を代入する。<br />参考 ロボットの形態(Fig)</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300305.html" target="rc7">FLUSH</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000374.html" class="xref">Comm.Clear</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400303.html" target="rc7">FLUSHSEM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10901001.html" target="rc7">FOLDER</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700163.html" target="rc7">GetCollisionForce</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900201.html" target="rc7">GETENV</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11800203.html" target="rc7">GETERR</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000107.html" class="xref">CurErr</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11800205.html" target="rc7">GETERRLVL</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000108.html" class="xref">ErrLvl</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200902.html" target="rc7">GetJntData</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="004556.html" class="xref">GetSrvJntData</a></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400304.html" target="rc7">GIVESEM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400404.html" target="rc7">GIVEVIS</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200206.html" target="rc7">GOHOME</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>任意の原点復帰プログラムを作成してください。<br />参考 <a href="000112.html" class="xref">#Define</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501605.html" target="rc7">HEX$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000279.html" class="xref">Hex</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900501.html" target="rc7">HOME</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>マクロ定義にて任意に定義してください。<br />参考 <a href="000112.html" class="xref">#Define</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400501.html" target="rc7">INIT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400503.html" target="rc7">INITWAITERR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300301.html" target="rc7">INPUT</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000373.html" class="xref">Comm.Input</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300402.html" target="rc7">INPUTB</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000373.html" class="xref">Comm.Input</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300203.html" target="rc7">IOBLOCK ON/OFF</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800307.html" target="rc7">Lamp_pb_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800305.html" target="rc7">Lamp_pl_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800306.html" target="rc7">Lamp_variable_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501606.html" target="rc7">LEFT$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000280.html" class="xref">Left</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><p><a href="rc7data/cmidc11900202.html" target="rc7">LETENV</a></p></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300302.html" target="rc7">LINEINPUT</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000373.html" class="xref">Comm.Input</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300404.html" target="rc7">LINPUTB</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000373.html" class="xref">Comm.Input</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300403.html" target="rc7">LPRINTB</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000373.html" class="xref">Comm.Input</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800403.html" target="rc7">make_LABEL</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800402.html" target="rc7">make_LED</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800404.html" target="rc7">make_PARAM_BOX</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800401.html" target="rc7">make_PB</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800308.html" target="rc7">Man_pb_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501608.html" target="rc7">MID$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000282.html" class="xref">Mid</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700148.html" target="rc7">MotionComp</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000425.html" class="xref">MotionComplete</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700101.html" target="rc7">mvResetPulseWidth</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000405.html" class="xref">EncMotionAllow</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700102.html" target="rc7">mvResetPulseWidthJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000407.html" class="xref">EncMotionAllowJnt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700103.html" target="rc7">mvResetTimeOut</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000409.html" class="xref">MotionTimeout</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700104.html" target="rc7">mvReverseFlip</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700105.html" target="rc7">mvSetPulseWidth</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000405.html" class="xref">EncMotionAllow</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700106.html" target="rc7">mvSetPulseWidthJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000407.html" class="xref">EncMotionAllowJnt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700107.html" target="rc7">mvSetTimeOut</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000409.html" class="xref">MotionTimeout</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300114.html" target="rc7">ndApra</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300115.html" target="rc7">ndDepa</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300103.html" target="rc7">ndInb</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300104.html" target="rc7">ndJf</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300105.html" target="rc7">ndOnb</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300106.html" target="rc7">ndOnbI</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300116.html" target="rc7">ndTc</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300117.html" target="rc7">ndTs</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300113.html" target="rc7">ndVcom</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300107.html" target="rc7">ndVdt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300108.html" target="rc7">ndVis</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300109.html" target="rc7">ndVput</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300110.html" target="rc7">ndVrst</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300111.html" target="rc7">ndVset</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20300112.html" target="rc7">ndVType</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700119.html" target="rc7">OffPWM</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700117.html" target="rc7">OffSrvLock</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100303.html" target="rc7">ON...GOSUB</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000324.html" class="xref">Sub...End Sub</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+	  <td><a href="rc7data/cmidc11100602.html" target="rc7">ON...GOTO</a></td>
+	  <td>コンパイルエラー</td>
+	  <td></td>
+	  <td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700118.html" target="rc7">OnPWM</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700116.html" target="rc7">OnSrvLock</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501609.html" target="rc7">ORD</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000275.html" class="xref">Asc</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800310.html" target="rc7">Plan_pb_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800312.html" target="rc7">Plan_pb_singlebtn</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800311.html" target="rc7">Plan_pl_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800309.html" target="rc7">Plan_variable_btns</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400101.html" target="rc7">pltDecCnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400102.html" target="rc7">pltGetCnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400103.html" target="rc7">pltGetK</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400104.html" target="rc7">pltGetK1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400105.html" target="rc7">pltGetM</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400106.html" target="rc7">pltGetM1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400107.html" target="rc7">pltGetN</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400108.html" target="rc7">pltGetN1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400109.html" target="rc7">pltGetNextPos</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400110.html" target="rc7">pltGetPLT1END</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400111.html" target="rc7">pltGetPLTEND</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400112.html" target="rc7">pltIncCnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400113.html" target="rc7">pltInit1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400114.html" target="rc7">pltInitialize</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400115.html" target="rc7">pltKernel</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400116.html" target="rc7">pltLetCnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400117.html" target="rc7">pltLetK1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400118.html" target="rc7">pltLetM1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400119.html" target="rc7">pltLetN1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400120.html" target="rc7">pltMain1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400121.html" target="rc7">pltMain2</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400122.html" target="rc7">pltMove</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400123.html" target="rc7">pltMove0</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400124.html" target="rc7">pltResetAll</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400125.html" target="rc7">pltResetPLT1END</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20400126.html" target="rc7">pltResetPLTEND</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900302.html" target="rc7">POSTUREAREA</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>Areaコマンドのオプション<br />参考 <a href="000580.html" class="xref">エリアオプション</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300303.html" target="rc7">PRINT</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000372.html" class="xref">Comm.Output</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300401.html" target="rc7">PRINTB</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000372.html" class="xref">Comm.Output</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300505.html" target="rc7">PRINTLBL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300504.html" target="rc7">PRINTWARNING</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>ダイアログの発生はできなくなりました。<br />参考 <a href="000367.html" class="xref">PrintMsg</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900201.html" target="rc7">PROGRAM</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000324.html" class="xref">Sub...End Sub</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500402.html" target="rc7">RAD</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000239.html" class="xref">RadDeg</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100405.html" target="rc7">REPEAT...UNTIL</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000126.html" class="xref">Do...Loop</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700162.html" target="rc7">ResetCollisionJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700129.html" target="rc7">ResetCompControl</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700142.html" target="rc7">ResetCompEralw</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700138.html" target="rc7">ResetCompJLimit</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700134.html" target="rc7">ResetCompRate</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700140.html" target="rc7">ResetCompVMode</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700113.html" target="rc7">ResetCurLmt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000219.html" class="xref">CurLmt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700122.html" target="rc7">Resetcycloid</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td>&nbsp;</td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700123.html" target="rc7">ResetCycloidJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td>&nbsp;</td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700144.html" target="rc7">ResetDampRate</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700115.html" target="rc7">ResetEralw</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000220.html" class="xref">Eralw</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700136.html" target="rc7">ResetFrcAssist</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700132.html" target="rc7">ResetFrcLimit</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700109.html" target="rc7">ResetGravity</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000221.html" class="xref">GrvCtrl</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700111.html" target="rc7">ResetGrvOffset</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700159.html" target="rc7">ResetHighPathAccuracy</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200804.html" target="rc7">RESETPOSTUREAREA</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>Areaコマンドのオプション<br />参考 <a href="000580.html" class="xref">エリアオプション</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700146.html" target="rc7">ResetVibControl</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501610.html" target="rc7">RIGHT$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000284.html" class="xref">Right</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400209.html" target="rc7">ROBOTSTOP</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000200.html" class="xref">Halt</a></td>
+		<td>Halt + Motor Off</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500601.html" target="rc7">SEC</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止( *1000)</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800301.html" target="rc7">Select_Screen</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400213.html" target="rc7">SEMIDSTATE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300601.html" target="rc7">set_button</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800406.html" target="rc7">set_button_param</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300602.html" target="rc7">set_page</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700150.html" target="rc7">SetArchParam</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000162.html" class="xref">ArchMove</a></td>
+		<td>ステートメントの引数化<br />参考 <a href="000162.html" class="xref">ArchMove</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700161.html" target="rc7">SetCollisionJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700165.html" target="rc7">SetCollisionLevel</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700127.html" target="rc7">SetCompControl</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700141.html" target="rc7">SetCompEralw</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700128.html" target="rc7">SetCompFControl</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700137.html" target="rc7">SetCompJLimit</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700133.html" target="rc7">SetCompRate</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700139.html" target="rc7">SetCompVMode</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700124.html" target="rc7">SetCPSpdMode</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000426.html" class="xref">CPMode</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700112.html" target="rc7">SetCurLmt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000219.html" class="xref">CurLmt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700120.html" target="rc7">Setcycloid</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td>&nbsp;</td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700121.html" target="rc7">SetCycloidJnt</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td>&nbsp;</td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700143.html" target="rc7">SetDampRate</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700114.html" target="rc7">SetEralw</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000220.html" class="xref">Eralw</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11800202.html" target="rc7">SETERR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700166.html" target="rc7">SetExtForceDetect</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700126.html" target="rc7">SetForce_HC</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700125.html" target="rc7">SetForce_HM</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700135.html" target="rc7">SetFrcAssist</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700130.html" target="rc7">SetFrcCoord</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700131.html" target="rc7">SetFrcLimit</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700108.html" target="rc7">SetGravity</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000221.html" class="xref">GrvCtrl</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700110.html" target="rc7">SetGrvOffset</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700158.html" target="rc7">SetHighPathAccuracy</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700151.html" target="rc7">SetMonitorCond</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400502.html" target="rc7">SETOCCUPATIONTIME</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200803.html" target="rc7">SETPOSTUREAREA</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>Areaコマンドのオプション<br />参考 <a href="000580.html" class="xref">エリアオプション</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700160.html" target="rc7">SetSingularAvoid</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700145.html" target="rc7">SetVibControl</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101010.html" target="rc7">SHCIRCLE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101004.html" target="rc7">SHCLRMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101003.html" target="rc7">SHCOPYMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101008.html" target="rc7">SHCORNER</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101009.html" target="rc7">SHDEFCIRCLE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101007.html" target="rc7">SHDEFCORNER</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101001.html" target="rc7">SHDEFMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101005.html" target="rc7">SHDISPMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101006.html" target="rc7">SHMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101002.html" target="rc7">SHREFMODEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20800405.html" target="rc7">single_button_set</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>操作盤オブジェクトにて記述</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501604.html" target="rc7">SPRINTF$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000278.html" class="xref">SprintF</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201201.html" target="rc7">ST_aspACLD</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000216.html" class="xref">PayLoad</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201202.html" target="rc7">ST_aspChange</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000217.html" class="xref">SpeedMode</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201211.html" target="rc7">ST_OffSrvLock</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201210.html" target="rc7">ST_OnSrvLock</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201214.html" target="rc7">ST_ResetCompControl</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201227.html" target="rc7">ST_ResetCompEralw</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201223.html" target="rc7">ST_ResetCompJLimit</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201219.html" target="rc7">ST_ResetCompRate</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201225.html" target="rc7">ST_ResetCompVMode</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201207.html" target="rc7">ST_ResetCurLmt</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000219.html" class="xref">CurLmt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201229.html" target="rc7">ST_ResetDampRate</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201209.html" target="rc7">ST_ResetEralw</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000220.html" class="xref">Eralw</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201221.html" target="rc7">ST_ResetFrcAssist</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201217.html" target="rc7">ST_ResetFrcLimit</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201204.html" target="rc7">ST_ResetGravity</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000221.html" class="xref">GrvCtrl</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201205.html" target="rc7">ST_ResetGrvOffset</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201231.html" target="rc7">ST_ResetZBalance</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201212.html" target="rc7">ST_SetCompControl</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201226.html" target="rc7">ST_SetCompEralw</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201213.html" target="rc7">ST_SetCompFControl</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201222.html" target="rc7">ST_SetCompJLimit</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201218.html" target="rc7">ST_SetCompRate</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201224.html" target="rc7">ST_SetCompVMode</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201206.html" target="rc7">ST_SetCurLmt</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000219.html" class="xref">CurLmt</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201228.html" target="rc7">ST_SetDampRate</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201208.html" target="rc7">ST_SetEralw</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000220.html" class="xref">Eralw</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201220.html" target="rc7">ST_SetFrcAssist</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201215.html" target="rc7">ST_SetFrcCoord</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201216.html" target="rc7">ST_SetFrcLimit</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201203.html" target="rc7">ST_SetGravity</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000221.html" class="xref">GrvCtrl</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201232.html" target="rc7">ST_SetGrvOffset</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201230.html" target="rc7">ST_SetZBalance</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000222.html" class="xref">GrvOffset</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700152.html" target="rc7">StartSrvMonitor</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000397.html" class="xref">SysLog.Servo.Start</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900304.html" target="rc7">STARTTRACELOG</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000394.html" class="xref">SysLog.Trace.Start</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900307.html" target="rc7">STARTVARLOG</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100203.html" target="rc7">STOPEND</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000200.html" class="xref">Halt</a></td>
+		<td>機能廃止(Runのサイクルオプションがなくなったため)</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700153.html" target="rc7">StopSrvMonitor</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000398.html" class="xref">SysLog.Servo.Stop</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900305.html" target="rc7">STOPTRACELOG</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000395.html" class="xref">SysLog.Trace.Stop</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900308.html" target="rc7">STOPVARLOG</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501612.html" target="rc7">STR$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000286.html" class="xref">Str</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501611.html" target="rc7">STRPOS</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000285.html" class="xref">InStr</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400305.html" target="rc7">TAKESEM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400403.html" target="rc7">TAKEVIS</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11700202.html" target="rc7">TIME$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000387.html" class="xref">Time</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20500101.html" target="rc7">tolChange</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20500102.html" target="rc7">tolInit1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20500103.html" target="rc7">tolInitialize</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20500104.html" target="rc7">tolKernel</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20500105.html" target="rc7">tolMain1</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能廃止</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900203.html" target="rc7">VER$</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000389.html" class="xref">Ver</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100706.html" target="rc7">VISBINA</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100707.html" target="rc7">VISBINAR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100602.html" target="rc7">VISBRIGHT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100404.html" target="rc7">VISCAMOUT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100608.html" target="rc7">VISCIRCLE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100603.html" target="rc7">VISCLS</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100710.html" target="rc7">VISCOPY</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100611.html" target="rc7">VISCROSS</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100613.html" target="rc7">VISDEFCHAR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100407.html" target="rc7">VISDEFTABLE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100713.html" target="rc7">VISEDGE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100609.html" target="rc7">VISELLIPSE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100708.html" target="rc7">VISFILTER</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101101.html" target="rc7">VISGETNUM</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100702.html" target="rc7">VISGETP</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101102.html" target="rc7">VISGETSTR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100703.html" target="rc7">VISHIST</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100705.html" target="rc7">VISLEVEL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100605.html" target="rc7">VISLINE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100612.html" target="rc7">VISLOC</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100709.html" target="rc7">VISMASK</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100711.html" target="rc7">VISMEASURE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100406.html" target="rc7">VISOVERLAY</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100405.html" target="rc7">VISPLNOUT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101103.html" target="rc7">VISPOSX</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101104.html" target="rc7">VISPOSY</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100614.html" target="rc7">VISPRINT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100712.html" target="rc7">VISPROJ</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100606.html" target="rc7">VISPTP</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100604.html" target="rc7">VISPUTP</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100801.html" target="rc7">VISREADQR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100607.html" target="rc7">VISRECT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101106.html" target="rc7">VISREFCAL</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100704.html" target="rc7">VISREFHIST</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100408.html" target="rc7">VISREFTABLE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100601.html" target="rc7">VISSCREEN</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100610.html" target="rc7">VISSECT</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12101105.html" target="rc7">VISSTATUS</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100701.html" target="rc7">VISWORKPLN</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20900101.html" target="rc7">viTran6</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000640.html" class="xref">vis.Trans</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20900102.html" target="rc7">viTran6S</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td><a href="000640.html" class="xref">vis.Trans</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400504.html" target="rc7">WAITERROR</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000107.html" class="xref">CurErr</a></td>
+		<td>Wait + CurErr</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100502.html" target="rc7">WINDCLR</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100503.html" target="rc7">WINDCOPY</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100505.html" target="rc7">WINDDISP</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100501.html" target="rc7">WINDMAKE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12100504.html" target="rc7">WINDREF</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501505.html" target="rc7">WORKATTRIBUTE</a></td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300304.html" target="rc7">WRITE</a></td>
+		<td>コンパイルエラー</td>
+		<td><a href="000372.html" class="xref">Comm.Output</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700157.html" target="rc7">xdSPLClrTakeArm</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700156.html" target="rc7">xdSPLPASSNUM</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700155.html" target="rc7">xdWAITSPLINE</a> (ライブラリ)</td>
+		<td>コンパイルエラー</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+</table>
+<!-- $RC7MCommand_CplErr_End$ -->
+
+ <!-- コンテンツの中で確認すべき事項 -->
+
+
+ <!-- コンテンツの中で仕様の意図などを記述しておく -->
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 672</p>
+<p class="pre_next"><a href="000513.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="000673.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

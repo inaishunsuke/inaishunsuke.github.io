@@ -1,0 +1,34 @@
+'!TITLE "KEYENCE_CV_sample"
+'
+'キーエンスCVシリーズを利用する通信コマンドのサンプルプログラム
+'
+
+#Include "KEYENCE_CVS.pcs"		'通信用関数をインクルードします
+
+Sub Main
+	Dim strResults as string
+	Dim lLineNo as Integer
+	Dim	lProgNo as Integer
+	lLineNo = 8			'回線番号　8　で接続
+	lProgNo = 2			'設定No.2
+
+	IF Not (ConnectCV(lLineNo)) Then		'----　接続ON
+		PrintDbg "Connect NG"
+		EXIT SUB
+	End IF
+	IF Not (X_PW(lLineNo, lProgNo)) Then 	'---　設定No.変更
+		PrintDbg "Change NG"
+		EXIT SUB
+	END IF
+	IF Not(X_T1(lLineNo, strResults)) Then	'トリガ実行します
+		PrintDBG "トリガ NG"
+		EXIT SUB
+	else
+		P[0] = ( D_dnCvData(0), D_dnCvData(1), D_dnCvData(2) )
+						'受信データをポジションデータへ
+	End If
+
+	DisconnectCV lLineNo			'----　接続OFF　
+
+END Sub
+

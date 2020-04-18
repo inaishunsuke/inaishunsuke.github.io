@@ -1,0 +1,116 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>LETJ</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">LETJ<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ジョイント型の指定リンク角へ代入します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">LETJ &lt;軸番号&gt;,&lt;ジョイント型変数&gt; = &lt;数式&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">LETJ &lt;軸番号&gt;で始まる代入文で、式の右辺は&lt;数式&gt;です。この代入の実行によって、&lt;ジョイント型変数&gt;の内の&lt;軸番号&gt;で指定したリンク角が&lt;数式&gt;の値に変更されます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11501101.html" target="_top">JOINT</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFJNT lj1, lj2, lj3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFSNG lf1, lf2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">LETJ 1, lj1 = JOINT(2, lj3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'lj3の2軸のリンク角をlj1の1軸に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">LETJ 3, lj2 = lf1 - lf2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(lf1 - lf2)の値をlj2の3軸に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

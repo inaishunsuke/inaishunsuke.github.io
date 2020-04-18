@@ -1,0 +1,202 @@
+'!TITLE "KEYENCE_CVS.pcs"
+'
+'キーエンスCVシリーズと通信するための関数ライブラリ
+'
+
+static D_dnCvData(30) as Double		'受信データ(double) [Receive Data(double)]
+'このサンプルではスタティック変数をデータの受け渡しのために用いていますが，
+'スタティック変数の変わりにユーザー様でローカル変数を用いて頂いても結構です．
+
+Sub InitData
+	Dim lCnt as Long
+	For lCnt = 0 to 30
+		D_dnCvData(lCnt) = 0
+	Next	
+End Sub
+
+Function ConnectCV(ByVal lLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Comm.Open lLineNo
+	ConnectCV = -1
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	ConnectCV = 0
+End Function
+
+
+Function DisconnectCV(ByVal lLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+
+	Comm.Close lLineNo
+	DisconnectCV = -1
+
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	DisconnectCV = 0
+End Function
+
+
+Function X_R0(ByVal lLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output lLineNo, "R0"
+	strResult = Comm.Input(lLineNo)
+	If(strResult = "R0") then
+		X_R0 = -1
+	Else
+		PrintMsg strResult
+		X_R0 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_R0 = 0
+End Function
+
+
+Function X_S0(ByVal lLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output lLineNo, "S0"
+	strResult = Comm.Input(lLineNo)
+	If(strResult = "S0") then
+		X_S0 = -1
+	Else
+		PrintMsg strResult
+		X_S0 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_S0 = 0
+End Function
+
+
+Function X_M0(ByVal lLineNo as Integer, ByRef strResultPacket as String) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+	Dim vntValue as Variant
+	Dim Icnt as Integer
+
+	Comm.Output lLineNo, "M0"
+	strResult = Comm.Input(lLineNo)
+	If(Left(strResult,2) = "M0") then
+		If (Len(strResult) > 3) Then
+			strResultPacket = Right(strResult,Len(strResult)-3)
+'			結果を変数に入れる
+			vntValue = Split(strResultPacket,",")			'結果をコンマで分割
+			For Icnt = 0 to Ubound(vntValue)				'要素数だけ繰り返す
+				D_dnCvData(Icnt) = Val(vntValue(Icnt))		'文字を数値に変換して格納
+			Next
+		End If
+		X_M0 = -1
+	Else
+		PrintMsg strResult
+		X_M0 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_M0 = 0
+End Function
+
+
+Function X_PW(ByVal lLineNo as Integer, ByVal lProgNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output lLineNo, "PW,IN," & lProgNo
+	strResult = Comm.Input(lLineNo)
+	If(Left(strResult,2) = "PW") then
+		X_PW = -1
+	Else
+		PrintMsg strResult
+		X_PW = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_PW = 0
+End Function
+
+
+Function X_PW_CF(ByVal lLineNo as Integer, ByVal lProgNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output lLineNo, "PW,CF," & lProgNo
+	strResult = Comm.Input(lLineNo)
+	If(Left(strResult,2) = "PW") then
+		X_PW_CF = -1
+	Else
+		PrintMsg strResult
+		X_PW_CF = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_PW_CF = 0
+End Function
+
+
+Function X_UW(ByVal lLineNo as Integer, ByVal lWindNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output lLineNo, "UW," & lWindNo
+	strResult = Comm.Input(lLineNo)
+	If(Left(strResult,2) = "UW") then
+		X_UW = -1
+	Else
+		PrintMsg strResult
+		X_UW = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_UW = 0
+End Function
+
+
+Function X_T1(ByVal lLineNo as Integer, ByRef strResultPacket as String) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+	Dim vntValue as Variant
+	Dim Icnt as Integer
+
+	Comm.Output lLineNo, "T1"
+	strResult = Comm.Input(lLineNo)
+	If(Left(strResult,2) = "T1") then
+		If (Len(strResult) > 3) then
+			strResultPacket = Right(strResult,Len(strResult)-3)
+'			結果を変数に入れる
+			vntValue = Split(strResultPacket,",")			'結果をコンマで分割
+			For Icnt = 0 to Ubound(vntValue)				'要素数だけ繰り返す
+				D_dnCvData(Icnt) = Val(vntValue(Icnt))		'文字を数値に変換して格納
+			Next
+		End If
+		X_T1 = -1
+	Else
+		PrintMsg strResult
+		X_T1 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_T1 = 0
+End Function
+
+

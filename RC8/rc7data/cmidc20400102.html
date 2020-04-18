@@ -1,0 +1,89 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>pltGetCnt</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">pltGetCnt<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">パレタイジング総カウンタの取得</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">pltGetCnt (&lt;パレタイジング番号&gt;，&lt;Cnt保存整数変数番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">指定されたパレタイジング番号のパレタイジング総カウンタを取得します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20400101.html" target="_top">pltDecCnt</a>、<a href="cmidc20400112.html" target="_top">pltIncCnt</a>、<a href="cmidc20400115.html" target="_top">pltKernel</a>、<a href="cmidc20400116.html" target="_top">pltLetCnt</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL pltGetCnt(1、0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'現在のカウンタをI[0]に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL pltLetCnt(1、I[0] - 1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カウンタを1つ戻します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

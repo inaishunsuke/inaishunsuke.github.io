@@ -1,0 +1,188 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISPRINT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISPRINT<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">画面に文字・数字を表示します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISPRINT &lt;メッセージ&gt;［&lt;セパレータ&gt;&lt;メッセージ&gt; …］</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;メッセージ&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">""で指定した文字、変数、定数などを指定します。</div>
+            </div>
+            <div class="p">&lt;セパレータ&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カンマ（，）、セミコロン（；）を使用します。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">カンマ：メッセージ間をスペースで空けます。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">セミコロン：メッセージ間を空けません。</div>
+            </div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;メッセージ&gt;の最後にカンマやセミコロンを指定すると改行が起こらず、その行で次のVISPRINTによる表示を続行します。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">実数変数を表示する場合は、小数点以下第四位までを画面に表示します。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100601.html" target="_top">VISSCREEN</a>、<a href="cmidc12100602.html" target="_top">VISBRIGHT</a>、<a href="cmidc12100612.html" target="_top">VISLOC</a>、<a href="cmidc12100613.html" target="_top">VISDEFCHAR</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPLNOUT 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ0番(処理画面)を表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 0,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'処理画面0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'画面のクリア</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'表示位置の設定</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISDEFCHAR 1,1,0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'文字サイズ、表示方法を指定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1= 10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">F1 = 0.999</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPRINT "整数変数";I1,"実数変数F1";F1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,230 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISHIST</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISHIST<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">画面のヒストグラム（輝度分布）を得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISHIST &lt;ウィンドウ番号&gt;，&lt;X座標&gt;，&lt;Y座標&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ウィンドウ番号&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> ウィンドウの番号を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;X座標&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> X座標を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;Y座標&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> Y座標を指定します。（0～479）</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">処理範囲をウィンドウで指定します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定したウィンドウの位置が画面をはみ出す場合、実行結果はエラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定できるウィンドウの形状は矩形の角度0&deg;のみです。その他のウィンドウの場合、エラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理対象はVISWORKPLNで指定した画面になります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理結果はVISREFHIST命令で読み出すことが可能です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理結果はメモリに記憶されています。再度本命令を実行するまで保持されています。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100501.html" target="_top">WINDMAKE</a>、<a href="cmidc12100701.html" target="_top">VISWORKPLN</a>、<a href="cmidc12100704.html" target="_top">VISREFHIST</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,100,100,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISWORKPLN 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'処理の対象画面を格納メモリ0番に設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISHIST 1,100,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'座標(100,100)を原点にウィンドウ1番でヒストグラ</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ムを実行します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 0 TO 255</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">I2 = VISREFHIST(I1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'輝度値I1の分布データをI2に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'表示位置の設定</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISDEFCHAR 1,1,3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'表示文字サイズ、表示方法を指定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISPRINT "分布データ=";I2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

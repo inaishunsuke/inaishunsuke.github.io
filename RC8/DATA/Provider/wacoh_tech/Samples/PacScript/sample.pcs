@@ -1,0 +1,24 @@
+'!TITLE "Pro2.pcs"
+
+ Sub Main
+         dim ctrl as object
+         dim var as object
+         set ctrl = cao.addcontroller("wacoh", "caoprov.wacoh.dynpick", "",
+ "conn=tcp:192.168.0.4, @Ifnotmember")
+         set var = ctrl.AddVariable("@Data", "@Ifnotmember")
+
+         dim vntVal as variant
+
+         vntVal = var.value
+
+         I11 = vntval(0)
+         I12 = vntval(1)
+         I13 = vntval(2)
+         I14 = vntval(3)
+         I15 = vntval(4)
+         I16 = vntval(5)
+         I17 = vntval(6)
+
+ End Sub
+
+

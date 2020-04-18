@@ -1,0 +1,104 @@
+'!TITLE "ビジョンセンサによるワーク検出"
+#Define ConvNum 1 		' コンベア番号
+#Define AbortIONum 128 	' 動作完了をチェックするIO番号
+'[システムヘッダファイル]
+' バリアント型データの内部処理形式を表す値を定義したヘッダファイル
+' RC8にあらかじめ組込まれた(登録された)ファイルです。
+#Include "Variant.h"
+
+Sub Main
+	Dim index As Integer 		' ビジョンセンサで検出したワークの番号
+	Dim workNum As Integer 		' ビジョンセンサで検出したワーク数
+	
+	Dim arrayVis As Variant 	' ビジョンセンサ検出座標の配列
+	Dim visionX As Double 		' ビジョンセンサで検出したワークの画像座標X [pixel]
+	Dim visionY As Double 		' ビジョンセンサで検出したワークの画像座標Y [pixel]
+	Dim visionAngl As Double 	' ビジョンセンサで検出したワークの姿勢角度 [deg]
+	
+	Dim arrayUser As Variant 	' ビジョンセンサで検出したワークに設定するユーザデータの配列
+	Dim userData As Integer 	' ビジョンセンサで検出したワークに設定するユーザデータ
+	
+	' ビジョンセンサの初期化
+	Call visInitialize
+	
+	' IO[AbortIONum]がOnになるまでワーク検出を繰り返す
+	Do
+		' ビジョンセンサによるワーク検出処理を実行
+		Call visSearch
+		
+		' ビジョンセンサで検出したワークの個数を取得
+		Call getWorkNumber( workNum )
+		
+		' ワークが1個以上検出されたらバッファにデータを追加する
+		If workNum > 0 Then
+			
+			' ベクトル型配列データ生成（ビジョンセンサ検出座標）
+			arrayVis = CreateArray( workNum, VT_VARIANT )
+			
+			' 整数型配列データ生成（ユーザデータ）
+			arrayUser = CreateArray( workNum, VT_I4 )
+			
+			For index = 0 To workNum - 1
+				' ビジョンセンサ検出座標と、ワークに割り当てるユーザデータ値を取得
+				Call getVisData( index, visionX, visionY, visionAngl, userData )
+				
+				' ビジョンセンサ検出座標を配列に保存
+				arrayVis( index ) = V( visionX, visionY, visionAngl )
+				
+				' ワークに割り当てるユーザデータ値を配列に保存
+				arrayUser( index ) = userData
+			Next index
+			
+			' コンベア１のバッファにワークのデータを追加
+			TrackSetVision ConvNum, workNum, arrayVis, arrayUser
+		End If
+	Loop Until IO[AbortIONum] = On
+	
+	' ビジョンセンサの終了処理
+	Call visTerminate
+	
+End Sub
+
+' [ユーザ記述]
+' ビジョンセンサの初期化処理を行うサブプロシージャ
+Sub visInitialize
+	' --------ビジョンセンサの初期化処理を記述--------
+	
+End Sub
+
+' [ユーザ記述]
+' ビジョンセンサの終了処理を行うサブプロシージャ
+Sub visTerminate
+	' --------ビジョンセンサの終了処理を記述--------
+	
+End Sub
+
+' [ユーザ記述]
+' ビジョンセンサによるワーク検出処理を行うサブプロシージャ
+Sub visSearch
+	' --------ビジョンセンサによるワーク検出処理を記述--------
+	
+End Sub
+
+' [ユーザ記述]
+' ビジョンセンサで検出したワークの個数を返すサブプロシージャ
+' [out] workNum    : 検出したワークの個数
+Sub getWorkNumber( ByRef workNum As Integer )
+	' --------ビジョンセンサで検出したワークの個数をworkNumに入力--------
+	workNum = 0
+End Sub
+
+' [ユーザ記述]
+' ビジョンセンサ検出座標とワークに割り当てるユーザデータ値を返すサブプロシージャ
+' [in]  index      : 検出番号
+' [out] visionX    : 画像座標X [pixel]
+' [out] visionY    : 画像座標Y [pixel]
+' [out] visionAngl : ワークの姿勢角度 [deg]
+' [out] userData   : ワークに割り当てるユーザデータ値
+Sub getVisData( ByVal index As Integer, ByRef visionX As Double, ByRef visionY As Double, ByRef visionAngl As Double, ByRef userData As Integer )
+	' --------ビジョンセンサ検出座標とワークに割り当てるユーザデータ値を各変数に入力--------
+	visionX = 0
+	visionY = 0
+	visionAngl = 0
+	userData = -1
+End Sub

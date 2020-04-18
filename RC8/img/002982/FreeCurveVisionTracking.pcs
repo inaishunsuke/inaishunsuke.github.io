@@ -1,0 +1,14 @@
+'!TITLE "ビジョントラッキングメインプログラム"
+#Define ConvNum 1 ' コンベア番号
+Sub Main
+	
+	' コンベア1のバッファをクリアし、センサからの信号のトリガ検出を開始
+	TrackInitialize ConvNum, 0
+	
+	' ワーク検出プログラムを実行
+	Run FreeCurveVision
+	
+	' トラッキング動作プログラムを実行
+	Run FreeCurveTracking
+	
+End Sub

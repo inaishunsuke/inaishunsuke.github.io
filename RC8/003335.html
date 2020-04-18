@@ -1,0 +1,631 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>デュアルアーム制御機能特有の内容</title>
+<meta name="description" content="" />
+<meta name="keywords" content="デュアルアーム制御機能特有の内容" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="003335" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="6" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001104.html">オプション</a></li>
+<li><a href="003319.html">デュアルアーム制御機能取扱説明書</a></li>
+<li><a href="003333.html">プログラミング</a></li>
+<li><span>デュアルアーム制御機能特有の内容</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="003350.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 3335</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>デュアルアーム制御機能特有の内容</h1>
+<p>ここでは、デュアルアーム制御機能特有の内容について、下記項目に分けて説明します。</p>
+<table>
+  <tr>
+  <th width="150" rowspan="2">PacScriptコマンド</th>
+    <td><a href="#ID003335_PacScript1">ロボット動作コマンド使用時のロボットの指定</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_PacScript2">&quot;MC8シリーズ制御ロボット &times; 2 内部軸のみ&quot;の組合わせでの軸番号</a></td>
+  </tr>
+  <tr>
+    <th rowspan="6">ティーチングペンダントによる操作/設定</th>
+    <td><a href="#ID003335_TeachPendant1">エラー表示とエラーログ画面</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_TeachPendant2">簡単設定の表示</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_TeachPendant3">付加軸の操作方法</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_TeachPendant4">排他機能/協調機能の設定</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_TeachPendant5">ロボット無効設定</a></td>
+  </tr>
+  <tr>
+    <td><a href="#ID003335_TeachPendant6">デュアルアーム制御機能無効設定</a></td>
+  </tr>
+  <tr>
+    <th>EMU</th>
+    <td><a href="#ID003335_Emu1">Robot0とRobot1の3Dビュー表示</a></td>
+  </tr>
+</table>
+<div class="notelv5">
+  <p>EMUは、複数台のデンソーロボットをシュミレーションすることができる、オプションのソフトウェア(有償)です。</p>
+</div>
+
+<h2>PacScriptのコマンド</h2>
+<dl>
+  <dt>
+<p id="ID003335_PacScript1">ロボット動作コマンド使用時のロボットの指定</p></dt>
+  <dd>
+    <p>ロボット動作コマンド使用時は、Robot0とRobot1のどちらに対するコマンドかを指定する必要があります。</p>
+    <p>指定の仕方は、ロボット名をロボット動作コマンドの前に付けます。</p>
+    <p>例えば、Robot0に対して、Moveコマンドを実行したい場合、下記のように記述します。</p>
+<pre><code>  Robot0.Move P, @[0] P[0]</code></pre>
+    <p>この考え方は、協調機能を使用する場合も同じです。Moveコマンド以外の、ロボットを指定するコマンドについては、&quot;協調機能ガイド&quot;の<a href="002016.html" target="_blank">&quot;コマンド&quot;</a>内にある&quot;ロボットを指定して使用するコマンド&quot;を参照してください。</p>
+    <p>また、全ロボットに対して実行されるコマンドもあります。&quot;協調機能ガイド&quot;の<a href="002016.html" target="_blank">&quot;コマンド&quot;</a>内にある&quot;全ロボットを対象にするコマンド&quot;を参照してください。ただし、SysStateコマンドについては、参照先の内容とは異なり、単独ロボット使用時と同じ仕様となります。</p>
+</dd>
+
+  <dt><p id="ID003335_PacScript2">&quot;MC8シリーズ制御ロボット &times; 2 内部軸のみ&quot;の組合わせでの軸番号</p></dt>
+  <dd>
+    <p>この組合せでは、Robot1の軸番号は、MC8シリーズモーションコントローラ(以降 MC8シリーズ)に実際に接続しているモータコネクタの軸番号と異なることになります。例えば下図のような構成を考えます。</p>
+  <p><img src="img/003335/003335_1.png" alt="" /></p>
+    <p>上図では、Robot1の各モータは、MC8シリーズのモータコネクタの、5軸、6軸、7軸に接続されています。しかし、Robot1のプロジェクトデータの中では、モータコネクタの軸番号の若い軸(&quot;5軸&quot;)から順に、1軸、2軸、3軸として扱われます。</p>
+  <p>また、プログラムの中でも同じように扱われます。例えば、モータコネクタの5軸に接続されているモータをDriveコマンドで動作させる場合、下記のように1軸を指定して記述します。</p>
+  <pre><code>  Robot1.Drive (1, 43)</code></pre>
+  <p>エラーが発生した場合も同じです。モータコネクタの5軸に接続されているモータにエラーが発生した場合、エラー番号およびエラーメッセージは、1軸に対するものになります。</p>
+  <p>なお、エラー表示とエラーログ画面に関しては、エラーの対象となるロボットがわかるような表示になります。これは、協調機能使用時と同じです。詳細は&quot;協調機能ガイド&quot;の<a href="001993.html" target="_blank">&quot;エラー表示とエラーログ画面&quot;</a>を参照してください。</p>
+  <div class="notelv4">
+  <p>モータコネクタの軸番号は、モータ容量によって順番が変わります。&quot;付加軸取扱説明書&quot;の<a href="004884.html" target="_blank">&quot;配線上の注意&quot;</a>を参照してください。</p>
+  </div>
+  </dd>
+</dl>
+
+<h2>ティーチングペンダントによる操作/設定</h2>
+<dl>
+  <dt><p id="ID003335_TeachPendant1">エラー表示とエラーログ画面</p></dt>
+  <dd>
+    <p>エラー表示とエラーログ画面に関しては、エラーの対象となるロボットがわかるような表示になります。これは、協調機能使用時と同じです。詳細は&quot;協調機能ガイド&quot;の<a href="001993.html" target="_blank">&quot;エラー表示とエラーログ画面&quot;</a>を参照してください。</p>
+  </dd>
+
+  <dt><p id="ID003335_TeachPendant2">簡単設定の表示</p></dt>
+  <dd>
+    <p>RC8シリーズロボットコントローラを起動時に表示される簡単設定ウィンドウは、Robot0に対するウィンドウのみ表示されます。Robot1に対する簡単設定ウィンドウは表示されません。ただし、Robot1をリーダに指定し、下記操作経路で表示される簡単設定ウィンドウで、Robot1の簡単設定は可能です。</p>
+    <table>
+      <tr>
+        <td>操作経路 : [F2 アーム] - [F6 補助機能] - [F1 使用条件] - [F6 簡単設定]</td>
+      </tr>
+    </table>
+　　<p>リーダの指定方法に関しては<a href="003334.html#ID003334_TeachPendant" target="_blank">&quot;デュアルアーム制御用プロジェクトの概念&quot;の&quot;ティーチングペンダントでの管理&quot;</a>を参照してください。</p>
+    <p>また、簡単設定は、設定可能なロボットが限られています。詳細は、&quot;操作ガイド&quot;の<a href="002505.html" target="_blank">&quot;簡単設定(ティーチングペンダント)&quot;</a>を参照してください。</p>
+  </dd>
+
+  <dt><p id="ID003335_TeachPendant3">付加軸の操作方法</p></dt>
+  <dd>
+    <p>ティーチングペンダントで付加軸を操作する場合、通常、[ロボット選択]ボタンを押して、動作させる対象を付加軸に切替えます。 デュアルアーム制御機能を使用している場合も同じですが、[ロボット選択]ボタンを押して表示されるウィンドウが、通常のものと異なります。</p>
+    <p>下図のようなウィンドウが表示されます。</p>
+    <p><img src="img/003335/003335_2.png" alt="" /></p>
+    <p>まず、操作したい付加軸が、どのロボットに対する付加軸であるかを指定します。指定するには、&quot;ロボット選択リスト&quot;から、対象のロボットを選択します。</p>
+    <p>次に、&quot;アーム/付加軸切替ボタン&quot;の中から、付加軸(モータのアイコン)を選択します。&quot;移動方向キー対応表&quot;に付加軸の軸番号と、その付加軸に対応するボタンが緑色で表示されます。</p>
+    <p>最後に[OK]ボタンを押すことで、操作対象が付加軸に切替わります。</p>
+  </dd>
+
+  <dt><p id="ID003335_TeachPendant4">排他機能/協調機能の設定</p></dt>
+  <dd>
+    <p>デュアルアーム制御機能での、排他機能および協調機能は、2台のRC8シリーズロボットコントローラ(以降 RC8シリーズ)またはMC8シリーズモーションコントローラ(以降 MC8シリーズ)との間で通信は行いません。1台のRC8シリーズまたはMC8シリーズが、2台のロボットに対し、排他制御または協調制御を行います。したがって、各機能の設定内容が、通常の場合と一部異なります。</p>
+    <table>
+      <tr>
+        <th width="150">排他機能</th>
+        <td>
+          <p>下記操作経路で表示される設定は通常、排他通信設定ですが、デュアルアーム制御機能では、排他制御の有効/無効を切替えるボタンになります。</p>
+<p>したがって、排他通信設定で設定していた、排他制御IP(0)や排他制御コントローラ起動待ち時間などは設定不要となります。</p>
+          <table>
+            <tr>
+              <td>操作経路 : [F2 アーム] - [F6 補助機能] - [F11 排他制御] - [F2 排他通信設定]</td>
+          </tr>
+        </table>
+          <p>上記操作経路の最後のボタンの[F2 排他通信設定]は[F2 排他設定]という名前で表示されます。</p>
+        <p>初期値は&quot;無効&quot;になっているので、排他機能を使用するときは、必ずこのボタンで、&quot;有効&quot;にしてください。</p>
+        </td>
+      </tr>
+      <tr>
+        <th width="150">協調機能</th>
+      <td>
+        <p>下記操作経路で設定する協調設定(協調コントローラ設定や協調制御通信モードなど)は不要となります。</p>
+        <table>
+            <tr>
+              <td>操作経路 : [F6 設定] - [F9 協調]</td>
+            </tr>
+        </table>
+        <p>上記操作経路の最後のボタンの[F9 協調]は表示されません。        </p></td>
+      </tr>
+    </table>
+  </dd>
+
+  <dt><p id="ID003335_TeachPendant5">ロボット無効設定</p></dt>
+  <dd>
+    <p>片方のロボットに対して、ティーチングやロボットプログラムの調整をしたい場合でも、両方のロボットをRC8シリーズロボットコントローラ(以降 RC8シリーズ)またはMC8シリーズモーションコントローラ(以降 MC8シリーズ)に接続しておかないと、エラーが発生してしまいます。</p>
+    <p>片方のロボットだけを接続してもエラーが発生しないようにするためには、ロボットの無効設定を行います。</p>
+    <p>ログインレベルを「メンテナ」にした後、下記操作経路で操作すると、[VRC設定]ウィンドウが表示されます。</p>
+    <table>
+      <tr>
+        <td>操作経路 : [F6 設定] - [F2 システム情報] - [F6 VRC設定]</td>
+      </tr>
+    </table>
+    <p>[VRC設定]ウィンドウの下記パラメータの内、接続しないロボットのパラメータを"1"(無効)に設定します。</p>
+    <table>
+      <tr>
+        <th>No.</th>
+        <th>項目名</th>
+      </tr>
+      <tr>
+        <td>79</td>
+        <td>Robot0 有効/無効設定</td>
+      </tr>
+      <tr>
+        <td>80</td>
+        <td>Robot1 有効/無効設定</td>
+      </tr>
+    </table>
+    <p>設定後、RC8シリーズまたはMC8シリーズを再起動すると、接続していないロボットに対する未接続のエラーが発生しなくなります。</p>
+    <p>接続していなかったロボットを接続したら、設定を元に戻してください。</p>
+  </dd>
+
+  <dt><p id="ID003335_TeachPendant6">デュアルアーム制御機能無効設定</p></dt>
+  <dd>
+    <p>Robot0だけを、通常の単独ロボット使用時と同じように使用したい場合、デュアルアーム制御機能無効設定を行います。</p>
+    <p>下記操作経路の最後のボタン[F1 有効無効設定]は、デュアルアーム制御機能の有効/無効を設定するボタンです。</p>
+    <table>
+      <tr>
+        <td>操作経路 : [F6 設定] - [F10 デュアルアーム] - [F1 有効無効設定]</td>
+      </tr>
+    </table>
+    <p>初期設定は"有効"になっています。"無効"に設定した後、RC8シリーズロボットコントローラまたはMC8シリーズモーションコントローラを再起動すると、Robot0だけを単独で使用する通常の状態になります。この状態では、Robot1が接続されていなくても、未接続のエラーは発生しません。</p>
+  </dd>
+
+</dl>
+
+<h2>EMU</h2>
+<dl>
+  <dt><p id="ID003335_Emu1">Robot0とRobot1の3Dビュー表示</p></dt>
+  <dd>
+    <p>EMUのプロジェクトに、デュアルアーム制御用のプロジェクトデータを追加すると、Robot0とRobot1のロボットがそれぞれ3Dビューに表示されます。ただし、追加する際のプロジェクトファイルは、Robot0のプロジェクトファイルを選択してください。Robot1のプロジェクトファイルを選択すると、Robot1のみ3Dビューに表示されます。</p>
+  <p>EMUのプロジェクトへデュアルアーム制御用のプロジェクトデータを追加する方法は、協調機能のプロジェクトデータをEMUへ追加する方法と同じです。&quot;協調機能ガイド&quot;の<a href="002027.html" target="_blank">&quot;EMUへのロボットの追加&quot;</a>を参照してください。</p>
+    <p>また、デュアルアーム制御用のプロジェクトデータのフォルダ構成については&quot;デュアルアーム制御用プロジェクトの概念&quot;の<a href="003334.html#ID003334_WincapsIII" target="_blank">&quot;WINCAPSIIIでの管理&quot;</a>を参照してください。</p>
+</dd>
+</dl>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 3335</p>
+<p class="pre_next"><a href="003350.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

@@ -1,0 +1,68 @@
+'!TITLE "Cognex_Calibration"
+
+
+' 注意 
+' 1. 付属の「3PointCal.job」をIn-Sightにロードしてください。
+' 2. IPAddressを割り付けて、下記「IPAddress」に入力してください。
+' 3. このPacscriptを実行してから、操作盤を開いてください。
+
+' In-SightのカメラIPを指定してください
+#define IPAddress "192.168.0.2"
+
+#define CalJobName "3PointCal.job"
+
+Sub Main
+	Dim caoCtrl as Object
+	Dim bmp as Object
+	Dim vntResult as Variant
+	Dim lCount as Long
+	Dim vntFileLists as Variant
+	Dim bFlag as Long
+	Dim VResult as Vector
+
+	' In-Sightに接続
+	caoCtrl = cao.AddController("CognexIn-sight", "caoProv.Cognex.In-Sight", "", "conn=eth:" & IPAddress & ", Timeout = 1000")
+	bmp = caoCtrl.AddVariable("@BITMAP")
+
+	' Jobファイルがロードされているか確認
+	vntFileLists = caoCtrl.GetFileList
+	bFlag = -1
+	For lCount= 0 to Ubound(vntFileLists)
+		If (vntFileLists(lCount) = CalJobName) Then
+			bFlag = 0
+		End If
+	Next
+	if (bFlag) Then
+		PrintDbg "Job not found."
+		PrintDbg "Plese Set ["& CalJobName &"]."
+		Exit Sub
+	End if
+
+	' オフラインに切り替え
+	caoCtrl.SetOnline 0
+
+	'ジョブファイルの読み込み
+	caoCtrl.LoadFile CalJobName
+	Delay 1000
+
+	' オンラインに切り替え
+	caoCtrl.SetOnline 1
+	Delay 1000
+
+	Do
+		' トリガーをかけて、画像処理結果を取得する
+		On Error Resume Next
+		vntResult = caoCtrl.SendMessageAndWait
+		VResult = "V(" & vntResult & ")"
+		vars.ItemValue(3) = POSX(VResult)
+		vars.ItemValue(4) = POSY(VResult)	
+		On Error Goto 0
+
+		' 操作盤に結果と画像を渡すために、変数書き込み
+		vars.ItemValue(0) = bmp.Value
+		Delay 500
+	Loop
+
+End Sub
+
+

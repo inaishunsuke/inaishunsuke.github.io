@@ -1,0 +1,123 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ResetCompControl</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ResetCompControl<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.4 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限機能を無効にします。(６軸専用命令)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ResetCompControl</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">力制限機能を無効にします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700127.html" target="_top">SetCompControl</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボット停止状態で実行してください。パス動作中に本ライブラリを実行した場合は、エンド動作となります。また、ロボット動作中に本ライブラリを実行し、ロボットが急停止したり、エラー「612* 過電流」が発生する場合、&lt;設定値&gt;を1に設定するか、Delay命令等でロボット停止を待ってから実行してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">本ライブラリ実行中に瞬時停止し、ステップバックやプログラムリセット操作した場合、エラー「60f9 力制限無効操作異常です」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限有効時に、SetEralwにて偏差許容値を変更した場合、偏差許容値は、初期値に戻ります。しかし、ResetCompControl実行時に\T×が発生した場合、初期値に戻らない場合がありますので、力制限無効後、ResetEralwにて偏差許容値を初期値に戻してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">エラー「608* J*指令速度限界オーバ」が発生する場合があります。その場合、ResetCompControl実行前にaspChangeにて最適可搬質量モードを2又は3に変更し、実行後に最適可搬質量設定モードを元の値に戻してください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL ResetCompControl</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限機能を無効化する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL ResetEralw(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'偏差許容値を初期化する。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

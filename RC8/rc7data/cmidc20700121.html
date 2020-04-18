@@ -1,0 +1,112 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetCycloidJnt</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetCycloidJnt<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.7 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">付加軸のエンド動作時のオーバーシュート量および残留振動を抑えるサイクロイド動作モードに移行します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetCycloidJnt(&lt;軸番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">サイクロイド動作モードでは、減速時の速度変化を滑らかにすることができます。そのため、停止時のオーバーシュート量、および残留振動が低減できます。</div>
+              </li>
+              <li class="item">
+                <div class="p">サイクロイド動作モード使用時は動作時間が増加します。サイクルタイムに余裕があることを確認の上使用してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">SetCycloidJntを実行後、設定した軸を別のプログラムで動作させた場合、本モードは有効になっています。解除する場合はResetCycloidJntを実行してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボットとの同期動作では、この設定は参照されません。ロボットの設定に従って動作します。</div>
+              </li>
+              <li class="item">
+                <div class="p">複数の付加軸を同期させて動作させる場合は、動作する軸の１つがサイクロイド動作モードに設定されていると同期動作する全ての軸に設定が適用されます。軸毎に設定を変えることはできません。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700123.html" target="_top">ResetCycloidJnt</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">指定する軸の制御権を取得（TAKEARM）していないと実行できません。</div>
+            <div class="p">SetCycloidJntは付加軸専用です。ロボット軸にはSetCycloidを使用してください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL  SetCycloidJnt(8)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'8軸をサイクロイド動作モードに移行</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

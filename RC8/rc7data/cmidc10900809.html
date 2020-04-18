@@ -1,0 +1,257 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DEFIO</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DEFIO<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">入出力ポートに対応するIO変数（I/O変数）を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">DEFIO &lt;変数名&gt; = &lt;I/O変数の型&gt;,&lt;ポートアドレス&gt;[,&lt;マスク情報&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;変数名&gt;で指定した変数をI/O変数として宣言します。</div>
+            <div class="p">&lt;I/O変数の型&gt;</div>
+            <div class="p">I/O変数の型を選択します。I/O変数の型は、BIT、BYTE、WORD、INTEGER、SINGLEがあります。BIT型は1ビット、BYTE型は8ビット、WORD型は16ビット、INTEGER型は32ビット、SINGLE型は32ビットの範囲を指定します。</div>
+            <div class="p">（SINGLE型はVer.3.2未満では使用できません）</div>
+            <div class="p">&lt;ポートアドレス&gt;</div>
+            <div class="p">入出力ポートでの開始番号を指定します。</div>
+            <div class="p">整数型定数で指定します。</div>
+            <div class="p">2つの整数型定数の加減算式による指定も可能です。</div>
+            <div class="p">&lt;マスク情報&gt;</div>
+            <div class="p">入力ポートの場合、入力データとマスク情報のANDをとります。</div>
+            <div class="p">出力ポートの場合、出力データとマスク情報のANDをとり出力しますが、マスクがセットされていないビットの出力状態は変化しません。</div>
+            <div class="p">SINGLEではマスク情報は無効です。マスク情報を記述するとコンパイルエラーとなります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11300201.html" target="_top">IN</a>、<a href="cmidc11300202.html" target="_top">OUT</a>、<a href="cmidc11300204.html" target="_top">SET</a>、<a href="cmidc11300205.html" target="_top">RESET</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">WORD,INTEGERの場合、最上位ビットにあたるポートは符号ビットとなります。</div>
+                <div class="p">SINGLEの表現方法は、IEEE 754形式です。</div>
+                <div class="p">数値の範囲と、各種ビットに対するポート番号は下記のとおりとなります。 </div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">WORD　</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">数値範囲　　　　　　　： -32768 ～ 32767</div>
+                      <div class="p">最上位ビットポート番号：開始ポートアドレス + 15　　　　　</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">INTEGER</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">数値範囲　　　　　　　： -2147483648 ～ 2147483647</div>
+                      <div class="p">最上位ビットポート番号：開始ポートアドレス + 31</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">SINGLE</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">数値範囲　　　　　　　： -3.4E+38～3.4E+38</div>
+                      <div class="p">符号部ポート番号　　　：開始ポートアドレス + 31</div>
+                      <div class="p">指数部ポート番号　　　：開始ポートアドレス + 30～開始ポートアドレス + 23</div>
+                      <div class="p">仮数部ポート番号　　　：開始ポートアドレス + 22～開始ポートアドレス</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">WINCAPSIIIでは、SINGLE型の値の表示（ウォッチなど）に対応していません。SINGLE型の値の参照はティーチングペンダントで行ってください。</div>
+              </li>
+              <li class="item">
+                <div class="p">WORD型の数値範囲は、INコマンドで値を取得する時の範囲です。OUTコマンドで出力する時にこの範囲を超える数値を指定した場合、整数部分の下位16ビットを出力します。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">#DEFINE IO_OFFSET 256</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'"IO_OFFSET"を256として定義</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp1 = BIT, 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp1をポート1から始まるBIT型I/O変数として宣</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'言します。samp1の返値は、ポート1の状態を表す、0</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'または1の1ビット整数となります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp2 = BYTE, 10, &amp;B00010000</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp2をポート10から始まるBYTE型I/O変数のマス</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ク情報を付けて宣言します。samp2の返値は、ポート10</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'の状態を表す、0または16の8ビット整数となります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp3 = WORD, 15</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp3をポート15から始まるWORD型I/O変数として</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'宣言します。samp3の返値は、ポート15から30の状態</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'を表す、0～&amp;Hffffの16ビット整数となります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp4 = INTEGER, 1 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp4をポート1から始まるINTEGER型I/O変数とし</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'て宣言します。samp4の返値は、ポート1から32の状</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'態を表す、0～&amp;Hffffffffの32ビット整数となります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp5 = BYTE, IO_OFFSET + 10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp5 を10 + IO_OFFSETの計算結果(用例では266)</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'のポート番号 から始まるBYTE 型I/O 変数として</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'宣言します。samp5 の返値は、用例ではポート266</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'から273 の状 態を表す、0 ～ &amp;Hff の8 ビット整数</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'となります</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFIO samp6 = SINGLE, 128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp6をポート128から始まるSINGLE型I/O変数として</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'宣言します。</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'samp6の戻値は、ポート128から159の状態を表す、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'-3.4E+38～3.4E+38の32ビット単精度実数となります。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

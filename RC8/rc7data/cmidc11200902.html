@@ -1,0 +1,164 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>GetJntData</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">GetJntData<span class="comment1">
+		　（システム変数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">指定軸のサーボ内部データを取得します。(Ver. 1.5以降対応)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">&lt;指定軸サーボ内部データ&gt; = GetJntData(&lt;データ番号&gt;、&lt;軸番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;データ番号&gt;と&lt;軸番号&gt;で指定した指定軸のサーボ内部データを取得します。</div>
+            <div class="p">&lt;指定軸サーボ内部データ&gt;は、Ｆ型(単精度実数型)のデータで、指定軸のデータがセットされます。データ番号により以下のデータが取得されます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">&lt;データ番号&gt;</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">&lt;サーボ内部データ&gt;</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">1</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ速度現在値 [rpm]</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">2</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ角度偏差 [Pulse]</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">4</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータ電流絶対値 [定格比 %]</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">5</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">モータトルク指令値(重力補償分は除く) [定格比 %]</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">8</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">各軸位置、角度指令値[mm or deg]</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200901.html" target="_top">GetSrvData</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">上記以外のデータ番号は、予約番号です。30まで指定してもエラーになりませんが、指定しないでください。</div>
+              </li>
+              <li class="item">
+                <div class="p">サーボ単軸モニタ実行中にサーボデータを取得すると、取得時間が大幅に伸びる場合があります。サーボ単軸モニタ機能と併用する場合はご注意ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">&lt;データ番号&gt;を変更すると、変更時間がかかる場合があります。&lt;データ番号&gt;の切替えは最小限にしてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">制御権を取得(TAKEARM)したタスクにて実行ください。制御権未取得の場合は、エラー「セマフォを取得できません」が発生します。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">defsng vel</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">vel=GetJntData(1,7)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'７軸のモータ速度を取得します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

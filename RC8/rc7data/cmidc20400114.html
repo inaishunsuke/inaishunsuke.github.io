@@ -1,0 +1,122 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>pltInitialize</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">pltInitialize<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">パレタイジング初期化</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">pltInitialize (&lt;パレタイジング番号&gt;，&lt;横分割数&gt;，&lt;縦分割数&gt;，&lt;段積数&gt;，&lt;アプローチ長&gt;，&lt;デパート長&gt;，&lt;パレット高さ&gt;，&lt;パレット4隅1P型変数番号&gt;，&lt;パレット4隅2P型変数番号&gt;，&lt;パレット4隅3P型変数番号&gt;，&lt;パレット4隅4P型変数番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">パレタイジング動作を定義する初期化プログラムです。</div>
+            <div class="p">パレタイジングカウンタのみの初期化の場合はpltResetAllライブラリを使った方が効率的です。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">pltInitializeを実行しないと、パレタイジング動作を実行することができません。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">mcApprVal ：アプローチ長を代入するF型変数番号</div>
+            <div class="p">mcDepVal  ：デパート長を代入するF型変数番号</div>
+            <div class="p">mcPltH    ：パレット高さを代入するF型変数番号</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">これらの定義がユーザ使用の変数番号と競合する場合はマクロ定義し直してください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20400115.html" target="_top">pltKernel</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">CALL pltInitialize(0,4,3,1,50,50,50,52,53,54,55)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'パレタイジング番号:0、横分割数:４、縦分割数:3、段積数:1</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'アプローチ長:50mm、デパート長:50mm、パレット高さ:50mm</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'パレット4隅1:P[52]、2:P[53]、3:P[54]、4:P[55]で初期</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'化します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

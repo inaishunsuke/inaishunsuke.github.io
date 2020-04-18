@@ -1,0 +1,460 @@
+#include <PanelMain.h> raw
+#Include "CONTEC_Motion.pcs"
+
+'---------------------------------------------------
+'	初期化
+'---------------------------------------------------
+Sub Panel_INITIALIZE()
+	CONTEC_Motion "SIGMA_5", "CaoProv.CONTEC.SMC", "", "DeviceName=SMC000,@Ifnotmember=True" 
+
+	'1軸パルス出力初期化
+	smcSetIniPis "SIGMA_5", 1, 4, 1, 0
+	
+	'1軸カウンタ動作設定
+	smcSetIniCnt "SIGMA_5", 1, 0, 0, 0
+	
+	'1軸制御入出力設定
+	smcSetIniDio "SIGMA_5", 1, 1, 0, 0, 0, 0
+	
+	'1軸エンコーダ設定
+	smcSetIniEnc "SIGMA_5", 1, 1, 0, 0, 0, 0
+	
+	'1軸原点設定
+	smcSetIniOrg "SIGMA_5", 1, 1, 1, 0, 0, 1
+	
+	'1軸速度分解能設定
+	smcSetReSpd "SIGMA_5", 1, 10
+	
+	'1軸その他の初期設定
+	smcSetIniExt "SIGMA_5", 1, 0, 0, 0
+End Sub
+
+'---------------------------------------------------
+'	汎用出力：OUT1 ＝ ON/OFF
+'---------------------------------------------------
+Sub ipbOUT1_CLICKED()
+	If smcOutBitCheck( "SIGMA_5", 1, 1 ) = 0 Then
+		smcOut1_On "SIGMA_5", 1
+		ipbOUT1.State = 1
+	ElseIf smcOutBitCheck( "SIGMA_5", 1, 1 ) = 1 Then
+		smcOut1_Off "SIGMA_5", 1
+		ipbOUT1.State = 0
+	End If
+End Sub
+
+'---------------------------------------------------
+'	汎用出力：OUT2＝ ON
+'---------------------------------------------------
+Sub ipbOUT2_CLICKED()
+	smcOut2_On "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	汎用出力：OUT3＝ ON
+'---------------------------------------------------
+Sub ipbOUT3_CLICKED()
+	smcOut3_On "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	汎用出力：OUT2＝ OFF
+'---------------------------------------------------
+Sub ipbOUT2_RELEASED()
+	smcOut2_Off "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	汎用出力：OUT3＝ OFF
+'---------------------------------------------------
+Sub ipbOUT3_RELEASED()
+	smcOut3_Off "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	タイマ1イベント
+'---------------------------------------------------
+Sub Timer1_TIMER()
+	'「/S-ON」	（汎用出力1：Out1）	状態
+	If smcOutBitCheck( "SIGMA_5", 1, 1 ) = 0 Then
+		ipbOUT1.State = 0
+	ElseIf smcOutBitCheck( "SIGMA_5", 1, 1 ) = 1 Then
+		ipbOUT1.State = 1
+	End If
+
+	'「ALM」	（汎用入力1：In1）	状態
+	If smcIn1( "SIGMA_5", 1 ) = 0 Then
+		plIN1.State =0
+	ElseIf smcIn1( "SIGMA_5", 1 ) = 1 Then
+		plIN1.State =1
+	End If
+
+	'「/COIN」	（汎用入力2：In2）	状態
+	If smcIn2( "SIGMA_5", 1 ) = 0 Then
+		plIN2.State =0
+	ElseIf smcIn2( "SIGMA_5", 1 ) = 1 Then
+		plIN2.State =1
+	End If
+
+	'「/S-RDY」	（汎用入力3：In3）	状態
+	If smcIn3( "SIGMA_5", 1 ) = 0 Then
+		plIN3.State =0
+	ElseIf smcIn3( "SIGMA_5", 1 ) = 1 Then
+		plIN3.State =1
+	End If
+
+	'「/TGON」	（汎用入力4：In4）	状態
+	If smcIn4( "SIGMA_5", 1 ) = 0 Then
+		plIN4.State =0
+	ElseIf smcIn4( "SIGMA_5", 1 ) = 1 Then
+		plIN4.State =1
+	End If
+
+	'「ALO1」	（汎用入力5：In5）	状態
+	If smcIn5( "SIGMA_5", 1 ) = 0 Then
+		plIN5.State =0
+	ElseIf smcIn5( "SIGMA_5", 1 ) = 1 Then
+		plIN5.State =1
+	End If
+
+	'「ALO2」	（汎用入力6：In6）	状態
+	If smcIn6( "SIGMA_5", 1 ) = 0 Then
+		plIN6.State =0
+	ElseIf smcIn6( "SIGMA_5", 1 ) = 1 Then
+		plIN6.State =1
+	End If
+
+	'「ALO3」	（汎用入力7：In7）	状態
+	If smcIn7( "SIGMA_5", 1 ) = 0 Then
+		plIN7.State =0
+	ElseIf smcIn7( "SIGMA_5", 1 ) = 1 Then
+		plIN7.State =1
+	End If
+
+	'ALM リミット（アラーム/緊急停止リミット）状態
+	If (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 0 ) = 0 Then
+		plALM.State = 0
+	ElseIf (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 0 ) = 2 ^ 0 Then
+		plALM.State = 1
+	End If
+
+	'+LMT リミット（正方向リミット）状態
+	If (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 1 ) = 0 Then
+		plLMTP.State = 0
+	ElseIf (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 1 ) = 2 ^ 1 Then
+		plLMTP.State = 1
+	End If
+
+	'-LMT リミット（負方向リミット）状態
+	If (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 2 ) = 0 Then
+		plLMTM.State = 0
+	ElseIf (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 2 ) = 2 ^ 2 Then
+		plLMTM.State = 1
+	End If
+
+	'ORG リミット（原点リミット）状態
+	If (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 3 ) = 0 Then
+		plORG.State = 0
+	ElseIf (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 3 ) = 2 ^ 3 Then
+		plORG.State = 1
+	End If
+
+	'SD リミット（減速停止リミット）状態
+	If (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 4 ) = 0 Then
+		plSD.State = 0
+	ElseIf (smcGetStsLmt( "SIGMA_5", 1 ) And 2 ^ 4 ) = 2 ^ 4 Then
+		plSD.State = 1
+	End If
+
+	'パルス状態
+	lblCNTPLS.Caption = smcGetCntPls( "SIGMA_5", 1 )
+	
+	'エンコーダ状態
+	lblCNTENC.Caption = smcGetCntEnc( "SIGMA_5", 1 )
+
+	'動作中のパルス出力速度
+	lblSTSSPD.Caption = smcGetStsSpd( "SIGMA_5", 1 )
+
+	'モータ動作状態	
+	Select Case smcGetStsMov( "SIGMA_5", 1 )
+	Case 0
+		lblSTSMOV.Caption = "停止中"
+	Case 1
+		lblSTSMOV.Caption = "PTP動作中"
+	Case 2
+		lblSTSMOV.Caption = "JOG動作中"
+	Case 3
+		lblSTSMOV.Caption = "原点復帰動作中"
+	Case 4
+		lblSTSMOV.Caption = "バンク動作中（シングル）"
+	Case 5
+		lblSTSMOV.Caption = "バンク動作中（ループ）"
+	End Select
+	
+	'モータ停止要因
+	Select Case smcGetStsStp( "SIGMA_5", 1 )
+	Case 0
+		lblSTSSTP.Caption = "動作中"
+	Case 1
+		lblSTSSTP.Caption = "停止コマンド"
+	Case 2
+		lblSTSSTP.Caption = "減速停止コマンド"
+	Case 3
+		lblSTSSTP.Caption = "他軸の停止"
+	Case 4
+		lblSTSSTP.Caption = "アラーム/緊急停止信号"
+	Case 5
+		lblSTSSTP.Caption = "正方向リミット停止信号"
+	Case 6
+		lblSTSSTP.Caption = "負方向リミット停止信号"
+	Case 7
+		lblSTSSTP.Caption = "減速停止信号"
+	Case 255
+		lblSTSSTP.Caption = "動作関数の終了"
+	End Select
+
+	'パルス出力状態
+	Select Case smcGetStsPls( "SIGMA_5", 1 )
+	Case 0 
+		lblSTSPLS.Caption = "パルス出力停止中"
+	Case 1
+		lblSTSPLS.Caption = "開始速度で定速動作中"
+	Case 2
+		lblSTSPLS.Caption = "目標速度で定速動作中"
+	Case 3
+		lblSTSPLS.Caption = "同期スタート待ち"
+	Case 4
+		lblSTSPLS.Caption = "ERCタイマ完了待ち"
+	Case 5
+		lblSTSPLS.Caption = "方向変化タイマ完了待ち"
+	Case 6
+		lblSTSPLS.Caption = "加速動作中"
+	Case 7
+		lblSTSPLS.Caption = "減速動作中"
+	Case 8
+		lblSTSPLS.Caption = "INP入力待ち状態"
+	End Select
+
+	'原点復帰PB 表示状態
+	If lblSTSMOV.Caption = "原点復帰動作中" Then
+		ipbORG.State = 1
+	ElseIf lblSTSMOV.Caption <> "原点復帰動作中" Then
+		ipbORG.State = 0
+	End If
+
+	'位置移動PB 表示状態
+	If lblSTSMOV.Caption = "PTP動作中" Then
+		ipbMOV.State = 1
+	ElseIf lblSTSMOV.Caption <> "PTP動作中" Then
+		ipbMOV.State = 0
+	End If
+End Sub
+
+'---------------------------------------------------
+'	速度変更
+'---------------------------------------------------
+Sub SpeedChange()
+	Dim dblValue As Double
+
+	'開始速度
+	dblValue = nbSTSPD.Value
+	smcSetMvStSpd "SIGMA_5", 1 , dblValue
+
+	'目標速度
+	dblValue = nbTGSPD.Value
+	smcSetMvTgSpd "SIGMA_5", 1 , dblValue
+
+	'加速時間
+	dblValue = nbACCTM.Value
+	smcSetMvAccTm "SIGMA_5", 1 , dblValue
+
+	'減速時間
+	dblValue = nbDECTM.Value
+	smcSetMvDecTm "SIGMA_5", 1 , dblValue
+End Sub
+
+'---------------------------------------------------
+'	原点復帰
+'---------------------------------------------------
+Sub ipbORG_CLICKED()
+	
+	'速度設定
+	SpeedChange
+
+	If rbORG1.State = 1 Then
+		smcOrg "SIGMA_5", 1, 0	'原点復帰：CW
+	ElseIf rbORG2.State = 1 Then
+		smcOrg "SIGMA_5", 1, 1	'原点復帰：CCW
+	End If
+
+End Sub
+
+'---------------------------------------------------
+'	カウントリセット
+'---------------------------------------------------
+Sub pbCNTRST_CLICKED()
+
+	'出力パルスのカウント リセット
+	smcSetCntPls "SIGMA_5", 1, 0
+
+	'エンコーダのカウント リセット リセット
+	smcSetCntEnc "SIGMA_5", 1, 0
+
+End Sub
+
+'---------------------------------------------------
+'	JOG(+) 動作 有効
+'---------------------------------------------------
+Sub pbJOBP_CLICKED()
+
+	'速度設定
+	SpeedChange
+	
+	'JOG(+)
+	smcJog "SIGMA_5", 1, 0
+End Sub
+
+'---------------------------------------------------
+'	JOG(+) 動作 無効
+'---------------------------------------------------
+Sub pbJOBP_RELEASED()
+	smcMvStop "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	JOG(-) 動作 有効
+'---------------------------------------------------
+Sub plJOGM_CLICKED()
+	
+	'速度設定
+	SpeedChange
+	
+	'JOG(-)
+	smcJog "SIGMA_5", 1, 1
+End Sub
+
+'---------------------------------------------------
+'	JOG(-) 動作 無効
+'---------------------------------------------------
+Sub plJOGM_RELEASED()
+	smcMvStop "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	停止
+'---------------------------------------------------
+Sub pbSTP_CLICKED()
+	smcMvStop "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	減速停止
+'---------------------------------------------------
+Sub pbDSTP_CLICKED()
+	smcMvDStop "SIGMA_5", 1
+End Sub
+
+'---------------------------------------------------
+'	位置移動
+'---------------------------------------------------
+Sub ipbMOV_CLICKED()
+	Dim dblValue As Double	
+
+	'速度設定
+	SpeedChange
+	
+	dblValue = nbSTPPOS.Value
+
+	If rbCOODINATE1.State = 1 Then
+		smcMvPtoP "SIGMA_5", 1, 0, dblValue		'絶対動作
+	ElseIf rbCOODINATE2.State = 1 Then
+		smcMvPtoP "SIGMA_5", 1, 1, dblValue		'相対動作
+	End If
+End Sub
+
+
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION="smcGetCntPls( \"SIGMA_5\", 1 )\"\"\""
+BG=&H8CB4D2
+FG=&H000000
+TIMEOUT=2000
+TIMEOUTMODE=1
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=1
+FONTTYPE=1
+BORDERSTYLE=0
+add_widget 7,"Rect6",470,290,160,70,&H7F7F7F,&HB0B0B0,1,1,0,1;
+add_widget 7,"Rect5",530,20,100,110,&H7F7F7F,&HB0B0B0,0,1,0,1;
+add_widget 7,"Rect2",10,140,130,220,&H7F7F7F,&HB0B0B0,0,1,0,1;
+add_widget 7,"Rect1",10,20,130,100,&H7F7F7F,&HB0B0B0,0,1,0,1;
+add_widget 2,"lblNAME12",11,330,50,20,&H000000,&H8CB4D2,0,1,0,"In7：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME11",11,300,50,20,&H000000,&H8CB4D2,0,1,0,"In6：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME10",11,270,50,20,&H000000,&H8CB4D2,0,1,0,"In5：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME09",11,240,50,20,&H000000,&H8CB4D2,0,1,0,"In4：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME08",11,210,50,20,&H000000,&H8CB4D2,0,1,0,"In3：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME07",11,180,50,20,&H000000,&H8CB4D2,0,1,0,"In2：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME06",11,150,50,20,&H000000,&H8CB4D2,0,1,0,"In1：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME04",11,92,50,20,&H000000,&H8CB4D2,0,1,0,"Out3：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME03",11,60,50,20,&H000000,&H8CB4D2,0,1,0,"Out2：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME02",11,30,50,20,&H000000,&H8CB4D2,0,1,0,"Out1：",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 7,"Rect3",150,20,90,160,&H7F7F7F,&HB0B0B0,0,1,0,1;
+add_widget 17,"ipbOUT3",60,90,70,25,&H00FF00,&H000000,0,3,1,"/CLR",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN1",60,150,70,25,&H0000FF,&H000000,0,1,1,"ALM",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN2",60,180,70,25,&H00FF00,&H000000,0,1,1,"/COIN",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN3",60,210,70,25,&H00FF00,&H000000,0,1,1,"/S-RDY",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN4",60,240,70,25,&H00FF00,&H000000,0,1,1,"/TGON",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN5",60,270,70,25,&H0000FF,&H000000,0,1,1,"ALO1",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIN6",60,300,70,25,&H0000FF,&H000000,0,1,1,"ALO2",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plIn7",60,330,70,25,&H0000FF,&H000000,0,1,1,"ALO3",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 17,"ipbOUT1",60,30,70,25,&H00FF00,&H000000,0,3,1,"/S-ON",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 17,"ipbOUT2",60,60,70,25,&H00FF00,&H000000,0,3,1,"/ALM-RST",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 2,"lblNAME13",150,10,80,18,&HFFFFFF,&H008B8B,0,1,0,"リミット状態",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 3,"plALM",160,30,70,25,&H0000FF,&H000000,0,1,1,"ALM",11,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plLMTP",160,60,70,25,&H0000FF,&H000000,0,1,1,"+ Lmt",11,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plLMTM",160,90,70,25,&H0000FF,&H000000,0,1,1,"- Lmt",11,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plORG",160,120,70,25,&H0000FF,&H000000,0,1,1,"ORG",11,0,0,"ＭＳ Ｐ明朝";
+add_widget 3,"plSD",160,150,70,25,&H0000FF,&H000000,0,1,1,"SD",11,0,0,"ＭＳ Ｐ明朝";
+add_widget 7,"Rect4",250,20,270,160,&H7F7F7F,&HB0B0B0,0,1,0,1;
+add_widget 2,"lblNAME14",250,10,100,18,&HFFFFFF,&H008B8B,0,1,0,"モーション状態",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME15",260,30,90,20,&H000000,&H8CB4D2,0,1,0,"モータ動作状態",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME16",260,55,90,20,&H000000,&H8CB4D2,0,1,0,"モータ停止要因",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME17",260,80,90,20,&H000000,&H8CB4D2,0,1,0,"パルス出力状態",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME18",253,105,130,20,&H000000,&H8CB4D2,0,1,0,"動作中パルス出力速度",9,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblSTSMOV",350,30,160,20,&H000000,&HFAE6E6,0,1,0,"",10,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblSTSSTP",350,55,160,20,&H000000,&HFAE6E6,0,1,0,"",10,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblSTSPLS",350,80,160,20,&H000000,&HFAE6E6,0,1,0,"",9,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblSTSSPD",379,105,131,20,&H000000,&HFAE6E6,0,1,0,"0",10,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME19",260,130,80,20,&H000000,&H8CB4D2,0,1,0,"出力パルス",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME20",260,155,80,20,&H000000,&H8CB4D2,0,1,0,"エンコーダ",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME01",10,10,80,18,&HFFFFFF,&H008B8B,0,1,0,"汎用出力",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME05",10,130,80,18,&HFFFFFF,&H008B8B,0,1,0,"汎用入力",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 4,"Line1",340,70,0,0,&H000000,&HB0B0B0,0,1,0,1;
+add_widget 2,"lblCNTPLS",350,130,160,20,&H000000,&HFAE6E6,0,1,0,"0",10,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblCNTENC",350,155,160,20,&H000000,&HFAE6E6,0,1,0,"0",10,1,"ＭＳ Ｐ明朝","",1,1;
+add_widget 1,"pbSTP",150,320,90,40,&H00FFFF,&H0000FF,0,3,1,"停止",13,0,0,"ＭＳ Ｐ明朝";
+add_widget 1,"pbDSTP",250,320,90,40,&H00FFFF,&H2068FF,0,3,1,"減速停止",13,0,0,"ＭＳ Ｐ明朝";
+add_widget 1,"pbCNTRST",530,140,100,40,&H000000,&HB0B0B0,0,3,1,"カウンタリセット",10,0,0,"ＭＳ Ｐ明朝";
+add_widget 11,"rbORG1",531,40,90,12,&H000000,&H8CB4D2,0,3,0,"CW",10,1,1,"ＭＳ Ｐ明朝";
+add_widget 1,"pbJOBP",470,190,160,40,&H0000FF,&H98FB98,0,3,1,"JOG （＋）",16,0,0,"ＭＳ Ｐ明朝";
+add_widget 1,"plJOGM",470,230,160,40,&H0000FF,&H98FB98,0,3,1,"JOG （－）",16,0,0,"ＭＳ Ｐ明朝";
+add_widget 5,"nbSTPPOS",300,190,160,20,&H000000,&HFFFFFF,0,3,0,"",10,1,26214,"ＭＳ Ｐ明朝";
+add_widget 2,"lblNAME23",150,190,140,20,&H000000,&H8CB4D2,0,1,0,"移動量[Pulse]",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME24",150,215,140,20,&H000000,&H8CB4D2,0,1,0,"ﾊﾟﾙｽ出力開始速度[PPS]",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME25",150,240,140,20,&H000000,&H8CB4D2,0,1,0,"ﾊﾟﾙｽ出力目標速度[PPS]",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME26",150,265,140,20,&H000000,&H8CB4D2,0,1,0,"加速度時間[ms]",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME27",150,290,140,20,&H000000,&H8CB4D2,0,1,0,"減速度時間[ms]",10,0,"ＭＳ Ｐ明朝","",1,1;
+add_widget 5,"nbSTSPD",300,215,160,20,&H000000,&HFFFFFF,0,3,0,"",10,1,10000,"ＭＳ Ｐ明朝";
+add_widget 5,"nbTGSPD",300,240,160,20,&H000000,&HFFFFFF,0,3,0,"",10,1,10000,"ＭＳ Ｐ明朝";
+add_widget 5,"nbACCTM",300,265,160,20,&H000000,&HFFFFFF,0,3,0,"",10,1,1,"ＭＳ Ｐ明朝";
+add_widget 5,"nbDECTM",300,290,160,20,&H000000,&HFFFFFF,0,3,0,"NB1",10,1,1,"ＭＳ Ｐ明朝";
+add_widget 11,"rbORG2",531,70,90,12,&H000000,&H8CB4D2,0,3,0,"CCW",10,1,0,"ＭＳ Ｐ明朝";
+add_widget 11,"rbCOODINATE1",478,310,99,12,&H000000,&H8CB4D2,1,3,0,"絶対動作",10,1,1,"ＭＳ Ｐ明朝";
+add_widget 11,"rbCOODINATE2",478,340,99,12,&H000000,&H8CB4D2,1,3,0,"相対動作",10,1,0,"ＭＳ Ｐ明朝";
+add_widget 2,"lblNAME21",530,10,90,18,&HFFFFFF,&H008B8B,0,1,0,"原点復帰",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 2,"lblNAME22",470,280,100,18,&HFFFFFF,&H008B8B,0,1,0,"指定位置移動",10,2,"ＭＳ Ｐ明朝","",1,1;
+add_widget 15,"Timer1",240,130,0,1,100;
+add_widget 17,"ipbMOV",350,320,110,40,&H00FF00,&H000000,0,3,1,"位置移動",13,0,0,"ＭＳ Ｐ明朝";
+add_widget 17,"ipbORG",540,90,80,30,&H00FF00,&H000000,0,3,1,"原点復帰",13,0,0,"ＭＳ Ｐ明朝";
+'<<--TPDESIGNER_RESERVED-->>
+#endif

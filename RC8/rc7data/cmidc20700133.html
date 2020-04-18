@@ -1,0 +1,140 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetCompRate</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetCompRate<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.4 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限時の柔らかさの割合を設定します。(６軸専用命令)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetCompRate(&lt;X方向柔らかさ&gt;,&lt;Y方向柔らかさ&gt;,&lt;Z方向柔らかさ&gt;,&lt;X回り柔らかさ&gt;,&lt;Y回り柔らかさ&gt;,&lt;Z回り柔らかさ&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">SetFrcCoordにて設定された座標系のＸ軸方向、Ｙ軸方向、Ｚ軸方向、Ｘ軸回り、Ｙ軸回り、Ｚ軸回りの柔らかさの割合を設定します。</div>
+            <div class="p">設定値は0～100の範囲で設定します。0の時最も柔らかくなります。小数点２桁まで有効です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700134.html" target="_top">ResetCompRate</a>、<a href="cmidc20700130.html" target="_top">SetFrcCoord</a>、<a href="cmidc20700127.html" target="_top">SetCompControl</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限中は、実行できません。力制限中に本ライブラリを実行すると、エラー「60fa 力制限中です」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">コントローラ電源立ち上げ直後は、設定値は初期化され、X軸方向,Y軸方向,Z軸方向,X軸回り,Y軸回り,Z軸回りすべて100となります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetFrcCoord(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限座標系をツール座標に設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">CALL SetCompRate(100,0,100,100,100,100)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'柔らかさ割合を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetCompControl</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ツール座標系のＹ方向の柔らかさ割合を0%に設定し、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'力機能を有効にする。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

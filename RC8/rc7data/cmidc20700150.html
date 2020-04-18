@@ -1,0 +1,165 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetArchParam</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetArchParam<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.9 以降の4軸ロボットのみ】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">アーチモーションにおける、上昇動作中に横方向動作を開始する位置（アーチ開始位置）および下降動作中に横方向動作を終了する位置（アーチ完了位置）の設定</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetArchParam (&lt;アーチ開始位置&gt;、&lt;アーチ完了位置&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ArchMoveを実行する場合のアーチの形状を設定できます。</div>
+              </li>
+              <li class="item">
+                <div class="p">アーチ開始位置、アーチ完了位置はそれぞれ現在位置、目標位置からのＺ軸方向の距離[mm]で指定します。  　</div>
+              </li>
+              <li class="item">
+                <div class="p">設定値は０～（Ｚ軸方向の最大動作可能距離）で、1ｍｍ刻みで設定可です。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボットコントローラの電源投入後の初期値はアーチ開始位置、アーチ完了位置とも0mmになっています。また、SetArchParamで設定した値は、ロボットコントローラの電源を切るまで有効です。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700149.html" target="_top">ArchMove</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">無効な数値が設定された場合、即時エラーとはなりません。ArchMove実行時にエラーが発生します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL  SetArchParam (10,20)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'10mm上昇後に横方向動作を開始し、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'下降完了20mm手前で横方向動作が</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'完了するように設定。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL  ArchMove (P10,100)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'目標位置P10、Z軸動作量100ｍｍで動作します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1117 @@
+'!TITLE "CONTECモーション"
+
+Dim Ctrl As Object
+Dim ExtAxis(7) As Object
+Dim VarIniPls(7) As Object
+Dim VarIniCnt(7) As Object
+Dim VarIniDio(7) As Object
+Dim VasIniEnc(7) As Object
+Dim VarIniOrg(7) As Object
+Dim VarIniExt(7) As Object
+Dim VarSigDo(7) As Object
+Dim VarSigDi(7) As Object
+Dim VarCntPls(7) As Object
+Dim VarCntEnc(7) As Object
+Dim VarCntEnZ(7) As Object
+Dim VarStsPls(7) As Object
+Dim VarStsMov(7) As Object
+Dim VarStsStp(7) As Object
+Dim VarStsLmt(7) As Object
+Dim VarStsSpd(7) As Object
+Dim VarMvReSpd(7) As Object
+Dim VarMvStSpd(7) As Object
+Dim VarMvTgSpd(7) As Object
+Dim VarMvAccTm(7) As Object
+Dim VarMvDecTm(7) As Object
+
+'-------------------------------------------------------------------------------------------------
+'	モーションメイン
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		プロバイダ名．固定値 =” CaoProv.CONTEC.SMC”
+'	・引数3		プロバイダの実行マシン名
+'	・引数4		プロバイダの実行マシン名
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+'-------------------------------------------------------------------------------------------------
+Sub Main(strCtrlName As String, strProvName As String, strPcName As String, strOption As String)
+	
+	Ctrl = Cao.AddController(strCtrlName, "CaoProv.CONTEC.SMC", strPcName, strOption)
+	
+End Sub
+
+
+
+'-------------------------------------------------------------------------------------------------
+'	パルス出力関連のパラメータ設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		パルスの出力モードを設定
+'					0:共通パルス方式 OUT：負論理，DIR+：High，DIR-：Low
+'					1:共通パルス方式 OUT：正論理，DIR+：High，DIR-：Low
+'					2:共通パルス方式 OUT：負論理，DIR+：Low，DIR-：High
+'					3:共通パルス方式 OUT：正論理，DIR+：Low，DIR-：High
+'					4:2パルス方式：負論理（デフォルト）
+'					5:2パルス方式：正論理
+'					6:90度位相差モード OUT：進み信号. DIR：遅れ信号
+'					7:90度位相差モード OUT：遅れ信号. DIR：進み信号
+'	・引数4		方向変化時のウェイト挿入（ 注:共通パルス方式の場合のみ有効）
+'					0:OFF
+'					1:ON (デフォルト)
+'	・引数5		デューティ比を設定
+'					0:パルス出力速度により変化
+'					1:デューティ比50%固定
+'						*デフォルト：DLシリーズ ”1”，DFシリーズ “0”
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniPis(strCtrlName As String, intAxis As Integer, intPulseModeb As Integer, intDirTimer As Integer, intDuty As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarIniPls(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_PLS")
+	
+	VarIniPls(intAxis - 1).Value = Array(intPulseModeb, intDirTimer, intDuty)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	カウンタの動作関連のパラメータ設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		LTC信号がOFF→ONへ変化した時にクリアする カウンタの種類を設定
+'					0:カウンタをクリアしない（デフォルト）
+'					1:出力パルスカウンタをクリア
+'					2:エンコーダカウンタをクリア
+'					3:出力パルスカウンタおよびエンコーダカウンタをクリア
+'	・引数4		LTC信号入力時にラッチするカウンタの種類を設定
+'					0:ラッチ機能を使用しない（デフォルト）
+'					1:出力パルスカウンタをラッチ
+'					2:エンコーダカウンタをラッチ
+'					3:出力パルスカウンタおよびエンコーダカウンタをラッチ
+'	・引数5		CLR信号がOFF→ONへ変化した時にクリアする カウンタの種類を設定
+'					0:カウンタをクリアしない（デフォルト）
+'					1:出力パルスカウンタをクリア
+'					2:エンコーダカウンタをクリア
+'					3:出力パルスカウンタおよびエンコーダカウンタをクリア
+'
+'				注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniCnt(strCtrlName As String, intAxis As Integer, intClearCntLtc As Integer, intLtcMode As Integer, intClearCntClr As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarIniCnt(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_CNT")
+	
+	VarIniCnt(intAxis - 1).Value = Array(intClearCntLtc, intLtcMode, intClearCntClr)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	制御入出力のパラメータ設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		制御入出力信号論理を設定
+'					[ 0 | 0 | 0 | 0 | 0 | OUT3 | OUT2 | OUT1| LIM | IN7 | IN6 | IN5 | IN4 | IN3 | IN2 | IN1 ] 設定範囲：0～7FF(Hex)
+'					各bitの設定値: 0 負論理，1 正論理
+'					デフォルト：0（すべて負論理）
+'	・引数4		制御入力信号形式（汎用入力/ALM, INP, SD, LTC, PCS, CLR）を設定
+'					[ 0 | 0 | IN6/CLR | IN5/PCS | IN4/LTC | IN3/SD | IN2/INP | IN1/ALM ]　　　設定範囲：0～3F(Hex)
+'					デフォルト：1（IN1をアラーム(ALM)信号入力として使用）
+'	・引数5		未使用
+'	・引数6		未使用	
+'	・引数7		制御出力OUT1～3の信号形式を設定
+'					0：汎用出力（デフォルト）
+'					1：アラームクリア信号
+'					2：偏差カウンタクリア信号（ERC）
+'					3：出力パルスカウンタカウント一致信号（CP1）
+'					4：エンコーダカウンタカウント一致信号（CP2）
+'					5：ホールドオフ信号
+'
+'					注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniDio(strCtrlName As String, intAxis As Integer, intIoLog As Integer, intInType As Integer, intOut1 As Integer, intOut2 As Integer, intOut3 As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarIniDio(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_DIO")
+	
+	intOut1 = 0
+	intOut2 = 0
+	
+	VarIniDio(intAxis - 1).Value = Array(intIoLog, intInType, intOut1, intOut2, intOut3)
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	エンコーダ設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		エンコーダ入力形式を設定
+'					0：A/B 1逓倍（デフォルト）
+'					1：A/B 2逓倍
+'					2：A/B 4逓倍
+'					3：U/D
+'					4：使用しない
+'	・引数4		偏差カウンタクリア信号幅を設定
+'					0：12  [μsec]（デフォルト）
+'					1：102 [μsec]
+'					2：408 [μsec]
+'					3：1.6 [msec]
+'					4：13  [msec]
+'					5：52  [msec]
+'					6：104 [msec]
+'					7：レベル出力
+'	・引数5		偏差カウンタクリア信号OFFタイマ時間を設定
+'					0：0   [μsec]（デフォルト）
+'					1：12  [μsec]
+'					2：1.6 [msec]
+'					3：104 [msec]
+'	・引数6		アラームクリア信号幅を設定
+'					0：12  [μsec]（デフォルト）
+'					1：102 [μsec]
+'					2：408 [μsec]
+'					3：1.6 [msec]
+'					4：13  [msec]
+'					5：52  [msec]
+'					6：104 [msec]
+'	・引数7		ERC信号自動出力の設定
+'					[ 0 | 0 | 0 | 0 | 0 | 0 | bit1 | bit0 ] 設定範囲：0～3(Hex)
+'					bit0
+'					   0:LIM、ALM信号入力による停止時にERC信号を 出力しない
+'					   1:LIM、ALM信号入力による停止時にERC信号を自動出力
+'					bit1
+'					   0:原点復帰動作完了時にERC信号を出力しない
+'					   1:原点復帰動作完了時にERC信号を自動出力
+'					デフォルト: 0
+'
+'					注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniEnc(strCtrlName As String, intAxis As Integer, intEncType As Integer, intErcTime As Integer, intErcOffTimer As Integer, intAlmTime As Integer, intErcMode As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VasIniEnc(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_ENC")
+	
+	VasIniEnc(intAxis - 1).Value = Array(intEncType, intErcTime, intErcOffTimer, intAlmTime, intErcMode)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	原点設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		原点入力論理とエッジを設定
+'					0：立下りエッジ，負論理（デフォルト）
+'					1：立下りエッジ，正論理
+'					2：立上りエッジ，負論理
+'					3：立上りエッジ，正論理
+'	・引数4		原点復帰動作中のリミット反転の有無を設定
+'					0：リミット反転しない
+'					1：リミット反転する（デフォルト）
+'	・引数5		Z相の使用有無を設定
+'					0：使用しない（ORGのみ）（デフォルト）
+'					1：リ使用する（ORG+Z相）
+'					注:"0"設定時、原点復帰時のZ相の数設定は無効
+'	・引数6		原点復帰時の原点突入方向（原点復帰終了方向）
+'					0：未指定（デフォルト）
+'					1：正方向（CW）
+'					2：負方向（CCW）
+'	・引数7		原点復帰時のZ相の数を設定
+'					設定範囲: 1～16
+'					デフォルト: 1
+'					注: "0"設定時にはこの設定は無効
+'					Z相の使用有りは"0"[使用しない]に自動的に変更される
+'
+'					注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniOrg(strCtrlName As String, intAxis As Integer, intOrgLog As Integer, intLimitTurn As Integer, intOrgType As Integer, intEndDir As Integer, intZCount As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarIniOrg(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_ENC")
+	
+	VarIniOrg(intAxis - 1).Value = Array(intOrgLog, intLimitTurn, intOrgType, intEndDir, intZCount)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	速度分解能設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		速度分解能設定
+'				単位：PPS
+'					SMC-4/8DL シリーズの場合: -1, 0.2929687～600
+'					SMC-4/8DF シリーズの場合: -1, 0.073242187～100
+'					デフォルト（1）
+'
+'					注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetReSpd(strCtrlName As String, intAxis As Integer, intResolveSpeed As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvReSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_RESPD")
+	
+	VarMvReSpd(intAxis - 1).Value = intResolveSpeed
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	その他の初期設定用パラメータ設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		S字加減速の使用有無を設定
+'				単位：PPS
+'					0:使用しない（デフォルト）
+'					1:使用する
+'	・引数4		SD信号入力時の動作を設定
+'					0:減速停止（デフォルト）
+'					1:減速のみ（開始速度で定速動作します）
+'					2:減速停止 + SD信号ラッチ
+'					3:減速 + SD信号ラッチ
+'	・引数5		入力フィルタ特性を設定
+'					0:フィルタを挿入しない（デフォルト）
+'					1:3.2[μsec]
+'					2:25[μsec]
+'					3:200[μsec]
+'					4:1.6[msec]
+'
+'					注：[省略可能要素] 又は “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetIniExt(strCtrlName As String, intAxis As Integer, intSAccelType As Integer, intSdMode As Integer, intFilterType As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarIniExt(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@INI_EXT")
+	
+	VarIniExt(intAxis - 1).Value = Array(intSAccelType, intSdMode, intFilterType)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	サーボON
+'		《汎用出力（Out1）を「サーボON」出力として使用》
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSrv_On(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(1, 0)
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	サーボOFF
+'		《汎用出力（Out1）を「サーボON」出力として使用》
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSrv_Off(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(0, 0)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		ポート番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcComOut(strCtrlName As String, intAxis As Integer, intOutPut As Integer)
+	Dim BitCheck As Integer
+	
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	BitCheck = VarSigDo(intAxis - 1).Value And 2 ^ (intOutPut - 1)
+	
+	If BitCheck = 0 Then
+		VarSigDo(intAxis - 1).Value = Array(2 ^ (intOutPut - 1), 2 ^ (intOutPut - 1))
+	ElseIf BitCheck = 2 ^ (intOutPut - 1) Then
+		VarSigDo(intAxis - 1).Value = Array(0, 2 ^ (intOutPut - 1))
+	End If
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 ポートチェック
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		ポート番号
+'
+'	・戻り値
+'					0:OFF
+'					1:ON
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcOutBitCheck(strCtrlName As String, intAxis As Integer, PotNum As Integer) As Integer
+	Dim BitCheck As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	BitCheck = VarSigDo(intAxis - 1).Value And 2 ^ (PotNum - 1)
+	
+	If BitCheck = 0 Then
+		smcOutBitCheck = 0
+	ElseIf BitCheck = 2 ^ (PotNum - 1) Then
+		smcOutBitCheck = 1
+	End IF
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out1 = ON
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut1_On(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(2 ^ 0, 2 ^ 0)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out1 = OFF
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut1_Off(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(0, 2 ^ 0)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out2 = ON
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut2_On(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(2 ^ 1, 2 ^ 1)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out2 = OFF
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut2_Off(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(0, 2 ^ 1)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out3 = ON
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut3_On(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(2 ^ 2, 2 ^ 2)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用出力 Out3 = OFF
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOut3_Off(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDo(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DO")
+	
+	VarSigDo(intAxis - 1).Value = Array(0, 2 ^ 2)
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In1
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn1(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 0) = 0 Then
+		smcIn1 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 0) = 2 ^ 0 Then
+		smcIn1 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In2
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn2(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 1) = 0 Then
+		smcIn2 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 1) = 2 ^ 1 Then
+		smcIn2 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In3
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn3(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 2) = 0 Then
+		smcIn3 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 2) = 2 ^ 2 Then
+		smcIn3 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In4
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn4(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 3) = 0 Then
+		smcIn4 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 3) = 2 ^ 3 Then
+		smcIn4 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In5
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn5(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 4) = 0 Then
+		smcIn5 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 4) = 2 ^ 4 Then
+		smcIn5 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In6
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn6(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 5) = 0 Then
+		smcIn6 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 5) = 2 ^ 5 Then
+		smcIn6 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	汎用入力 In7
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcIn7(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarSigDi(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@SIG_DI")
+	
+	If (VarSigDi(intAxis - 1).Value And 2 ^ 6) = 0 Then
+		smcIn7 = 0
+	ElseIf (VarSigDi(intAxis - 1).Value And 2 ^ 6) = 2 ^ 6 Then
+		smcIn7 = 1
+	End If
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	フィードバック出力パルスの設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		パルス数
+'					設定可能範囲: -134,217,728 ～+134,217,727
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetCntPls(strCtrlName As String, intAxis As Integer, dblPulse As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarCntPls(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@CNT_PLS")
+	
+	VarCntPls(intAxis - 1).Value = dblPulse
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	フィードバック出力パルスの取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetCntPls(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarCntPls(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@CNT_PLS")
+	
+	smcGetCntPls = VarCntPls(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	エンコーダのカウント値の設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		エンコーダカウント数
+'					設定可能範囲: -134,217,728 ～+134,217,727
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetCntEnc(strCtrlName As String, intAxis As Integer, dblEnc As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarCntEnc(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@CNT_ENC")
+	
+	VarCntENC(intAxis - 1).Value = dblEnc
+	
+End Sub
+
+
+'-------------------------------------------------------------------------------------------------
+'	エンコーダのカウント値の取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetCntEnc(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarCntEnc(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@CNT_ENC")
+	
+	smcGetCntEnc = VarCntEnc(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	原点復帰動作に伴うZ相カウント動作時のZ相カウント数、
+'	もしくはZ相カウント動作時のZ相カウント数を取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetCntEnz(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarCntEnz(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@CNT_ENZ")
+	
+	smcGetCntEnz = VarCntEnz(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	モータの動作状態を取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'
+'	・戻り値
+'					0:停止中
+'					1:PTP動作中
+'					2:JOG動作中
+'					3:原点復帰動作中
+'					4:バンク動作中（シングル）
+'					5:バンク動作中（ループ）					
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetStsMov(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarStsMov(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@STS_MOV")
+	
+	smcGetStsMov = VarStsMov(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	モータの停止要因を取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'
+'	・戻り値
+'					0: 動作中
+'					1: 停止コマンド
+'					2: 減速停止コマンド
+'					3: 他軸の停止
+'					4: アラーム/緊急停止信号
+'					5: 正方向リミット停止信号
+'					6: 負方向リミット停止信号
+'					7: 減速停止信号
+'					255:動作関数の終了					
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetStsStp(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarStsStp(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@STS_STP")
+	
+	smcGetStsStp = VarStsStp(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	パルス出力状態を取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'
+'	・戻り値
+'					0: 動作中
+'					1: 停止コマンド
+'					2: 減速停止コマンド
+'					3: 他軸の停止
+'					4: アラーム/緊急停止信号
+'					5: 正方向リミット停止信号
+'					6: 負方向リミット停止信号
+'					7: 減速停止信号
+'					255:動作関数の終了					
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetStsPls(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarStsPls(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@STS_PLS")
+	
+	smcGetStsPls = VarStsPls(intAxis - 1).Value
+	
+End Function
+
+
+
+'-------------------------------------------------------------------------------------------------
+'	リミット状態を取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'
+'	・戻り値
+'				bit7 [ 0 | 0 | 0 | SD | ORG | -LIM | +LIM | ALM ] bit0
+'				ALM アラーム/緊急
+'				+LIM 正方向リミット
+'				-LIM 負方向リミット
+'				ORG 原点リミット
+'				SD 減速停止リミ
+'				設定値
+'					0 無効
+'					1 有効
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetStsLmt(strCtrlName As String, intAxis As Integer) As Integer
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarStsLmt(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@STS_LMT")
+	
+	smcGetStsLmt = VarStsLmt(intAxis - 1).Value
+	
+End Function
+
+
+
+
+
+'-------------------------------------------------------------------------------------------------
+'	動作中のパルス出力速度の取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetStsSpd(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarStsSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@STS_SPD")
+	
+	smcGetStsSpd = VarStsSpd(intAxis - 1).Value
+	
+End Function
+
+
+'-------------------------------------------------------------------------------------------------
+'	開始速度設定
+'========================================================================
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		パルス出力開始速度（デフォルト=100)
+'					SMC-4/8DL シリーズ の場合: 0.2929687～9829800
+'					SMC-4/8DF シリーズ の場合: 0.073242187～6553500
+'					サンプルは「SMC-4/8DF シリーズ」で作成
+'					注: “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetMvStSpd(strCtrlName As String, intAxis As Integer, intSpeed As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvStSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_STSPD")
+	
+	VarMvStSpd(intAxis - 1).Value = intSpeed
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	開始速度取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetMvStSpd(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvStSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_STSPD")
+	
+	smcGetMvStSpd = VarMvStSpd(intAxis - 1).Value
+	
+End Function
+
+'-------------------------------------------------------------------------------------------------
+'	目標速度設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		パルス出力開始速度（デフォルト=100)
+'					SMC-4/8DL シリーズ の場合: 0.2929687～9829800
+'					SMC-4/8DF シリーズ の場合: 0.073242187～6553500
+'					サンプルは「SMC-4/8DF シリーズ」で作成
+'					注: “-1“指定時は，デフォルト値
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetMvTgSpd(strCtrlName As String, intAxis As Integer, intSpeed As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvTgSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_TGSPD")
+	
+	VarMvTgSpd(intAxis - 1).Value = intSpeed
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	目標速度取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetMvTgSpd(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvTgSpd(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_TGSPD")
+	
+	smcGetMvTgSpd = VarMvTgSpd(intAxis - 1).Value
+	
+End Function
+
+'-------------------------------------------------------------------------------------------------
+'	加速時間設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetMvAccTm(strCtrlName As String, intAxis As Integer, intAccel As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvAccTm(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_ACCTM")
+	
+	VarMvAccTm(intAxis - 1).Value = intAccel
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	加速時間取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetMvAccTm(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvAccTm(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_ACCTM")
+	
+	smcGetMvAccTm = VarMvAccTm(intAxis - 1).Value
+End Function
+
+'-------------------------------------------------------------------------------------------------
+'	減速時間設定
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcSetMvDecTm(strCtrlName As String, intAxis As Integer, intDecel As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvDecTm(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_DECTM")
+	
+	VarMvDecTm(intAxis - 1).Value = intDecel
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	減速時間取得
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Function smcGetMvDecTm(strCtrlName As String, intAxis As Integer) As Double
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	Set VarMvDecTm(intAxis - 1) = ExtAxis(intAxis - 1).AddVariable("@MV_DECTM")
+	
+	smcGetMvDecTm = VarMvDecTm(intAxis - 1).Value
+	
+End Function
+
+'-------------------------------------------------------------------------------------------------
+'	停止
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcMvStop(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "STOP"
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	減速停止
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcMvDStop(strCtrlName As String, intAxis As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "DSTP"
+	
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	原点復帰
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		原点入力論理とエッジを設定
+'					0：CW
+'					1：CCW
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcOrg(strCtrlName As String, intAxis As Integer, intEndDir As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "ORG", intEndDir
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	JOG移動
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		原点入力論理とエッジを設定
+'					0：CW
+'					1：CCW
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcJog(strCtrlName As String, intAxis As Integer, intEndDir As Integer)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "MOVJ", intEndDir
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	指定位置移動
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		位置の座標タイプを設定
+'					0：絶対動作
+'					1：相対動作
+'	・引数4		停止位置を設定
+'					設定可能範囲
+'					絶対座標:-134,217,728～+134,217,728
+'					相対座標:-134,217,728～+134,217,728( 0以外)
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcMvPtoP(strCtrlName As String, intAxis As Integer, intCoodinate As Integer, dblStopPosition As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "MOVP", Array(intCoodinate, dblStopPosition)
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	動作中に速度変更、停止位置変更
+'========================================================================
+'	・引数1		コントローラ名
+'	・引数2		軸番号
+'	・引数3		モータ動作変更タイプを設定
+'					0:瞬時に開始速度(FL速度)へ変更
+'					1:瞬時に目標速度(FH速度)へ変更
+'					2:減速して開始速度(FL速度)へ変更
+'					3:加速して目標速度(FH速度)へ変更
+'					4:動作速度と加減速度を変更
+'					5:モータ停止位置変更
+'					6:PCS信号によるモータ停止位置変更設定
+'	・引数4		位置の座標タイプを設定（引数1 が 5 の時のみ必要）
+'					0：絶対動作
+'					1：相対動作
+'	・引数5		停止位置を設定（引数1 が 5 の時のみ必要）
+'					設定可能範囲
+'					絶対座標:-134,217,728～+134,217,728
+'					相対座標:-134,217,728～+134,217,728( 0以外)
+'========================================================================
+'-------------------------------------------------------------------------------------------------
+Sub smcMvChange(strCtrlName As String, intAxis As Integer, intChangeType As Integer, intCoodinate As Integer, dblStopPosition As Double)
+	Set Ctrl = Cao.Controllers(strCtrlName)
+	Set ExtAxis(intAxis - 1) = Ctrl.AddExtension("Axis" & intAxis)
+	
+	ExtAxis(intAxis - 1).Execute "MCHG", Array(intChangeType, intCoodinate, dblStopPosition)
+	
+End Sub

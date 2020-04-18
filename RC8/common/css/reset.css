@@ -1,0 +1,28 @@
+@charset "utf-8";
+/* Markuped by TERA.inc TechnicalTeam 2010.10.20 */
+/*---------------------------------------------
+Reset Style
+---------------------------------------------*/
+*			{ margin: 0; padding: 0; font-size: 100%; }
+html		{ color: #333; background-color: #fff; overflow-y: scroll; }
+body		{ font-size: 12px; line-height: 1.5; height: 100%; text-align: left; font-family: "メイリオ", "ＭＳ Ｐゴシック", Osaka, "ヒラギノ角ゴ Pro W3"; }
+
+hr,legend	{ display: none; }
+img			{ border: none; vertical-align: bottom; }
+
+div, dl, dt, dd, form, input, ul, ol, li, p, select, textarea, span, th, td { margin: 0; padding: 0; }
+address, th, caption, em, strong	{ font-style: normal; font-weight: normal; }
+h1, h2, h3, h4, h5, h6				{ font-size: 100%; font-weight: normal; margin: 0; padding: 0; }
+input, select, textarea				{ font-size: 100%; font-weight: inherit; }
+sup			{ vertical-align: super; font-size: 90%; }
+sub			{ vertical-align: text-bottom; font-size: 72%; }
+ol, ul		{ list-style: none; }
+table		{ border-collapse: collapse; border-spacing: 0; font-size: 100%; font-size: inherit; }
+caption		{ text-align: left; }
+fieldset	{ border: 0; }
+
+a			{ overflow: hidden; outline: none; }
+a:link		{ color: #333; text-decoration: none; }
+a:visited	{ color: #333; text-decoration: none; }
+a:hover, 
+a:active	{ color: #333; text-decoration: underline; }

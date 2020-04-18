@@ -1,0 +1,51 @@
+#include <PanelMain.h> raw
+
+Dim g_ctrl as Object			' CaoControllerオブジェクト用
+Dim g_varAO0 As Object			' AIOボードにアクセスする変数オブジェクト用
+
+Sub Panel_INITIALIZE()
+	On Error Goto ErrorProc
+
+	' 接続処理
+	g_ctrl = cao.AddController("AIO", "CaoProv.CONTEC.AIO","","DeviceName=AIO000")
+
+	' デバイス名取得
+	DeviceName.Caption = g_ctrl.AddVariable("@DeviceName").Value	
+
+	' 変数オブジェクト生成(データ長の指定(8bit))
+	g_varAO0 = g_ctrl.AddVariable("AO0")
+
+	Exit Sub
+ErrorProc:
+End Sub
+
+Sub Panel_TERMINATE()
+	cao.Controllers.Remove g_ctrl.Index
+	g_ctrl = Nothing
+
+End Sub
+
+Sub Output_CLICKED()
+	' 指定電圧値を出力
+	g_varAO0.value = DC.Value
+
+End Sub
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION=""
+BG=&H754E3A
+FG=&H000000
+TIMEOUT=2000
+TIMEOUTMODE=1
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=1
+FONTTYPE=1
+BORDERSTYLE=0
+add_widget 5,"DC",240,130,90,50,&H000000,&HB0B0B0,0,3,4,"",16,1,      0,"MS UI Gothic";
+add_widget 2,"Label1",30,130,200,50,&H000000,&HB0B0B0,0,1,0,"DC[v] (-10.0～10.0)",16,0,"MS UI Gothic","",1,1;
+add_widget 1,"Output",340,130,140,50,&H000000,&HB0B0B0,0,3,1,"Output",16,0,0,"MS UI Gothic";
+add_widget 2,"Label2",30,50,110,40,&H000000,&HB0B0B0,0,1,0,"デバイス名",16,0,"MS UI Gothic","",1,1;
+add_widget 2,"DeviceName",150,50,330,40,&H000000,&HB0B0B0,0,1,0,"",16,2,"MS UI Gothic","",1,1;
+'<<--TPDESIGNER_RESERVED-->>
+#endif

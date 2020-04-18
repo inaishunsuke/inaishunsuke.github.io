@@ -1,0 +1,14 @@
+#define MyComPortNo	2
+
+Sub Main()
+	
+	Dim qr As Object
+	Dim dat As Object
+	
+	Set qr = cao.AddController( "QRC", "CaoProv.DENSO.QRCode", "", "Conn=com:" & Str(MyComPortNo) & ",Mode=6,Protocol=0:0:0" ) 
+	Set dat = qr.AddVariable("ReadData")
+
+  ' Read data from QR Code Scanner
+  PrintDbg dat.Value
+
+End Sub

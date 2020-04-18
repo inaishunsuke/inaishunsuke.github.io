@@ -1,0 +1,42 @@
+'!TITLE "VWXG_Calibration"
+
+' 注意
+' 1. KEYENCE XGの結果出力Ethernet通信のポートを回線番号9と同じ値にしてください。
+' 2. 回線番号のIPAddressをKEYENCE XGのIPAddressにしてください。
+' 3. このPacscriptを実行してから、操作盤を開いてください。
+
+' 機器のIPAddress
+#define IPAddress "192.168.0.2"
+
+Sub Main 
+	Dim ctrl as object
+	Dim VResult as Vector
+
+	' 結果出力ポートを強制クローズ
+	comm.Close -1
+
+	' 結果出力ポートをオープン
+	comm.Open 9
+
+	ctrl = Cao.AddController( "VWXG", "CaoProv.KEYENCE.VWXG", "", "conn=eth:" & IPAddress)
+
+	Do
+		' トリガon
+		ctrl.Trigger -1
+		
+		On Error Resume Next
+
+		' 結果取得待ち
+		VResult = "V(" & comm.Input(9, 1000) & ")" 
+		
+		' 操作盤に渡すように結果を変数に
+		vars.ItemValue(3) = POSX(VResult)
+		vars.ItemValue(4) = POSY(VResult)
+	
+		On Error Goto 0
+	
+		Delay 500
+	Loop
+End Sub
+
+

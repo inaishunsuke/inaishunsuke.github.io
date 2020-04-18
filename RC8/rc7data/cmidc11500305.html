@@ -1,0 +1,120 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>COS</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">COS<span class="comment1">
+		　（関数）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">余弦(コサイン)を得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">COS(&lt;数式&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;数式&gt;の値に対する余弦値を得ます。</div>
+            <div class="p">&lt;数式&gt;の単位は度で指定します。</div>
+            <div class="p">&lt;数式&gt;に倍精度実数が含まれる場合、得られる値は倍精度となりますが、他の場合には単精度となります。</div>
+            <div class="p">引数をラジアン(RAD)で入力する場合は、定数の後にRADを付けます。</div>
+            <div id="hint">
+              <img src="common/hint.jpg">
+              <div id="hintgroup">
+                <div id="hintitem">
+                  <div class="p">Cos 関数は、引数として角度を受け取り、その角度を含む直角三角形の 2 辺の比を返します。ここでいう 2 辺とは、引数 number に指定した角をはさむ 2 つの辺を指します。2 辺の比は、短い方の辺 (底辺) の長さを、もう一方の辺 (斜辺) の長さで割った値です。戻り値は、-1 ～ 1 の範囲の値になります。角度の単位を度からラジアンに変換するには、度にπ/180 を掛けます。ラジアンから度に変換するには、ラジアンに 180/πを掛けます。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11500306.html" target="_top">SIN</a>、<a href="cmidc11500307.html" target="_top">TAN</a>、<a href="cmidc11500302.html" target="_top">ASIN</a>、<a href="cmidc11500301.html" target="_top">ACOS</a>、<a href="cmidc11500303.html" target="_top">ATN</a>、<a href="cmidc11500304.html" target="_top">ATN2</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">DEFSNG lf1, lf2, lf3, lf4, lf5</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf1 = COS(0.78525RAD)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'0.78525（ラジアン）の余弦値をlf1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf2 = COS(lf4) </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'lf4の余弦値をlf2に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf3 = COS(45) * lf5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'45度の余弦値にlf5を掛けた値をlf3に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

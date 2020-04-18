@@ -1,0 +1,223 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ROTATE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ROTATE<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">指定した軸回りの回転動作を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ROTATE &lt;回転面&gt;,[@&lt;パス開始変位&gt;]&lt;相対回転角&gt; [,[&lt;回転中心点&gt;] [,&lt;回転オプション&gt;] [,&lt;動作オプション&gt;][,NEXT]]</div>
+            <div class="p">回転面の書式</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <div class="p">{{XY|YZ|ZX}|{XYH|YZH|ZXH}|(ベクトル型,ベクトル型,ベクトル型)}</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <div class="p">{{XY}|{XYH}}</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;回転面&gt;に垂直に作られた軸を中心に&lt;回転角度&gt;分、手先を回転します。回転軸は回転面に対し2種類ありますが、アプローチとのなす角が小さい方が選択されます。</div>
+            <div class="p">&lt;回転面&gt;は、以下の7種類の中から選択することができます。</div>
+            <div class="p">回転面の書式</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <div class="p">XY|YZ|ZXは、回転面がワーク座標のXY,YZ,ZX平面に平行である場合に指定します。</div>
+              <div class="p">XYH|YZH|ZXHは、回転面がツール座標のXY,YZ,ZX平面に平行である場合に指定します。</div>
+              <div class="p">(ベクトル型,ベクトル型,ベクトル型)は、3点のXYZ座標からベース座標基準の平面を作ります。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <div class="p">XYは、回転面がワーク座標のXY平面に平行である場合に指定します。</div>
+              <div class="p">XYHは、回転面がツール座標のXY平面に平行である場合に指定します。</div>
+            </div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;パス開始変位&gt;の値は指定座標(ポーズ)を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。パス開始タイミングを変えるための目安となる数値であり、アーム先端がその中に入ったときに次の制御へ移るわけではありません。</div>
+            <div class="p">省略するとデフォルト値@0として処理します。</div>
+            <div class="p">@0とすると、エンド動作で動きます。</div>
+            <div class="p">@Pとすると、パス動作で動きます。</div>
+            <div class="p">@Eとすると、エンコーダ値によって目標位置への到達を確認し、次の動作に移ります。</div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;相対回転角&gt;の単位は度(DEG)で、符号は右ねじ回りがプラス(+)になります。</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <div class="p">&lt;回転中心点&gt;は回転面が｛XY|YZ|ZX｝のときと（ベクトル型，ベクトル型，ベクトル型）のときは、ワーク座標上の点を指定し、回転面が｛XYH|YZH|ZXH｝のときは、ツール座標上の点を指定します。</div>
+              <div class="p">&lt;回転中心点&gt;を省略した場合は、回転面が{XY|YZ|ZX}のときは、(0,0,0)が回転中心になり、回転面が(ベクトル型,ベクトル型,ベクトル型)のときは、一つ目のベクトルが回転中心になります。ただし、回転面{XYH|YZH|ZXH}を指定した場合、(0,0,0)を回転中心に動作できません。必ず回転中心点を指定してください。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <div class="p">&lt;回転中心点&gt;は回転面が｛XY｝のときは、ワーク座標上の点を指定し、回転面が｛XYH｝のときは、ツール座標上の点を指定します。</div>
+              <div class="p">&lt;回転中心点&gt;を省略した場合は、回転面が{XY}のときは、(0,0,0)が回転中心になります。ただし、回転面{XYH}を指定した場合、(0,0,0)を回転中心に動作できません。必ず回転中心点を指定してください。</div>
+            </div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;回転オプション&gt;はpose=1、pose=2で指定します。</div>
+            <div class="p">pose=1の場合、ロボットの姿勢は回転中心に対し一定になるように変化します。回転角度は±540福?でとなります。pose=2の場合、ロボットの姿勢は現在の姿勢を保持します。オプション指定しない場合、pose=2と同様な動作になります。</div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;動作オプション&gt;にはSPEED、ACCEL、DECELがあります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">動作オプション</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">SPEED（またはSと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">移動速度を指定します。意味はSPEED文と同じです。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">加速度を指定します。意味はACCEL文と同じです。ただし、減速度の指定はできません。減速度の指定はDECEL文を使ってください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">減速度を指定します。意味はDECEL文と同じです。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">
+            </div>
+            <div class="p">&lt;NEXTオプション&gt;を付けると、ロボットの動作完了を待たずに次の非動作命令に続きます。ただし、以下の命令は、ロボットの動作完了（パス開始）まで実行待ちになります。</div>
+            <div class="p">ロボット動作命令（CHANGETOOL、CHANGEWORK、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL）、最適可搬質量設定ライブラリ（aspACLD、aspChange）、アーム動作ライブラリ（mvSetPulseWidthなど）</div>
+            <div class="p">また、動作オプションと併用した場合、NEXTオプションは無効になります。&lt;NEXTオプション&gt;を付けた場合、ステップ停止を実行すると、次の動作命令実行待ちの場合は、その動作を終了後に停止します。したがって、停止までの移動が長くなりますので注意してください。</div>
+            <div class="p">また、ティーチチェックモードのときは、NEXTオプションは無効になります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200209.html" target="_top">ROTATEH</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">パス動作中に瞬時停止をかけ、再起動すると、「エラー60de　指定した回転動作と異なる動作をします」が発生することがあります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ROTATE XY, 45, V1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'V1の点を通るXY平面に垂直な軸回りに、姿勢固定で</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'45度回転します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">6軸のみ</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ROTATE (V2, V3, V4), F1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'V2の点を通る（V2，V3，V4）の作る平面に垂直な軸回に</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'F1の値分回転します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ROTATE XYH, 43, V1, S = 100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ツール座標V1を通るアプローチベクトル回りに43度</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'の回転動作を移動速度100%で行ないます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

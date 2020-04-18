@@ -1,0 +1,1353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>用語集</title>
+<meta name="description" content="" />
+<meta name="keywords" content="用語集" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="002299" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="11" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="000989.html">その他</a></li>
+<li><span>用語集</span></li>
+
+</ul>
+
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 2299</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>用語集</h1>
+	<table>
+		<tr>
+			<td><a href="#ID002299_H2-No1">あ行</a></td>
+			<td><a href="#ID002299_H2-No2">か行</a></td>
+			<td><a href="#ID002299_H2-No3">さ行</a></td>
+			<td><a href="#ID002299_H2-No4">た行</a></td>
+			<td><a href="#ID002299_H2-No5">な行</a></td>
+			<td><a href="#ID002299_H2-No6">は行</a></td>
+			<td><a href="#ID002299_H2-No7">ま行</a></td>
+			<td><a href="#ID002299_H2-No8">や行</a></td>
+			<td><a href="#ID002299_H2-No9">ら行</a></td>
+			<td><a href="#ID002299_H2-No10">わ行</a></td>
+		</tr>
+		<tr>
+			<td><a href="#ID002299_H2-No11">英数字</a></td>
+		</tr>
+	</table>
+	<h2 id="ID002299_H2-No1">あ行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>アームセマフォ<br />
+        (arm semaphore)</td>
+			<td>ロボット制御権のこと。この権利をもつタスクのみが、ロボットを動作させることができる。</td>
+		</tr>
+		<tr>
+			<td>アドレス設定<br />
+        (IP address setting)</td>
+			<td>コントローラのIPアドレスを設定すること。イーサネットで通信するときに必要。</td>
+		</tr>
+		<tr>
+			<td id="ABOVE">アバッブ<br />
+        (ABOVE)</td>
+			<td>6軸ロボットのひじ形態のひとつ。(&hArr;<a href="#BELOW">ビロー</a>)</td>
+		</tr>
+		<tr>
+			<td>アプローチベクトル<br />
+        (approach vector)</td>
+			<td>メカニカルインタフェース座標系におけるZ軸の正方向のベクトル。</td>
+		</tr>
+		<tr>
+			<td>位置データ<br />
+        (position data)</td>
+			<td>ロボットのフランジ中心（ツール定義が有効なときはツール先端）の位置と、そのときのロボットの姿勢を表すベース座標系のデータ。</td>
+		</tr>
+		<tr>
+			<td>腕形態<br />
+        (arm figure)</td>
+			<td>6軸ロボットの第1軸～第3軸の値で決まる形態。ライティー、レフティーの2種類がある。</td>
+		</tr>
+		<tr>
+			<td>エラーコード<br />
+        (error code)</td>
+			<td>ロボットあるいはWINCAPSIIIで発生した異常の原因・状況を表す8桁の16進数のこと。</td>
+		</tr>
+		<tr>
+			<td>エラーログ<br />
+        (error log)</td>
+			<td>エラー内容と発生した時刻の記録。</td>
+		</tr>
+		<tr>
+			<td>エリア設定<br />
+        (defining interference area)</td>
+			<td>干渉エリアを設定すること。ティーチングペンダントやWINCAPSIIIを使って設定する方法と、プログラムのコマンドにより設定する方法がある。</td>
+		</tr>
+		<tr>
+			<td>エンコーダ値確認動作<br />
+        (encoder value check motion)</td>
+			<td>エンコーダ値が、ティーチングされた動作目標位置に対して指定パルス以内に入ったときに、目標位置に到達したと判断する動作。</td>
+		</tr>
+		<tr>
+			<td>エンド動作<br />
+        (end motion)</td>
+			<td>サーボの指令位置が、ティーチングされた動作目標位置に一致したときに、目標位置に到達したと判断する動作。</td>
+		</tr>
+		<tr>
+			<td>オリエントベクトル<br />
+        (orient vector)</td>
+			<td>メカニカルインタフェース座標系におけるY軸の正方向のベクトル。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No2">か行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>外部加速度<br />
+        (external acceleration)</td>
+			<td>ティーチングペンダントで設定する加速度のこと。最高加速度に対する割合(%)を入力する。</td>
+		</tr>
+		<tr>
+			<td>外部減速度<br />
+        (external deceleration)</td>
+			<td>ティーチングペンダントで設定する減速度のこと。最高加速度に対する割合(%)を入力する。</td>
+		</tr>
+		<tr>
+			<td>外部自動運転<br />
+        (external automatic run)</td>
+			<td>外部機器からプログラムを実行すること。</td>
+		</tr>
+		<tr>
+			<td>外部速度<br />
+        (external speed)</td>
+			<td>ティーチングペンダントで設定する速度のこと。最高速度に対する割合(%)を入力する。</td>
+		</tr>
+		<tr>
+			<td>各軸モード<br />
+        (joint mode)</td>
+			<td>各軸ごとに手動動作させるモード。</td>
+		</tr>
+		<tr>
+			<td>型宣言<br />
+        (type declaration)</td>
+			<td>プログラム内で変数の型を宣言すること。</td>
+		</tr>
+		<tr>
+			<td>各個操作<br />
+        (panel operation)</td>
+			<td>ティーチングペンダントの画面から内部I/OのON/OFFを操作すること。</td>
+		</tr>
+		<tr>
+			<td>可動範囲<br />
+        (motion space)</td>
+			<td>ロボットが動作できる範囲。</td>
+		</tr>
+		<tr>
+			<td>可搬質量<br />
+        (load capacity)</td>
+			<td>ロボットが所持できるツールとワークを合計した質量。</td>
+		</tr>
+		<tr>
+			<td>干渉エリア<br />
+        (interference area)</td>
+			<td>ツールが設備に干渉していないかを監視するためにユーザが設けるエリア。このエリア内にツール座標系の原点が入ると、指定のI/Oポートから出力がある。</td>
+		</tr>
+		<tr>
+			<td>グローバル変数<br />
+        (global variable)</td>
+			<td>どのタスクからも利用できる変数。</td>
+		</tr>
+		<tr>
+			<td>形態<br />
+        (figure)</td>
+			<td>ロボットの各軸（関節）の取りうる状態。同じ位置、姿勢に対して複数の形態をとり得る。</td>
+		</tr>
+		<tr>
+			<td>形態成分<br />
+        (figure component)</td>
+			<td>形態を決定する要素。6軸ロボットでは、腕、ひじ、手首、第6軸、第4軸の5つ要素がある。</td>
+		</tr>
+		<tr>
+			<td>現在位置<br />
+        (current position)</td>
+			<td>ツール座標系原点の現在の位置。</td>
+		</tr>
+		<tr>
+			<td>互換モード<br />
+        (compatible mode)</td>
+			<td>I/Oの配置が、従来シリーズのロボットと互換性を保つように設定されたモード。</td>
+		</tr>
+		<tr>
+			<td>コマンド<br />
+        (command)</td>
+			<td>プログラムに記述する命令のこと。コントローラはプログラムに記述された順にコマンドを読み、解釈を行って実行する。</td>
+		</tr>
+		<tr>
+			<td>コマンド処理完了<br />
+        (command processing complete)</td>
+			<td>I/Oコマンド処理の完了を外部に知らせる出力信号。</td>
+		</tr>
+		<tr>
+			<td>コマンド領域<br />
+        (command area)</td>
+			<td>I/Oコマンドの種類を指定するI/Oポート群のこと。</td>
+		</tr>
+		<tr>
+			<td>コメント<br />
+        (comment)</td>
+			<td>プログラムに記述する注釈のこと。プログラムを人が理解しやすくするために付加する。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No3">さ行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>サーボON<br />
+        (servo ON)</td>
+			<td>モータ電源が入りになっていることを外部に知らせる信号。</td>
+		</tr>
+		<tr>
+			<td>サイクル起動<br />
+        (single-cycle start)</td>
+			<td>プログラムを1サイクル実行させる起動方法。1サイクル(プログラムの最終ステップまで）実行すると終了する。</td>
+		</tr>
+		<tr>
+			<td>サイクル停止<br />
+        (cycle stop)</td>
+			<td>プログラムを1サイクル実行すると停止する停止方法。</td>
+		</tr>
+		<tr>
+			<td>最適速度制御機能<br />
+        (setting the Control Set of Motion Optimization)</td>
+			<td>ロボットの負荷条件や姿勢に応じて、最適な速度、加速度を設定する機能。</td>
+		</tr>
+		<tr>
+			<td>サブルーチン<br />
+        (subroutine)</td>
+			<td>特定の動作を記述したプログラムで、メインプログラムの他の部分から呼び出される。</td>
+		</tr>
+		<tr>
+			<td>視覚機能<br />
+        (visual function)</td>
+			<td>カメラから入力した画像を処理し、必要なデータをロボット制御機能に与える機能。</td>
+		</tr>
+		<tr>
+			<td>視覚装置<br />
+        (visual device)</td>
+			<td>カメラから入力した画像を処理し、必要なデータをロボットに与える装置。</td>
+		</tr>
+		<tr>
+			<td>システム変数<br />
+        (system variable)</td>
+			<td>プログラム内でシステムの状況を調べるための変数。</td>
+		</tr>
+		<tr>
+			<td>姿勢<br />
+        (posture)</td>
+			<td>6軸ロボットの場合、ロール、ピッチ、ヨー角で決まるツールの傾き。4軸ロボットの場合はZ軸回りの回転角で決まるツールの向きのこと。</td>
+		</tr>
+		<tr>
+			<td>実行プログラム<br />
+        (execution program)</td>
+			<td>ロボットが理解できるデータ形式に変換されたプログラムのこと。</td>
+		</tr>
+		<tr>
+			<td>自動運転イネーブル (enable auto)</td>
+			<td>短絡（ON)状態にすると自動モードに切り替え可能にする信号。開放（OFF)状態では手動モード、ティーチチェックモードにすることが可能。</td>
+		</tr>
+		<tr>
+			<td>自動運転<br />
+        (automatic robot run)</td>
+			<td>プログラムを実行することにより、ロボットを運転すること。</td>
+		</tr>
+		<tr>
+			<td>手動操作<br />
+        (manual robot operation)</td>
+			<td>ユーザがティーチングペンダントやオペレーティングパネルの操作キーを使って、ロボットを操作すること。</td>
+		</tr>
+		<tr>
+			<td>瞬時停止<br />
+        (halt)</td>
+			<td>プログラムを直ちに停止する停止方法。モータ電源は切れない。</td>
+		</tr>
+		<tr>
+			<td>ジョグダイアル<br />
+        (jog dial)</td>
+			<td>ペンダントにあるダイヤル。入力画面でカーソルの移動や選択肢を切り替えるのに使う。</td>
+		</tr>
+		<tr>
+			<td>シングル<br />
+        (SINGLE)</td>
+			<td>第6軸の回転角&theta;6が（-180&deg;&lt;&theta;6&le;180&deg;）の場合を示す。</td>
+		</tr>
+		<tr>
+			<td>ステータス領域<br />
+        (status area)</td>
+			<td>I/Oコマンド処理結果を知らせる出力信号群。I/Oコマンドに応じたステータスがセットされる。</td>
+		</tr>
+		<tr>
+			<td>ステップ送り<br />
+        (step check)</td>
+			<td>ティーチチェックモードでプログラムを1ステップ実行すること。</td>
+		</tr>
+		<tr>
+			<td>ステップ起動<br />
+        (single-step start)</td>
+			<td>プログラムを1ステップ実行させる起動方法。1ステップ実行すると停止する。</td>
+		</tr>
+		<tr>
+			<td>ステップ停止<br />
+        (step stop)</td>
+			<td>プログラムを1ステップ実行すると停止する停止方法。</td>
+		</tr>
+		<tr>
+			<td>ストローブ信号<br />
+        (strobe signal)</td>
+			<td>I/Oコマンドの処理開始を指示する入力信号。</td>
+		</tr>
+		<tr>
+			<td>スナップショット<br />
+        (snapshot)</td>
+			<td>ロボットの現在の状態を記録する機能。</td>
+		</tr>
+		<tr>
+			<td>制御ログ<br />
+        (control log)</td>
+			<td>指令値、エンコーダ値、電流値、負荷率の記録。各動作軸ごとに記録される。</td>
+		</tr>
+		<tr>
+			<td>セカンドアーム<br />
+        (second arm)</td>
+			<td>ロボットのアームのうち、ベースから遠い方。</td>
+		</tr>
+		<tr>
+			<td id="absolute_motion">絶対動作<br />
+        (absolute motion)</td>
+			<td>ティーチングされた動作目標位置へ移動する動作。（&hArr;<a href="#relative_motion">相対動作</a>）</td>
+		</tr>
+		<tr>
+			<td>設置架台<br />
+        (installation frame)</td>
+			<td>ロボットを設置する台。</td>
+		</tr>
+		<tr>
+			<td>セマフォ<br />
+        (semaphore)</td>
+			<td>タスクの実行権のこと。タスク間で同期をとったり、同時に動いてはいけないタスク間で排他制御を行うのに用いる。</td>
+		</tr>
+		<tr>
+			<td>専用入出力信号<br />
+        (system I/O signals)</td>
+			<td>運転制御や運転状況を外部に知らせるためにシステムで固定になっている入出力信号。</td>
+		</tr>
+		<tr>
+			<td id="software_limit2">走行軸<br />
+        (traveling shaft)</td>
+			<td>ロボットを乗せて動作する付加軸。</td>
+		</tr>
+		<tr>
+			<td>操作ログ<br />
+        (operation log)</td>
+			<td>ティーチングペンダントやオペレーティングパネルを使った操作の記録。</td>
+		</tr>
+		<tr>
+			<td id="relative_motion">相対動作<br />
+        (relative motion)</td>
+			<td>現在位置からティーチングされた移動量だけ移動する動作。（&hArr;<a href="#absolute_motion">絶対動作</a>）</td>
+		</tr>
+		<tr>
+			<td id="software_limit">ソフトウェアリミット<br />
+        (software limit)</td>
+			<td>ソフトウエアで決められたロボットの動作範囲の限界。（&hArr;<a href="#mechanical_end">メカエンド</a>）</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No4">た行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>タスク<br />
+        (task)</td>
+			<td>同時に複数のプログラムの進行管理を行なう場合に、各プログラムが形成する動作プロセスのこと。</td>
+		</tr>
+		<tr>
+			<td>ダブル<br />
+        (DOUBLE)</td>
+			<td>第6軸の回転角&theta;6が（180&deg;&lt;&theta;6&le;360&deg;または-360&deg;&lt;&theta;6&le;-180&deg;）の場合を示す。</td>
+		</tr>
+		<tr>
+			<td>単軸CALSET<br />
+        (CALSET of a single axis)</td>
+			<td>指定した軸のみをCALSETすること。</td>
+		</tr>
+		<tr>
+			<td>ツール<br />
+        (tool)</td>
+			<td>ロボットが直接ワークに働きかける部分。エンドエフェクタ（JIS)と同義語。</td>
+		</tr>
+		<tr>
+			<td>ツール座標系<br />
+        (tool coordinates)</td>
+			<td>ツールに原点を設定した座標系で、メカニカルインタフェース座標系の原点を任意の点にオフセットし、各軸回りの回転させる。</td>
+		</tr>
+		<tr>
+			<td>ツール定義<br />
+        (Defining tool coordinates)</td>
+			<td>ツール座標系を定義すること。メカニカルインタフェース座標系を基準として原点オフセット量と各軸回りの回転角度量を定義する。TOOL1からTOOL63まで定義できる。</td>
+		</tr>
+		<tr>
+			<td>ティーチチェック<br />
+        (teach check)</td>
+			<td>プログラムによる動作を検査すること。</td>
+		</tr>
+		<tr>
+			<td>ティーチング<br />
+        (teaching)</td>
+			<td>ティーチングペンダントを使って作業に必要な情報をロボットに入力すること。</td>
+		</tr>
+		<tr>
+			<td>データ領域<br />
+        (data area)</td>
+			<td>I/Oコマンドに必要なデータを指定するI/Oポート群のこと。</td>
+		</tr>
+		<tr>
+			<td>手首形態<br />
+        (wrist figure)</td>
+			<td>6軸ロボットの第4軸と第5軸の値で決まる形態。フリップとノンフリップの2種類がある。</td>
+		</tr>
+		<tr>
+			<td>デッドマンスイッチ<br />
+        (deadman switch)</td>
+			<td>安全のために、移動方向キーと同時に押している間だけロボットが動作するようにしたスイッチ。移動方向キーまたはデッドマンスイッチのどちらか一方を離すと、ロボットは直ちに停止する。</td>
+		</tr>
+		<tr>
+			<td>電源入り<br />
+        (powering ON the robot controller)</td>
+			<td>ロボットコントローラの電源を入れること。</td>
+		</tr>
+		<tr>
+			<td>電源切り<br />
+        (powering OFF the robot controller)</td>
+			<td>ロボットコントローラの電源を切ること。</td>
+		</tr>
+		<tr>
+			<td>天吊り仕様<br />
+        (overhead version)</td>
+			<td>ベースを上にアームを下にして、天井からつるすように設置する仕様のロボット。作業台上にロボットの設置スペースが不要になるため、作業エリアを広くとることができる。</td>
+		</tr>
+		<tr>
+			<td>動作モード<br />
+        (operating modes)</td>
+			<td>手動で動作させるモード。各軸モード、X－Yモード、TOOLモードの3種類がある。</td>
+		</tr>
+		<tr>
+			<td>特異点<br />
+        (singular point)</td>
+			<td>2つの形態の境界上の位置。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No5">な行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>内部加速度<br />
+        (internal acceleration)</td>
+			<td>プログラム中で設定する加速度のこと。</td>
+		</tr>
+		<tr>
+			<td>内部減速度<br />
+        (internal deceleration)</td>
+			<td>プログラム中で設定する減速度のこと。</td>
+		</tr>
+		<tr>
+			<td>内部自動運転<br />
+        (internal automatic run)</td>
+			<td>オペレーティングパネルやティーチングペンダントからプログラムを実行すること。</td>
+		</tr>
+		<tr>
+			<td>内部速度<br />
+        (internal speed)</td>
+			<td>プログラム中で設定する速度のこと。</td>
+		</tr>
+		<tr>
+			<td>ノーマルベクトル<br />
+        (normal vector)</td>
+			<td>メカニカルインタフェース座標系におけるX軸の正方向のベクトル。</td>
+		</tr>
+		<tr>
+			<td id="NONFLIP">ノンフリップ<br />
+        (NONFLIP)</td>
+			<td>6軸ロボットの手首形態のひとつ。（&hArr;<a href="#FLIP">フリップ</a>）</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No6">は行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>パス動作<br />
+        (pass motion)</td>
+			<td>ティーチングされた動作目標位置の近傍を通過する動作。</td>
+		</tr>
+		<tr>
+			<td>パレタイジング<br />
+        (palletizing)</td>
+			<td>しきりのあるパレットに部品などの投入や取り出しを順次行うこと。</td>
+		</tr>
+		<tr>
+			<td>ハンド<br />
+        (Hand)</td>
+			<td>ワークをつかむ部分。ツールと同じ。</td>
+		</tr>
+		<tr>
+			<td>汎用入出力信号<br />
+        (user I/O signals)</td>
+			<td>ユーザプログラムで制御できる入出力信号。</td>
+		</tr>
+		<tr>
+			<td>ひじ形態<br />
+        (elbow figure)</td>
+			<td>6軸ロボットの第2軸、第3軸の値で決まる形態。アバッブとビローの2種類がある。</td>
+		</tr>
+		<tr>
+			<td>ピッチ角<br />
+        (pitch angle)</td>
+			<td>Y軸回りの回転角。</td>
+		</tr>
+		<tr>
+			<td>標準モード<br />
+        (normal mode)</td>
+			<td>I/Oの標準配置モード。</td>
+		</tr>
+		<tr>
+			<td id="BELOW">ビロー<br />
+        (BELOW)</td>
+			<td>6軸ロボットのひじ形態のひとつ。（&hArr;<a href="#ABOVE">アバッブ</a>）</td>
+		</tr>
+		<tr>
+			<td>ファーストアーム<br />
+        (first arm)</td>
+			<td>ロボットのアームのうち、ベースに近い方。</td>
+		</tr>
+		<tr>
+			<td>ファンクションキー<br />
+        (function keys)</td>
+			<td>ペンダントの画面の下に並んでいるボタン。機能名称が画面の下部に表示されていて、押すとその機能を果たす。</td>
+		</tr>
+		<tr>
+			<td>フランジ部<br />
+        (plate mechanical interface)</td>
+			<td>ロボットのアーム先端にあるツールを取り付ける部分のこと。</td>
+		</tr>
+		<tr>
+			<td>フランジ面<br />
+        (mechanical interface)</td>
+			<td>フランジとツールの接合面。メカニカルインタフェース（JIS)のこと。</td>
+		</tr>
+		<tr>
+			<td id="FLIP">フリップ<br />
+        (FLIP)</td>
+			<td>6軸ロボットの手首形態のひとつ。（&hArr;<a href="#NONFLIP">ノンフリップ</a>）</td>
+		</tr>
+		<tr>
+			<td>ブレーキOFF<br />
+        (brake-OFF)</td>
+			<td>各軸のブレーキを解除すること。</td>
+		</tr>
+		<tr>
+			<td>ブレーキON<br />
+        (brake-ON)</td>
+			<td>各軸のブレーキをかけること。</td>
+		</tr>
+		<tr>
+			<td>プログラムスタート<br />
+        (program start)</td>
+			<td>プログラムをスタートさせる入力信号。ステップ停止している場合は、次のステップから実行を再開し、瞬時停止している場合は、同じステップの続きから実行を再開する。</td>
+		</tr>
+		<tr>
+			<td>プログラム転送<br />
+        (program transfer)</td>
+			<td>ロボットプログラムをロボットコントローラとWINCAPSIII（パソコン）間で送受信すること。</td>
+		</tr>
+		<tr>
+			<td>プログラムリセット<br />
+        (program reset)</td>
+			<td>強制的に先頭からプログラムを実行させる入力信号。</td>
+		</tr>
+		<tr>
+			<td>ベース<br />
+        (base)</td>
+			<td>ロボットの第1軸を取り付ける部分。</td>
+		</tr>
+		<tr>
+			<td>ベース座標系<br />
+        (base coordinates)</td>
+			<td>ロボットのベースを原点とする三次元直交座標。</td>
+		</tr>
+		<tr>
+			<td>ベース面<br />
+        (base mounting surface)</td>
+			<td>ベースと架台の接合面。</td>
+		</tr>
+		<tr>
+			<td>変数テーブル<br />
+        (variable table)</td>
+			<td>ロボットコントローラが保持している変数番号と値が対になったデータ群のこと。</td>
+		</tr>
+		<tr>
+			<td>ペンダントレス運転<br />
+        (pendantless state)</td>
+			<td>オペレーティングパネルやティーチングペンダントが接続されていない状態で、外部機器から運転を行うこと。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No7">ま行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>マクロ<br />
+        (macro)</td>
+			<td>変数番号、ポート番号など12文字列で名前を定義したもの。プログラム実行時に名前が番号に置き換えられる。</td>
+		</tr>
+		<tr>
+			<td>マクロ定義ファイル<br />
+        (macro definition file)</td>
+			<td>マクロを定義したファイル。</td>
+		</tr>
+		<tr>
+			<td>マシンロック<br />
+        (machine lock)</td>
+			<td>ロボットを実際には動作させずに、ロボットコントローラだけでシミュレーション動作をする状態のこと。</td>
+		</tr>
+		<tr>
+			<td>マルチタスク<br />
+        (multitasking)</td>
+			<td>複数のプログラムが、見かけ上同時に実行されている状態。ロボットコントローラのCPUが、短時間に次々とプログラムの実行を交代することにより実現している。</td>
+		</tr>
+		<tr>
+			<td id="mechanical_end">メカエンド<br />
+        (mechanical end)</td>
+			<td>メカストッパにより設定された機械的な動作限界。（&hArr;<a href="#software_limit">ソフトウエアリミット</a>）</td>
+		</tr>
+		<tr>
+			<td>メカストッパ<br />
+        (mechanical stopper) </td>
+			<td>ロボットの軸の動作を物理的に制限する機構。</td>
+		</tr>
+		<tr>
+			<td>メカニカルインタフェース座標系<br />
+        (mechanical interface    coordinates)</td>
+			<td>フランジ中心を原点とする三次元直交座標。</td>
+		</tr>
+		<tr>
+			<td>メニューツリー<br />
+        (menu tree)</td>
+			<td>ファンクションキーの機能メニューの一覧をツリー状に表現したもの。</td>
+		</tr>
+		<tr>
+			<td>モータ電源切り<br />
+        (powering OFF the motor)</td>
+			<td>ロボットのモータ電源を切ること。</td>
+		</tr>
+		<tr>
+			<td>モータ電源入り<br />
+        (powering ON the motor)</td>
+			<td>ロボットのモータ電源を入れること。</td>
+		</tr>
+		<tr>
+			<td>モード切替スイッチ<br />
+        (mode switch)</td>
+			<td>ペンダントにあるスイッチ。運転モードを切り替えることができる。</td>
+		</tr>
+		<tr>
+			<td>モニタ<br />
+        (monitor)</td>
+			<td>ロボットの現在の状態を表示する。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No8">や行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>ユーザ座標系<br />
+        (user coordinates)</td>
+			<td>ユーザが定義できる座標系のこと。</td>
+		</tr>
+		<tr>
+			<td>ユーザレベル<br />
+        (user level)</td>
+			<td>データ管理のセキュリティを守るために設けられたユーザのクラス。アクセスできる情報や操作をクラスごとに制限する。</td>
+		</tr>
+		<tr>
+			<td>優先順位<br />
+        (priority)</td>
+			<td>タスクの実行を優先させる順番。優先順位の高い順にプログラムは実行される。</td>
+		</tr>
+		<tr>
+			<td>ヨー角<br />
+        (yaw angle)</td>
+			<td>X軸回りの回転角。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No9">ら行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td id="RIGHTY">ライティー<br />
+        (RIGHTY)</td>
+			<td>6軸ロボットの腕形態のひとつ。（&hArr;<a href="#LEFTY">レフティ</a>）</td>
+		</tr>
+		<tr>
+			<td id="LEFTY">レフティー<br />
+        (LEFTY)</td>
+			<td>6軸ロボットの腕形態のひとつ。（&hArr;<a href="#RIGHTY">ライティ</a>）</td>
+		</tr>
+		<tr>
+			<td>連続起動<br />
+        (continuous start)</td>
+			<td>プログラムを繰り返し実行させる起動方法。停止をかけるまで動作を続ける。</td>
+		</tr>
+		<tr>
+			<td>ローカル変数<br />
+        (local variable)</td>
+			<td>ひとつのタスク内だけで利用できる変数。</td>
+		</tr>
+		<tr>
+			<td>ロール角<br />
+        (roll angle)</td>
+			<td>Z軸回りの回転角。</td>
+		</tr>
+		<tr>
+			<td>ログ<br />
+        (log)</td>
+			<td>ロボットが持つ操作や動作などの記録。エラーログ、操作ログ、制御ログなどがある。</td>
+		</tr>
+		<tr>
+			<td>ロボット異常<br />
+        (robot error)</td>
+			<td>サーボ異常、プログラム異常などの、ロボットに異常が発生したことを知らせる出力信号。</td>
+		</tr>
+		<tr>
+			<td>ロボット警告<br />
+        (robot warning)</td>
+			<td>I/Oコマンドやサーボ処理で軽微な異常が発生したことを知らせる出力信号。</td>
+		</tr>
+		<tr>
+			<td>ロボット停止<br />
+        (robot stop)</td>
+			<td>プログラムを直ちに停止し、モータ電源を切る停止方法。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No10">わ行</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>ワーク座標系<br />
+        (work coordinates)</td>
+			<td>ロボットの作業対象であるワークを原点とする三次元直交座標。</td>
+		</tr>
+		<tr>
+			<td>割り込みスキップ信号<br />
+        (interrupt skip signal)</td>
+			<td>ロボットコマンド実行中に短絡（ON）すると、そのステップの動作を瞬時停止して、次のステップの実行を開始する入力信号。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+	<h2 id="ID002299_H2-No11">英数字</h2>
+	<table>
+		<tr>
+			<th>用語</th>
+			<th>意味</th>
+		</tr>
+		<tr>
+			<td>CALSET<br />
+        (CALSET)</td>
+			<td>コントローラが認識する位置情報と、ロボット本体の実際の位置の関係を較正すること。</td>
+		</tr>
+		<tr>
+			<td id="CP_control">CP制御<br />
+        (CP control)</td>
+			<td>動作目標位置に到達する経路が、直線または円弧になるよう補間制御すること。（&hArr;<a href="#PTP_control">PTP制御</a>）</td>
+		</tr>
+		<tr>
+			<td>D型変数<br />
+        (D type variable)</td>
+			<td>値が倍精度（有効桁精度が15桁）の実数である変数。</td>
+		</tr>
+		<tr>
+			<td>FIG<br />
+        (FIG)</td>
+			<td>形態をあらわす数字。</td>
+		</tr>
+		<tr>
+			<td>F型変数<br />
+        (F type variable)</td>
+			<td>値が単精度（有効桁精度が7桁）の実数である変数。</td>
+		</tr>
+		<tr>
+			<td>I/O<br />
+        (I/O)</td>
+			<td>入出力信号のこと。</td>
+		</tr>
+		<tr>
+			<td>I/Oコマンド<br />
+        (I/O command)</td>
+			<td>外部機器からI/Oポートを使って与える処理指令のこと。ロボットコントローラはこのコマンドに従って処理を行う。</td>
+		</tr>
+		<tr>
+			<td>I型変数<br />
+        (I type variable)</td>
+			<td>値が整数である変数。</td>
+		</tr>
+		<tr>
+			<td>J型変数<br />
+        (J type variable)</td>
+			<td>各軸の値によって表される変数。</td>
+		</tr>
+		<tr>
+			<td id="NLIM">NLIM<br />
+        (NLIM)</td>
+			<td>ソフトウェアリミットの負方向の端点の値。(&hArr;<a href="#PLIM">PLIM</a>)</td>
+		</tr>
+		<tr>
+			<td>Operator<br />
+        (Operator)</td>
+			<td>WINCAPSIIIのユーザレベルのひとつ。重要なパラメータは変更できない。パスワードの入力が不要。</td>
+		</tr>
+		<tr>
+			<td>PacScript<br />
+        (PacScript)</td>
+			<td>デンソーロボット(RC8シリーズ)を制御するためのプログラミング言語(ロボット言語)。SLIM(JISの産業用ロボット言語)の上位互換言語。</td>
+		</tr>
+		<tr>
+			<td id="PLIM">PLIM<br />
+        (PLIM)</td>
+			<td>ソフトウェアリミットの正方向の端点の値。(&hArr;<a href="#NLIM">NLIM</a>)</td>
+		</tr>
+		<tr>
+			<td>Programmer<br />
+        (Programmer)</td>
+			<td>WINCAPSIIIのユーザレベルのひとつ。一般的な操作は全てできる。このモードにするためにはパスワードの入力が必要。</td>
+		</tr>
+		<tr>
+			<td id="PTP_control">PTP制御<br />
+        (PTP control)</td>
+			<td>補間を行わずに、ただ動作目標位置に移動させる制御。到達する経路が直線になるとは限らない。(&hArr;<a href="#CP_control">CP制御</a>)</td>
+		</tr>
+		<tr>
+			<td>P型変数<br />
+        (P type variable)</td>
+			<td>位置、姿勢および形態で表される変数。</td>
+		</tr>
+		<tr>
+			<td>RANG<br />
+        (RANG)</td>
+			<td>ロボットの基準位置とメカエンドとの関係を決める角度。</td>
+		</tr>
+		<tr>
+			<td>RX成分<br />
+        (RX component)</td>
+			<td>X座標軸回りの回転角度量。</td>
+		</tr>
+		<tr>
+			<td>RY成分<br />
+        (RY component)</td>
+			<td>Y座標軸回りの回転角度量。</td>
+		</tr>
+		<tr>
+			<td>RZ成分<br />
+        (RZ component)</td>
+			<td>Z座標軸回りの回転角度量。</td>
+		</tr>
+		<tr>
+			<td>STOPキー<br />
+        (STOP key)</td>
+			<td>ペンダントのボタンのひとつ。押すと全プログラムを瞬時停止させることができる。</td>
+		</tr>
+		<tr>
+			<td>TOOL0<br />
+        (TOOL0)</td>
+			<td>ツール定義の特殊型で、原点オフセットが0、メカニカルインタフェース座標系を意味する。</td>
+		</tr>
+		<tr>
+			<td>TOOLモード<br />
+        (TOOL mode)</td>
+			<td>ツール座標系で手動動作させるモード。</td>
+		</tr>
+		<tr>
+			<td>T型変数<br />
+        (T type variable)</td>
+			<td>位置ベクトル、オリエントベクトル、アプローチベクトル、および形態で表される変数。</td>
+		</tr>
+		<tr>
+			<td>X-Yモード<br />
+        (X-Y mode)</td>
+			<td>ベース座標系で手動動作させるモード。</td>
+		</tr>
+	</table>
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 2299</p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

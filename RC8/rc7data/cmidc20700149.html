@@ -1,0 +1,119 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ArchMove</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ArchMove<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.9 以降の4軸ロボットのみ】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">アーチモーションを実施します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ArchMove (&lt;目標位置（Ｐ型変数）&gt;、&lt;Ｚ軸動作量&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">現在位置P1と目標位置P4および経由点P2、P3の４点にてP&amp;P動作を行ないます。</div>
+            <div class="p">経由点P3は目標位置に対して指定した&lt;Z軸動作量&gt;(L1)上昇させた位置となります。 経由点P2は現在位置のZ軸延長上で経由点P3のZ軸値と同一となる位置となります。</div>
+            <div class="p">図中のアーチ開始位置（L2）、アーチ完了位置（L3）はSetArchParamにて設定します。</div>
+            <div class="figure">
+              <img src="image/cmidc20700149_01.jpg">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700150.html" target="_top">SetArchParam</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得（TAKEARM）したタスクにて実行してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">この動作は位置制御を行っている訳ではありません。動作速度によって動作経路が変化しますので、動作の際は周辺設備との干渉に気を付けてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">現在位置と目標位置のZ値が同一でない場合は正常に機能しません。Z方向の位置を同一にした状態で使用してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">ワーク座標系には対応していません。ベース座標系で使用してください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL  ArchMove (P10,100)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'目標位置P10、Z軸動作量100ｍｍで動作します。</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'なお、アーチ開始位置、アーチ完了位置は</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'現在の設定値が適用されます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

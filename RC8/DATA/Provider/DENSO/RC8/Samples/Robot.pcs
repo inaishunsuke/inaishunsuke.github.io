@@ -1,0 +1,26 @@
+'!TITLE "<Robot>"
+
+Sub Main 
+
+	Dim m_Ctrl as Object	' CaoController Object
+	Dim m_Robot as Object	' CaoRobot Object
+
+	' Connect
+	m_Ctrl = cao.AddController("RC", "CaoProv.DENSO.RC8", "", "Server=192.168.0.1")
+
+	' Create Robot
+	m_Robot =  m_Ctrl.AddRobot("Arm", "")
+
+	' Obtain arm semaphore 
+	m_Robot.Execute "TakeArm", Array(0, 1)
+
+	' Move
+	m_Robot.Move 1, "@P P10", "NEXT"
+
+	' Release arm semaphore
+	m_Robot.Execute "GiveArm"
+
+	' DisConnect
+	m_Ctrl.Robots.Remove m_Robot.Index
+	cao.Controllers.Remove m_Ctrl.Index
+End Sub

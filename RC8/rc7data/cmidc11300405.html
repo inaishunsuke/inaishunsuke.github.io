@@ -1,0 +1,210 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>com_encom</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">com_encom<span class="comment2">
+		　【Ver.1.5 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">RS-232CポートまたはEthernetクライアントポートを使ってバイナリ通信行うための準備をします。</div>
+            <div class="p">RS-232Cポートの場合は、バイナリ通信のためにポートを占有します。</div>
+            <div class="p">Ethernetクライアントポートを使う場合はクライアントポートのオープンを行いサーバとの間で接続を確立します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">com_encom #＜ポート番号＞</div>
+            <div class="p">＜ポート番号＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">出力ポート番号</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：コントローラRS-232Cポート</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">8～15：Ethernetクライアントポート</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">バイナリ通信中にWINCAPSⅢなどでPC←→コントローラ間通信を行う際、通信データが交じり合わないようにします。</div>
+            <div class="p">バイナリ通信が終了したら、com_discomコマンドで通信ポートを開放する必要があります。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">このコマンドを実行したあとで、WINCAPSⅢなどでデータを送信してもバイナリ通信データとして取り扱われます。RS-232Cポートを閉じてしまうことではありませんのでご注意ください。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">Ethernet接続では、このコマンドを実行した後でもWINCAPSⅢとのデータ通信に影響はありません。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">com_discom,com_encomを短い間隔で行うと、com_encomでクライアントオープン失敗エラーが発生することがあります。上記用例のように回線未確立を確認するプログラムを使用するようにしてください。</div>
+            <div class="p">For loopの中でcom_discom、com_encomを使用しないでください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div class="p">&lt;EtherNetポート使用時の場合&gt;</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM sample</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFINT Flg</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">com_state #8,Flg</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ポートの状態を取得</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF Flg=-1 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'回線未確立なら</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">com_encom #8</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ポートオープン</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ENDIF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

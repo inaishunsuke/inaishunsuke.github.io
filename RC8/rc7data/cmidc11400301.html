@@ -1,0 +1,456 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CREATESEM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CREATESEM<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">セマフォを生成します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CREATESEM(&lt;数式&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">セマフォを生成し、セマフォIDを取得します。</div>
+            <div class="p">セマフォIDがないと、他のセマフォ関連のコマンドは使用できませんので、セマフォの使用に先立ってこのCREATESEMコマンドを実行しなくてはなりません。</div>
+            <div class="p">引数でタスクのキューイング（実行待ち）方式を指定します。複数のタスクが同じセマフォを待っている場合の実行順を決めます。</div>
+            <div class="p">キューイング方式は次の2種類があります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">引  数</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">   0</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p"> 先着順</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">   0以外</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p"> タスクのプライオリティ順</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">先着順は、TAKESEMコマンドを実行した順です。</div>
+            <div class="p">タスクのプライオリティは、RUNコマンドのオプション(PRIORITY)で指定されたものです。</div>
+            <div class="p">CREATESEMを実行すると、その時点でセマフォが存在する状態になりますので、GIVESEMを実行しなくても、TAKESEMを実行できます。</div>
+            <div class="p">セマフォは32個生成することができます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11400302.html" target="_top">DELETESEM</a>、<a href="cmidc11400303.html" target="_top">FLUSHSEM</a>、<a href="cmidc11400304.html" target="_top">GIVESEM</a>、<a href="cmidc11400305.html" target="_top">TAKESEM</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">CREATESEM命令使用上の注意：</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">間違った使用方法により発生する現象</div>
+                <div class="p">CREATESEM命令によりすでに生成されたセマフォIDを持つプログラムが動作中・一時停止待機中の場合に</div>
+              </li>
+              <ul type="circle" class="list2">
+                <li class="item">
+                  <div class="p">SEMCREATEによりセマフォID格納変数を書き換える、</div>
+                  <div class="p">あるいは</div>
+                </li>
+                <li class="item">
+                  <div class="p">その変数の書き換えをティーチングペンダントなどから故意に行うとセマフォIDを持つプログラムがセマフォを獲得できずに待機中のままになります。</div>
+                </li>
+              </ul>
+              <li class="item">
+                <div class="p">例</div>
+                <div class="p">PRO1を起動しPRO2の動作中にSTOPキーにより瞬時停止を行います。その後PRO1を再起動すると、i1に格納されたセマフォIDが変更されるため、PRO3は無限にセマフォを待ち続けます。</div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">PROGRAM PRO1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">i1=CREATESEM(0)</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">RUN PRO2</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">RUN PRO3</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">PROGRAM PRO2</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">TAKESEM i1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">GIVESEM i1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">PROGRAM PRO3</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">TAKESEM i1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">&middot;</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source04">
+                        <div class="p">GIVESEM i1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source03">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">発生時の対処方法</div>
+                <div class="p">この状態から抜け出すには、無限待ちになっているプログラム（例ではPRO3）を停止してから、呼び出し元のプログラム（例ではPRO1）を起動してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">正しく使用するために守っていただくこと</div>
+                <div class="p">待ち状態にあるセマフォのIDを書き換えないように注意してください。</div>
+                <div class="p">具体的には、以下の2点をお守りください。</div>
+              </li>
+              <ul type="circle" class="list2">
+                <li class="item">
+                  <div class="p">同一変数番号を使用するセマフォは明示的に削除されない限り、生成を一度だけにする。</div>
+                </li>
+                <li class="item">
+                  <div class="p">セマフォIDを管理する変数は他の用途で利用しない。</div>
+                </li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFINT Li1, Li2, Li3 = 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Li1 = CREATESEM(Li3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li3で指定したキューイング方式でセマフォを生成し、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'Li1にセマフォIDを得ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Li2 = CREATESEM(Li3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li3で指定したキューイング方式でセマフォを生成し、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'Li2にセマフォIDを得ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKESEM Li1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li1で指定されるセマフォを取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TALESEM Li2, 100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li2で指定されるセマフォを取得します。ただし、100ms</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'でタイムアウトします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">RUN samp1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">GIVESEM Li1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li1で指定されるセマフォを持つ一つのタスクを待ち</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'状態から解放します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FLUSHSEM Li2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li2で指定されるセマフォを持つすべてのタスクを待</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ち状態から解放します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DELETESEM Li1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li1で指定されるセマフォIDを持つセマフォを削除し</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DELETESEM Li2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Li2で指定されるセマフォIDを持つセマフォを削除し</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,200 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CAMLEVEL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CAMLEVEL<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">カメラ映像の入力レベルを設定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CAMLEVEL &lt;カメラ番号&gt;，&lt;下限レベル&gt;，&lt;上限レベル&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;カメラ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラ番号を指定します。（1または2）</div>
+            </div>
+            <div class="p">&lt;下限レベル&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラ映像の取り込みレベルの下限値を設定します。（0～93）</div>
+            </div>
+            <div class="p">&lt;上限レベル&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラ映像の取り込みレベルの上限値を設定します。（7～100）</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">本命令は最大入力範囲の下限を0%、上限を100%とし入力範囲の設定を指定します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">設定した下限、上限レベルの範囲を256階調にします。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">設定は 0 ≦ 下限値 &lt; 上限値 ≦ 100 かつ 上限 － 下限 ≧ 7である必要があります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">暗い映像や明るい映像、部分的に輝度の分解能を上げる場合に調整するとより詳細な映像情報を得ることができます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令を設定しない場合、初期設定値に基づきます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令は初期設定を変更しません。電源再立ち上げの場合設定は失われています。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令は次のカメラ入力（CAMIN）実行時に有効となります。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100401.html" target="_top">CAMIN</a>、<a href="cmidc12100404.html" target="_top">VISCAMOUT</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMLEVEL 1,0,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番の入力レベル範囲を最大にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラからの映像(動画像)をモニタに表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番の映像を格納メモリ0番にテーブル0番</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">' (カメラの映像と'同じ輝度)で変換し格納します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DELAY 2000</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2秒停止</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMLEVEL 1,30,80</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番の入力レベル下限を30%、上限を80%に</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラからの映像(動画像)をモニタに表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

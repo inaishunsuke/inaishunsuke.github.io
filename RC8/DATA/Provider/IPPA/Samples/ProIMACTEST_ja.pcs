@@ -1,0 +1,36 @@
+'!TITLE "ProIMACTEST"
+
+#define CHN 1
+#define PTN 1
+#define PWM 100
+
+
+Sub Main 
+	Dim caoCtrl as Object
+
+
+	' 照明制御ユニットへの接続
+	caoCtrl = cao.AddController("IPPA", "CaoProv.IMAC.IPPA", "", "conn=eth:192.168.0.29")
+	
+
+	' パターンの切り替え
+	caoCtrl.WriteExecutionPattern PTN
+
+	' ON/OFFの切り替え ON
+	caoCtrl.WriteOnOffSetting CHN, 1
+
+	' PWMの設定
+	caoCtrl.WritePWMDuty PTN, CHN, PWM
+
+	' トリガーモードの切り替え 内部トリガモード
+	caoCtrl.WriteTriggerMode CHN, 0
+
+
+	' 照明制御ユニットからの切断
+	cao.Controllers.Remove caoCtrl.Name
+	caoCtrl = Nothing
+
+	delay 100
+End Sub
+
+

@@ -1,0 +1,353 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>STATUS</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">STATUS<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">プログラムの状態を得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">STATUS(&lt;プログラム名&gt;) </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;プログラム名&gt;で指定したプログラムの状態が整数で格納されています。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">値</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01" colspan="2">
+                  <div class="p">状      態</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">1</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">running</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">実行中</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">2</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">stopping</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">停止中</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">3</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">suspend</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">一時停止中</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">4</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">delay</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">遅延中</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">5</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">pending</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">待機中</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">6</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">step stopped</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ステップ停止中</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200601.html" target="_top">DELAY</a>、<a href="cmidc11200402.html" target="_top">HALT</a>、<a href="cmidc11200401.html" target="_top">HOLD</a>、<a href="cmidc11100202.html" target="_top">STOP</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">自分自身のSTATUSを取得することはできません。</div>
+              </li>
+              <li class="item">
+                <div class="p">プログラムが実行中であることを示す状態には1:runningの他に4:delay、5:pendingも該当し、実行するコマンドの処理状況によって変化します。プログラムが実行中かどうかを判断する場合は用例のプログラムを参考にしてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">CALLコマンドで呼び出されているプログラムの状態を得るには、呼び出している方のプログラムのプログラム名を指定してください。例えば</div>
+                <div class="p">　　PROGRUM PRO1</div>
+                <div class="p">　　　　　:</div>
+                <div class="p">　　　CALL SUB1</div>
+                <div class="p">　　　　　:</div>
+                <div class="p">というプログラムがあり、プログラム"SUB1"が呼び出されている最中のプログラム"SUB1"の状態を得るには"PRO1"を指定してください。"SUB1"を指定すると、正しい状態が得られません。</div>
+                <div class="p">　　　I0 = STATUS(PRO1)</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM li1 As Integer</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">li1 = STATUS(samp1) </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp1のプログラムの状態を整数でli1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'====== プログラムの状態別処理 ======</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFINT iX</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">iX = STATUS(PRO1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SELECT CASE iX</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'停止中</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'停止中の処理</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 3,6</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'一時停止中、ステップ停止中</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'一時停止中、ステップ停止中の処理</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE ELSE</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'実行中、遅延中、待機中</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'実行中の処理</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END SELECT</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

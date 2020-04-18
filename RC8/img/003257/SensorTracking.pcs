@@ -1,0 +1,17 @@
+﻿'!TITLE "センサトラッキングメインプログラム"
+
+Sub Main 
+
+	' コンベア1のバッファをクリアし、センサからの信号のトリガ検出を開始
+	TrackInitialize 1, 0
+
+	' コンベア軸動作プログラムを実行
+	Run Conveyor
+
+	' ワーク検出プログラムを実行
+	Run Sensor
+
+	' トラッキング動作プログラムを実行
+	Run Tracking
+
+End Sub

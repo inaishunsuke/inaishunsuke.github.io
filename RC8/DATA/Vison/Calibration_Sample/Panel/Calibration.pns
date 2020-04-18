@@ -1,0 +1,952 @@
+#include <PanelMain.h> raw
+
+#Define ALGO_FIND_POS1  0
+#Define ALGO_FIND_POS3  1
+
+#Define ERR_INVALID_CALNO	-1
+#Define ERR_FAILED_CAL		-2
+#Define ERR_FIND_POS1		-3
+#Define ERR_FIND_POS3		-4
+#Define ERR_DESABLE_OCV		-5
+
+Dim m_ObjOcv as object
+Dim m_ObjIMG as object
+Dim m_ObjEdit as object
+Dim m_ObjDISP as object
+
+
+' ﾎﾟｲﾝﾄNo
+Dim m_lPointNo as long
+
+' ﾎﾟｲﾝﾄ登録情報
+Dim m_blnRegistVis(3) as long
+Dim m_blnRegistRob(3) as long
+
+' 画像内の重心座標
+Dim m_dblTempVisX(3) as double
+Dim m_dblTempVisY(3) as double
+
+Dim m_lEdit as long
+
+' 視覚座標情報
+Dim m_dblVisX(3) as double
+Dim m_dblVisY(3) as double
+
+' ﾛﾎﾞｯﾄ座標情報
+Dim m_dblRobX(3) as double
+Dim m_dblRobY(3) as double
+Dim m_dblRobZ(3) as double
+
+Dim m_Algorithm as long
+
+Dim m_lErrorNo as long
+Dim m_lEnableOcv as long
+
+Dim m_lEnableVis as long
+
+' ---------------------
+' 初期化処理
+' ---------------------
+Sub Panel_INITIALIZE()
+	On Error Goto ErrProc
+	m_lEnableOcv = TRUE
+	m_lEnableVis = TRUE
+
+	m_ObjOcv = cao.AddController("ocv", "CaoProv.OpenCV", "", "")
+	m_ObjIMG = m_ObjOcv.AddFile("IMG", "ID=101")
+	m_ObjEdit = m_ObjOcv.AddFile("EDIT", "ID=102")
+	m_ObjDISP = m_ObjOcv.AddFile("DISP", "ID=103")
+
+ErrProc:
+	if (Err.Number <> 0) then
+		printdbg "Err"
+		m_lEnableOcv = FALSE
+		m_lEnableVis = FALSE
+	End if
+		
+	Call InitInfo
+
+	Dim lIndex as long
+
+	On Error Resume Next
+	lIndex = vars.ItemValue(2)
+
+	' 不正な値の場合、0にする
+	if ((lIndex < 0) or (lIndex > 31)) then
+		lIndex = 0
+	end if
+
+	Call DispCal(lIndex)	
+	vars.ItemValue(2) = 0
+End Sub
+
+
+' ---------------------
+' パネル終了処理
+' ---------------------
+Sub Panel_TERMINATE()
+	Timer1.Active = 0
+	DELAY 200
+
+	if (m_lEnableOcv = TRUE) then
+		Call cao.Controllers.Remove(m_ObjOcv.Index)
+	end if
+End Sub
+
+
+' ---------------------
+' 情報の初期化
+' ---------------------
+Sub InitInfo()
+	Dim lIdx as long
+
+	m_lPointNo = 0
+
+	for lIdx = 0 to 2
+		m_blnRegistVis(lIdx) = False
+		m_blnRegistRob(lIdx) = False
+	next
+
+	m_lPointNo = 1
+	lblHelpM.Picture = "HelpVis1.bmp"
+
+	m_Algorithm = ALGO_FIND_POS1
+	m_lErrorNo = 0
+
+	if (m_lEnableOcv = FALSE) then
+		m_lErrorNo = ERR_DESABLE_OCV
+		lblAlgo.Caption = "無効"
+	end if
+
+	Timer1.Active = 1
+End Sub
+
+
+' ---------------------
+' 表示状態の更新
+' ---------------------
+Sub RefreshInfo(lNo as long)
+	' ポイントNo 表示の更新
+	lblPoint1.Caption = "ﾎﾟｲﾝﾄ" & lNo
+	lblPoint2.Caption = "ﾎﾟｲﾝﾄ" & lNo
+
+	m_lPointNo = lNo
+
+	' 視覚座標の表示更新
+	nbVisPosX.Value = m_dblVisX(lNo - 1)
+	nbVisPosY.Value = m_dblVisY(lNo - 1)
+
+	' ロボット座標の表示更新
+	nbRobPosX.Value = m_dblRobX(lNo - 1)
+	nbRobPosY.Value = m_dblRobY(lNo - 1)
+	nbRobPosZ.Value = m_dblRobZ(lNo - 1)
+
+
+	' ヘルプ画像の更新
+	If (m_blnRegistVis(lNo - 1) = True) then
+		lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & lNo & "に移動し、\nﾛﾎﾞｯﾄ座標を登録します"
+		lblHelpM.Picture = "HelpRob.bmp"
+	Else
+		lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & lNo & "を撮像し、\n視覚座標を登録します"
+		lblHelpM.Picture = "HelpVis" & lNo & ".bmp"
+	End If
+End Sub
+
+
+' ---------------------
+' ﾎﾟｲﾝﾄ1 選択
+' ---------------------
+Sub fkPoint1_CLICKED()
+	Call RefreshInfo(1)
+End Sub
+
+
+' ---------------------
+' ﾎﾟｲﾝﾄ2 選択
+' ---------------------
+Sub fkPoint2_CLICKED()
+	Call RefreshInfo(2)
+End Sub
+
+
+' ---------------------
+' ﾎﾟｲﾝﾄ3 選択
+' ---------------------
+Sub fkPoint3_CLICKED()
+	Call RefreshInfo(3)
+End Sub
+
+
+' ---------------------
+' 視覚座標 入力
+' ---------------------
+Sub fkGetVisPos_CLICKED()
+	Dim lIndex as Long
+
+	' 視覚プロバイダが有効かつ視覚検出機能が有効な場合
+	if ((m_lEnableOcv = TRUE) And (m_lEnableVis = TRUE)) then
+		If (m_Algorithm = ALGO_FIND_POS1) Then
+			m_dblVisX(m_lPointNo - 1) = m_dblTempVisX(0)
+			m_dblVisY(m_lPointNo - 1) = m_dblTempVisY(0)
+		ElseIf (m_Algorithm = ALGO_FIND_POS3) Then
+			For lIndex = 0 To 2
+				m_dblVisX(lIndex) = m_dblTempVisX(lIndex)
+				m_dblVisY(lIndex) = m_dblTempVisY(lIndex)
+			Next
+		End If
+
+		m_blnRegistVis(m_lPointNo - 1) = True
+	else
+		m_dblVisX(m_lPointNo - 1) = vars.ItemValue(3)
+		m_dblVisY(m_lPointNo - 1) = vars.ItemValue(4)
+	end if
+
+	Call RefreshInfo(m_lPointNo)
+End Sub
+
+
+' ---------------------
+' ロボット座標 入力
+' ---------------------
+Sub fkGetRobPos_CLICKED()
+
+	m_dblRobX(m_lPointNo - 1) = POSX(CURPOS)
+	m_dblRobY(m_lPointNo - 1) = POSY(CURPOS)
+	m_dblRobZ(m_lPointNo - 1) = POSZ(CURPOS)
+
+	m_blnRegistRob(m_lPointNo - 1) = True
+	Call RefreshInfo(m_lPointNo)
+End Sub
+
+
+' ---------------------
+' タイマ処理
+' ---------------------
+Sub Timer1_TIMER()
+
+	Call CheckErrorNo()
+
+	' OpenCVプロバイダが有効かつ視覚機能が有効な場合
+	if ((m_lEnableOcv = TRUE) And (m_lEnableVis = True)) then 
+		' OpenCVプロバイダで画像処理した画像を表示する
+		if (vartype(vars.ItemValue(0)) <> 0) then
+			m_ObjIMG.Value = vars.ItemValue(0)
+
+'			If (vartype(m_ObjIMG.Value) <> 0) Then
+			if (m_Algorithm = ALGO_FIND_POS1) Then
+				Call FindCircle()
+			Else
+				Call FindCircle3()
+			End If			
+
+			If (vartype(m_ObjDisp.Value) <> 0) Then
+				lblMonitor.Picture = m_ObjDISP.Value
+			End If		
+		End If
+	else
+		' 生画像を表示する
+		If (vartype(vars.ItemValue(0)) <> 0) Then
+			lblMonitor.Picture = vars.ItemValue(0)
+		End If		
+	end if
+End Sub
+
+
+' ---------------------
+' ロボット座標（Ｘ）入力処理
+' ---------------------
+Sub nbRobPosX_CLICKED()
+	lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & m_lPointNo & "に移動し、\nﾛﾎﾞｯﾄ座標を登録します"
+	lblHelpM.Picture = "HelpRob.bmp"
+End Sub
+
+Sub nbRobPosX_RELEASED()
+	m_dblRobX(m_lPointNo - 1) = nbRobPosX.Value
+End Sub
+
+Sub nbRobPosX_DONE()
+	m_dblRobX(m_lPointNo - 1) = nbRobPosX.Value
+End Sub
+
+
+' ---------------------
+' ロボット座標（Ｙ）入力処理
+' ---------------------
+Sub nbRobPosY_CLICKED()
+	lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & m_lPointNo & "に移動し、\nﾛﾎﾞｯﾄ座標を登録します"
+	lblHelpM.Picture = "HelpRob.bmp"
+End Sub
+
+Sub nbRobPosY_RELEASED()
+	m_dblRobY(m_lPointNo - 1) = nbRobPosY.Value
+End Sub
+
+Sub nbRobPosY_DONE()
+	m_dblRobY(m_lPointNo - 1) = nbRobPosY.Value
+End Sub
+
+
+' ---------------------
+' ロボット座標（Ｚ）入力処理
+' ---------------------
+Sub nbRobPosZ_CLICKED()
+	lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & m_lPointNo & "に移動し、\nﾛﾎﾞｯﾄ座標を登録します"
+	lblHelpM.Picture = "HelpRob.bmp"
+End Sub
+
+Sub nbRobPosZ_RELEASED()
+	m_dblRobZ(m_lPointNo - 1) = nbRobPosZ.Value
+End Sub
+
+Sub nbRobPosZ_DONE()
+	m_dblRobZ(m_lPointNo - 1) = nbRobPosZ.Value
+End Sub
+
+
+' ---------------------
+' 視覚座標（Ｘ）入力処理
+' ---------------------
+Sub nbVisPosX_CLICKED()
+	lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & m_lPointNo & "を撮像し、\n視覚座標を登録します"
+	lblHelpM.Picture = "HelpVis" & m_lPointNo & ".bmp"
+End Sub
+
+Sub nbVisPosX_DONE()
+	m_dblVisX(m_lPointNo - 1) = nbVisPosX.Value
+End Sub
+
+
+' ---------------------
+' 視覚座標（Ｙ）入力処理
+' ---------------------
+Sub nbVisPosY_CLICKED()
+	lblHelpStr.Caption = "ﾎﾟｲﾝﾄ" & m_lPointNo & "を撮像し、\n視覚座標を登録します"
+	lblHelpM.Picture = "HelpVis" & m_lPointNo & ".bmp"
+End Sub
+
+Sub nbVisPosY_DONE()
+	m_dblVisY(m_lPointNo - 1) = nbVisPosY.Value
+End Sub
+
+
+' ---------------------
+' 画像処理選択（3点探索）
+' ---------------------
+Sub fkFindPos3_CLICKED()
+	if ((m_lEnableOcv = TRUE) And (m_lEnableVis = True)) then 
+		m_Algorithm = ALGO_FIND_POS3
+		lblAlgo.Caption = "3点検出"
+	End if
+End Sub
+
+
+' ---------------------
+' 画像処理選択（1点探索）
+' ---------------------
+Sub fkFindPos1_CLICKED()
+	if ((m_lEnableOcv = TRUE) And (m_lEnableVis = True)) then 
+		m_Algorithm = ALGO_FIND_POS1
+		lblAlgo.Caption = "1点検出"
+	End if
+End Sub
+
+
+' ---------------------
+' キャリブレーション実行処理
+' ---------------------
+Sub fkExecCal_CLICKED()
+	Dim posRob1 as Position
+	Dim posRob2 as Position
+	Dim posRob3 as Position
+	Dim sngCam1(1) as Single
+	Dim sngCam2(1) as Single
+	Dim sngCam3(1) as Single
+	Dim lTableNo as Long
+	Dim vntCalData as Variant
+
+	Dim lIndex as Long
+
+	On Error Goto ErrProc
+
+	' キャリブレーション番号チェック
+	If ((INT(nbCalNo.Value) < 0) or (INT(nbCalNo.Value) > 31)) Then
+'		PrintMsg "キャリブレーション番号が不正です．" & nbCalNo.Value
+		m_lErrorNo = ERR_INVALID_CALNO
+		Exit Sub
+	End If
+
+	' 3点キャリブレーションの場合、座標を再設定する
+	If m_Algorithm = ALGO_FIND_POS3 Then
+		Call ResetPos()
+	End If
+
+	lTableNo = INT(nbCalNo.Value)
+	
+	' データ設定
+	LETP posRob1 = V(m_dblRobX(0), m_dblRobY(0), m_dblRobZ(0))	
+	LETP posRob2 = V(m_dblRobX(1), m_dblRobY(1), m_dblRobZ(1))	
+	LETP posRob3 = V(m_dblRobX(2), m_dblRobY(2), m_dblRobZ(2))	
+
+	sngCam1(0) = m_dblVisX(0)
+	sngCam1(1) = m_dblVisY(0)
+	sngCam2(0) = m_dblVisX(1)
+	sngCam2(1) = m_dblVisY(1)
+	sngCam3(0) = m_dblVisX(2)
+	sngCam3(1) = m_dblVisY(2)
+
+	' カメラロボットキャリブレーション
+	Call vis.CalTrans(lTableNo, sngCam1(0), sngCam1(1), posRob1, sngCam2(0), sngCam2(1), posRob2, sngCam3(0), sngCam3(1), posRob3)
+	vntCalData = vis.GetCalData(lTableNo)
+
+	' キャリブレーション結果の表示
+	if ((vartype(vntCalData) And 8192) <> 0) then
+		nbCalRX.Value = Format(vntCalData(3), "#.0000")
+		nbCalRY.Value = Format(vntCalData(7), "#.0000")
+		nbCalRZ.Value = Format(vntCalData(11), "#.0000")
+		nbCalOX.Value = Format(vntCalData(1), "#.0000")
+		nbCalOY.Value = Format(vntCalData(5), "#.0000")
+		nbCalOZ.Value = Format(vntCalData(9), "#.0000")
+		nbCalNX.Value = Format(vntCalData(0), "#.0000")
+		nbCalNY.Value = Format(vntCalData(4), "#.0000")
+		nbCalNZ.Value = Format(vntCalData(8), "#.0000")
+	end if	
+
+	m_lErrorNo = 0
+
+	Exit Sub
+
+ErrProc:
+	m_lErrorNo = ERR_FAILED_CAL
+End Sub
+
+
+' ---------------------
+' 円探索処理（1点）
+' ---------------------
+Sub FindCircle()
+	Dim dblMaxArea as double = 0
+	Dim lMaxCircleNo as long = 0
+	Dim lBlobCnt as long = 0
+	Dim vntInfo as Variant
+	Dim dblArea as double
+	Dim lIndex as long	
+
+	Dim XCenter as long
+	Dim YCenter as long
+	Dim Width as long
+	Dim Height as long
+
+'	m_lEdit = 1
+	Call m_ObjIMG.Execute("Copy", m_ObjEdit.ID)
+
+	If INT(m_ObjIMG.Execute("IsColor")) = True Then
+		Call m_ObjIMG.Execute("Copy", m_ObjDisp.ID)
+	Else
+		Call m_ObjIMG.Execute("Merge", Array(m_ObjDisp.ID, m_ObjIMG.ID, m_ObjIMG.ID, m_ObjIMG.ID))
+	End If
+
+
+	Call m_ObjEdit.Execute("Threshold2", Array(m_ObjEdit.ID, 125, 255))
+	lBlobCnt = m_ObjEdit.Execute("FindBlobs", Array(0, 125, true))
+	lBlobCnt = m_ObjEdit.Execute("BlobsFilter", Array(0, 1, 6, 0, 1.2))	
+
+	If (lBlobCnt < 1) Then
+		m_lErrorNo = ERR_FIND_POS1
+'		m_lEdit = 0
+		Exit Sub
+	End If
+
+	For lIndex = 0 To lBlobCnt - 1
+		vntInfo = m_ObjEdit.Execute("BlobEllipse", lIndex)
+
+		' 幅と高さの誤差が5未満の場合、円とする
+		if (abs(vntInfo(2) - vntInfo(3)) < 5) then
+			dblArea = m_ObjEdit.Execute("BlobResult", Array(0, 0, 0, 0))
+
+			' 最大の円を算出する
+			if (dblArea > dblMaxArea) then
+				lMaxCircleNo = lIndex
+				dblMaxArea = dblArea
+
+				XCenter = vntInfo(0)
+				YCenter = vntInfo(1)
+				Width = vntInfo(2)
+				Height = vntInfo(3)
+			End if
+		end if
+	Next
+
+	m_dblTempVisX(0) = XCenter
+	m_dblTempVisY(0) = YCenter
+
+	Call m_ObjDisp.Execute("Ellipse", Array(m_ObjDisp.ID, XCenter, YCenter, Width / 2, Height / 2, 0, 0, 360, 255, 0, 0, 3, 0))
+	Call m_ObjDisp.Execute("Cross", Array(m_ObjDisp.ID, XCenter, YCenter, Width / 4, Height / 4, 0, 255, 0, 0, 3, 0))
+
+	m_lErrorNo = 0
+
+'	m_lEdit = 0
+
+End Sub
+
+
+' ---------------------
+' 円探索処理（3点）
+' ---------------------
+Sub FindCircle3()
+	Dim lIdx1 as long, lIdx2 as long, lIdx3 as long
+	Dim dblArea1 as double
+	Dim dblArea2 as double
+	Dim dblArea3 as double
+
+	Dim lBlobCnt as long
+	Dim vntInfo as variant
+	Dim dblArea as double
+	Dim lIndex as long
+
+	Dim XCenter as double
+	Dim YCenter as double
+	Dim Width as double
+	Dim Height as double
+
+	lIdx1 = -1
+	lIdx2 = -1
+	lIdx3 = -1
+	dblArea1 = -1
+	dblArea2 = -1
+	dblArea3 = -1
+
+	Call m_ObjIMG.Execute("Copy", m_ObjEdit.ID)
+
+	If INT(m_ObjIMG.Execute("IsColor")) = True Then
+		Call m_ObjIMG.Execute("Copy", m_ObjDisp.ID)
+	Else
+		Call m_ObjIMG.Execute("Merge", Array(m_ObjDisp.ID, m_ObjIMG.ID, m_ObjIMG.ID, m_ObjIMG.ID))
+	End If
+
+	Call m_ObjEdit.Execute("Threshold2", Array(m_ObjEdit.ID, 125, 255))
+
+	' ラベル検出（AreaEllipseRatioが0 ～ 1.2）
+	lBlobCnt = m_ObjEdit.Execute("FindBlobs", Array(0, 125, true))
+	lBlobCnt = m_ObjEdit.Execute("BlobsFilter", Array(0, 1, 6, 0, 1.2))
+
+	' ラベル数が3未満の場合、何もせず終了
+	If lBlobCnt < 3 Then 
+		m_lErrorNo = ERR_FIND_POS3
+		Exit Sub
+	End If
+
+	For lIndex = 0 To lBlobCnt - 1
+		' ラベルの外接円の情報を取得する
+		vntInfo = m_ObjEdit.Execute("BlobEllipse", lIndex)
+		
+		Width = vntInfo(2)
+		Height = vntInfo(3)
+
+		' 幅と高さの差が10pixel以下は円と認識する
+		If abs(Width - Height) < 10 Then
+			' 円の面積を取得する
+			dblArea = m_ObjEdit.Execute("BlobResult", Array(lIndex, 0, 0, 0))
+
+			If (dblArea > dblArea1) Then
+				lIdx3 = lIdx2
+				dblArea3 = dblArea2
+
+				lIdx2 = lIdx1
+				dblArea2 = dblArea1
+
+				lIdx1 = lIndex
+				dblArea1 = dblArea				
+
+			ElseIf (dblArea > dblArea2) Then
+				lIdx3 = lIdx2
+				dblArea3 = dblArea2
+
+				lIdx2 = lIndex
+				dblArea2 = dblArea
+
+			ElseIf (dblArea > dblArea3) Then
+				lIdx3 = lIndex
+				dblArea3 = dblArea
+
+			End If
+
+		End If
+	Next
+
+	' 3点が見つからなかった場合、終了する
+	if ((lIdx1 < 0) Or (lIdx2 < 0) Or (lIdx3 < 0)) Then
+		m_lErrorNo = ERR_FIND_POS3
+		Exit Sub
+	End If
+
+
+	vntInfo = m_ObjEdit.Execute("BlobEllipse", lIdx1)
+	m_dblTempVisX(0) = vntInfo(0)
+	m_dblTempVisY(0) = vntInfo(1)
+	Call m_ObjDisp.Execute("Ellipse", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 2, vntInfo(3) / 2, 0, 0, 360, 255, 0, 0, 3, 0))
+	Call m_ObjDisp.Execute("Cross", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 4, vntInfo(3) / 4, 0, 255, 0, 0, 3, 0))
+
+	vntInfo = m_ObjEdit.Execute("BlobEllipse", lIdx2)
+	m_dblTempVisX(1) = vntInfo(0)
+	m_dblTempVisY(1) = vntInfo(1)
+	Call m_ObjDisp.Execute("Ellipse", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 2, vntInfo(3) / 2, 0, 0, 360, 255, 0, 0, 3, 0))
+	Call m_ObjDisp.Execute("Cross", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 4, vntInfo(3) / 4, 0, 255, 0, 0, 3, 0))
+
+	vntInfo = m_ObjEdit.Execute("BlobEllipse", lIdx3)
+	m_dblTempVisX(2) = vntInfo(0)
+	m_dblTempVisY(2) = vntInfo(1)
+	Call m_ObjDisp.Execute("Ellipse", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 2, vntInfo(3) / 2, 0, 0, 360, 255, 0, 0, 3, 0))
+	Call m_ObjDisp.Execute("Cross", Array(m_ObjDisp.ID, vntInfo(0), vntInfo(1), vntInfo(2) / 4, vntInfo(3) / 4, 0, 255, 0, 0, 3, 0))
+
+	m_lErrorNo = 0
+End Sub
+
+
+' ---------------------
+' 視覚座標とロボット座標の対応付け
+' ---------------------
+Function ResetPos() as Long
+	Dim vntPos1 as Variant
+	Dim vntPos2 as Variant
+	Dim vntPos3 as Variant
+
+	Dim dblVisDeg(3) as Double
+	Dim dblRobDeg(3) as Double
+
+	Dim MinDeg as Double
+
+	Dim lSrcIdx as Integer
+	Dim lDstIdx as Integer
+
+	Dim NewIndex(3) as Integer
+
+	Dim dblNewPosX(3) as Double
+	Dim dblNewPosY(3) as Double
+	Dim dblNewPosZ(3) as Double
+
+	ResetPos = -1
+
+	' 視覚座標の角度を取得
+	vntPos1 = Array(m_dblVisX(0), m_dblVisY(0))
+	vntPos2 = Array(m_dblVisX(1), m_dblVisY(1))
+	vntPos3 = Array(m_dblVisX(2), m_dblVisY(2))
+	If FindDeg(vntPos1, vntPos2, vntPos3, dblVisDeg(0)) = -1 Then Exit Function
+	If FindDeg(vntPos2, vntPos3, vntPos1, dblVisDeg(1)) = -1 Then Exit Function
+	If FindDeg(vntPos3, vntPos1, vntPos2, dblVisDeg(2)) = -1 Then Exit Function
+
+	' ロボット座標の角度を取得
+	vntPos1 = Array(m_dblRobX(0), m_dblRobY(0), m_dblRobZ(0))
+	vntPos2 = Array(m_dblRobX(1), m_dblRobY(1), m_dblRobZ(1))
+	vntPos3 = Array(m_dblRobX(2), m_dblRobY(2), m_dblRobZ(2))
+	If FindDeg(vntPos1, vntPos2, vntPos3, dblRobDeg(0)) = -1 Then Exit Function
+	If FindDeg(vntPos2, vntPos3, vntPos1, dblRobDeg(1)) = -1 Then Exit Function
+	If FindDeg(vntPos3, vntPos1, vntPos2, dblRobDeg(2)) = -1 Then Exit Function
+
+
+	Dim deg1 as Double, deg2 as Double, deg3 as Double
+	' 近似の座標を探索する
+	For lSrcIdx = 0 To 2
+		deg1 = abs(dblVisDeg(lSrcIdx) - dblRobDeg(0))
+		deg2 = abs(dblVisDeg(lSrcIdx) - dblRobDeg(1))
+		deg3 = abs(dblVisDeg(lSrcIdx) - dblRobDeg(2))
+		MinDeg = Min(deg1, deg2, deg3)
+
+		' 視覚とロボットの3点の角度の誤差が5°より大きい場合、異常とする
+		If (MinDeg > 5) Then
+			Exit Function
+		Else
+			For lDstIdx = 0 To 2
+				If (abs(MinDeg - abs(dblVisDeg(lSrcIdx) - dblRobDeg(lDstIdx))) < 0.0001) Then
+					NewIndex(lSrcIdx) = lDstIdx
+				End If
+			Next
+
+			If NewIndex(lSrcIdx) = -1 Then
+				Exit Function
+			End If
+		End If
+	Next
+
+	' 座標入れ替え
+	For lSrcIdx = 0 To 2
+		dblNewPosX(lSrcIdx) = m_dblRobX(NewIndex(lSrcIdx))
+		dblNewPosY(lSrcIdx) = m_dblRobY(NewIndex(lSrcIdx))
+		dblNewPosZ(lSrcIdx) = m_dblRobZ(NewIndex(lSrcIdx))
+	Next
+
+	For lSrcIdx = 0 To 2
+		m_dblRobX(lSrcIdx) = dblNewPosX(lSrcIdx)
+		m_dblRobY(lSrcIdx) = dblNewPosY(lSrcIdx)
+		m_dblRobZ(lSrcIdx) = dblNewPosZ(lSrcIdx)
+	Next
+
+	ResetPos = 0
+
+End Function
+
+Function FindDeg(ByVal vntPos1 as Variant, _
+					ByVal vntPos2 as Variant, _
+					ByVal vntPos3 as Variant, _
+					ByRef dblDegree as Double) as Long
+
+	Dim lIndex as Long
+	Dim dblLen1 as Double
+	Dim dblLen2 as Double
+	Dim dblLen3 as Double
+	Dim dblCos as Double
+
+	FindDeg = -1
+
+	' 3点の辺の長さを取得する
+	If Ubound(vntPos1) = 1 Then
+		dblLen1 = sqr(((vntPos1(0) - vntPos2(0)) ^ 2) + _
+						((vntPos1(1) - vntPos2(1)) ^ 2))
+	ElseIf Ubound(vntPos1) = 2 Then
+		dblLen1 = sqr(((vntPos1(0) - vntPos2(0)) ^ 2) + _
+						((vntPos1(1) - vntPos2(1)) ^ 2) + _
+						((vntPos1(2) - vntPos2(2)) ^ 2))
+	Else
+		Exit Function
+	End If
+
+
+	If Ubound(vntPos2) = 1 Then
+		dblLen2 = sqr(((vntPos2(0) - vntPos3(0)) ^ 2) + _
+						((vntPos2(1) - vntPos3(1)) ^ 2))
+	ElseIf Ubound(vntPos2) = 2 Then
+		dblLen2 = sqr(((vntPos2(0) - vntPos3(0)) ^ 2) + _
+						((vntPos2(1) - vntPos3(1)) ^ 2) + _
+						((vntPos2(2) - vntPos3(2)) ^ 2))
+	Else
+		Exit Function
+	End If
+
+
+	If Ubound(vntPos3) = 1 Then
+		dblLen3 = sqr(((vntPos3(0) - vntPos1(0)) ^ 2) + _
+						((vntPos3(1) - vntPos1(1)) ^ 2))
+	ElseIf Ubound(vntPos3) = 2 Then
+		dblLen3 = sqr(((vntPos3(0) - vntPos1(0)) ^ 2) + _
+						((vntPos3(1) - vntPos1(1)) ^ 2) + _
+						((vntPos3(2) - vntPos1(2)) ^ 2))
+	Else
+		Exit Function
+	End If
+
+	If ((dblLen1 = 0) or (dblLen2 = 0) or (dblLen3 = 0)) Then Exit Function
+
+	' cos 算出
+	dblCos = ((dblLen2 ^ 2) + (dblLen3 ^ 2) - (dblLen1 ^ 2)) / _
+				(2 * dblLen2 * dblLen3)
+
+	dblDegree = acos(dblCos)
+
+	FindDeg = 0
+
+End Function
+
+
+' ---------------------
+' エラー文字列の表示
+' ---------------------
+Sub CheckErrorNo()
+	lblInfo.Caption = "Info: "
+
+	Select case m_lErrorNo
+		case ERR_INVALID_CALNO
+			lblInfo.Caption = lblInfo.Caption + "キャリブレーション番号が不正です．"
+		case ERR_FAILED_CAL
+			lblInfo.Caption = lblInfo.Caption + "キャリブレーションに失敗しました．"
+		case ERR_FIND_POS1
+			lblInfo.Caption = lblInfo.Caption + "座標の検出に失敗しました."
+		case ERR_FIND_POS3
+			lblInfo.Caption = lblInfo.Caption + "3点座標の検出に失敗しました."
+		case ERR_DESABLE_OCV
+			lblInfo.Caption = lblInfo.Caption '+ "視覚座標取得機能は利用できません."
+	End Select
+End Sub
+
+Function DispCal(ByVal lIndex as long) as long
+	Dim vntCalData as Variant
+	Dim vntCalPos as Variant
+
+	On Error goto ErrProc
+
+	nbCalNo.Value = lIndex
+
+	vntCalData = vis.GetCalData(lIndex)
+	vntCalPos = vis.GetCalPos(lIndex)
+
+	' キャリブレーション結果の表示
+	if ((vartype(vntCalData) And 8192) <> 0) then
+		nbCalRX.Value = Format(vntCalData(3), "#.0000")
+		nbCalRY.Value = Format(vntCalData(7), "#.0000")
+		nbCalRZ.Value = Format(vntCalData(11), "#.0000")
+		nbCalOX.Value = Format(vntCalData(1), "#.0000")
+		nbCalOY.Value = Format(vntCalData(5), "#.0000")
+		nbCalOZ.Value = Format(vntCalData(9), "#.0000")
+		nbCalNX.Value = Format(vntCalData(0), "#.0000")
+		nbCalNY.Value = Format(vntCalData(4), "#.0000")
+		nbCalNZ.Value = Format(vntCalData(8), "#.0000")
+	end if	
+
+	if ((vartype(vntCalPos) And 8192) <> 0) then
+		m_dblVisX(0) = vntCalPos(0)
+		m_dblVisY(0) = vntCalPos(1)
+		' Z : vntCalPos(2) 
+
+		m_dblVisX(1) = vntCalPos(3)
+		m_dblVisY(1) = vntCalPos(4)
+		' Z : vntCalPos(5) 
+
+		m_dblVisX(2) = vntCalPos(6)
+		m_dblVisY(2) = vntCalPos(7)
+		' Z : vntCalPos(8) 
+
+		m_dblRobX(0) = vntCalPos(9)
+		m_dblRobY(0) = vntCalPos(10)
+		m_dblRobZ(0) = vntCalPos(11)
+		' RX : vntCalPos(12)
+		' RY : vntCalPos(13)
+		' RZ : vntCalPos(14)
+		
+		m_dblRobX(1) = vntCalPos(15)
+		m_dblRobY(1) = vntCalPos(16)
+		m_dblRobZ(1) = vntCalPos(17)
+		' RX : vntCalPos(18)
+		' RY : vntCalPos(19)
+		' RZ : vntCalPos(20)
+
+		m_dblRobX(2) = vntCalPos(21)
+		m_dblRobY(2) = vntCalPos(22)
+		m_dblRobZ(2) = vntCalPos(23)
+		' RX : vntCalPos(24)
+		' RY : vntCalPos(25)
+		' RZ : vntCalPos(26)
+
+	end if
+
+	DispCal = TRUE
+
+	Call RefreshInfo(m_lPointNo)
+
+	Exit Function
+
+ErrProc:
+	DispCal = FALSE
+End Function
+
+
+' 結果画面表示
+Sub fkResult_CLICKED()
+	vars.Itemvalue(1) = nbCalNo.Value
+	PageChange CalResult	
+End Sub
+
+
+Sub nbCalNo_DONE()
+	Dim lIndex as long
+
+	lIndex = nbCalNo.Value
+
+	if ((lIndex < 0) or (lIndex > 31)) then
+		m_lErrorNo = ERR_INVALID_CALNO
+		exit sub
+	end if
+
+	Call DispCal(lIndex)
+	m_lErrorNo = 0
+	Exit sub
+End Sub
+
+' メイン画面表示
+Sub fkMain_CLICKED()
+	PageChange Main
+End Sub
+
+' 視覚検出機能 有効／無効切替
+Sub fkVisionEnabled_CLICKED()
+	if (m_lEnableOcv = TRUE) then
+		if (m_lEnableVis = TRUE) then
+			m_lEnableVis = FALSE
+
+			lblAlgo.Caption = "無効"
+		else
+			m_lEnableVis = TRUE
+
+			if (m_Algorithm = ALGO_FIND_POS1) Then
+				lblAlgo.Caption = "1点検出"
+			Else
+				lblAlgo.Caption = "3点検出"
+			End If			
+		end if
+	end if
+End Sub
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION=""
+BG=3
+FG=0
+TIMEOUT=200
+TIMEOUTMODE=0
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=0
+FONTTYPE=0
+BORDERSTYLE=0
+CONTROLSORT=0
+add_widget 2,"Label1",0,0,640,370,0,0,0,1,0," ",2,0,"","",1,1;
+add_widget 9,"Group3",250,47,210,180,10,0,0,1,0,"Help",2,0,2,0;
+add_widget 2,"Label2",0,0,460,35,0,8,0,1,0,"キャリブレーション",1,2,"","",1,1;
+add_widget 2,"Label3",229,4,150,26,0,7,0,1,0,"ｷｬﾘﾌﾞﾚｰｼｮﾝ番号",1,0,"","",1,1;
+add_widget 5,"nbCalNo",387,4,65,26,-1,1,0,3,1,"NB1",2,0,0;
+add_widget 9,"grpVision",10,240,230,96,10,0,0,1,0,"Vision",2,0,2,0;
+add_widget 9,"grpRobot",250,240,210,96,10,0,0,1,0,"Robot",2,0,2,0;
+add_widget 9,"grpCalData",469,14,163,322,10,0,0,1,0,"CalData",2,0,2,0;
+add_widget 2,"lblMonitor",10,40,230,190,0,8,0,1,0," ",2,0,"","",1,1;
+add_widget 15,"Timer1",20,54,0,0,500;
+add_widget 7,"grpPoint",20,250,430,76,14,8,0,1,0,1;
+add_widget 2,"lblPoint1",20,250,70,30,0,14,0,1,0,"ﾎﾟｲﾝﾄ1",1,0,"","",1,1;
+add_widget 2,"Label6",117,260,30,25,0,7,0,1,0,"Ｘ",1,0,"","",1,1;
+add_widget 5,"nbVisPosX",147,260,80,25,-1,1,0,3,5,"NB1",2,1,      0;
+add_widget 2,"Label7",117,293,30,25,0,7,0,1,0,"Ｙ",1,0,"","",1,1;
+add_widget 5,"nbVisPosY",147,294,80,25,-1,1,0,3,5,"NB1",2,1,      0;
+add_widget 2,"Label8",347,257,20,20,0,7,0,1,0,"Ｘ",1,0,"","",1,1;
+add_widget 5,"nbRobPosX",366,258,75,20,-1,1,0,3,5,"NB1",1,1,      0;
+add_widget 2,"Label9",347,279,20,20,0,7,0,1,0,"Ｙ",1,0,"","",1,1;
+add_widget 5,"nbRobPosY",366,280,75,20,-1,1,0,3,5,"NB1",1,1,      0;
+add_widget 2,"Label10",347,301,20,20,0,7,0,1,0,"Ｚ",1,0,"","",1,1;
+add_widget 5,"nbRobPosZ",366,302,75,20,-1,1,0,3,5,"NB1",1,1,      0;
+add_widget 2,"Label11",476,302,47,25,0,7,0,1,0,"ＮＺ",1,0,"","",1,1;
+add_widget 5,"nbCalRX",523,30,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label12",476,268,47,25,0,7,0,1,0,"ＮＹ",1,0,"","",1,1;
+add_widget 5,"nbCalRY",523,64,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label13",476,234,47,25,0,7,0,1,0,"ＮＸ",1,0,"","",1,1;
+add_widget 5,"nbCalRZ",523,98,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label14",476,200,47,25,0,7,0,1,0,"ＯＺ",1,0,"","",1,1;
+add_widget 5,"nbCalOX",523,132,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label15",476,166,47,25,0,7,0,1,0,"ＯＹ",1,0,"","",1,1;
+add_widget 5,"nbCalOY",523,166,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label16",476,132,47,25,0,7,0,1,0,"ＯＸ",1,0,"","",1,1;
+add_widget 5,"nbCalOZ",523,200,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label17",476,98,47,25,0,7,0,1,0,"ＲＺ",1,0,"","",1,1;
+add_widget 5,"nbCalNX",523,234,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label18",476,64,47,25,0,7,0,1,0,"ＲＹ",1,0,"","",1,1;
+add_widget 5,"nbCalNY",523,268,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label19",476,30,47,25,0,7,0,1,0,"ＲＸ",1,0,"","",1,1;
+add_widget 5,"nbCalNZ",523,302,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"lblPoint2",250,250,70,30,0,14,0,1,0,"ﾎﾟｲﾝﾄ1",1,0,"","",1,1;
+add_widget 2,"lblHelpM",260,62,190,108,0,8,0,1,0," ",2,0,"","",1,1;
+add_widget 2,"lblHelpStr",260,179,190,40,0,7,0,1,0,"ﾎﾟｲﾝﾄ1を撮像し、\n視覚座標を入力します",1,0,"","",1,1;
+add_widget 12,"fkExecCal","ｷｬﾘﾌﾞﾚｰｼｮﾝ",6;
+add_widget 12,"fkPoint1","ﾎﾟｲﾝﾄ1",1;
+add_widget 12,"fkPoint2","ﾎﾟｲﾝﾄ2",2;
+add_widget 12,"fkPoint3","ﾎﾟｲﾝﾄ3",3;
+add_widget 12,"fkGetVisPos","視覚座標取得",4;
+add_widget 12,"fkGetRobPos","ﾛﾎﾞｯﾄ座標取得",5;
+add_widget 2,"lblInfo",0,340,640,26,0,-1,0,1,0,"Info: ",1,2,"","",1,1;
+add_widget 2,"lblAlgo",146,5,72,25,0,14,0,0,0,"1点検出",1,0,"","",1,1;
+add_widget 12,"fkResult","結果画面",11;
+add_widget 12,"fkMain","メイン画面",12;
+'<<--TPDESIGNER_RESERVED-->>
+#endif

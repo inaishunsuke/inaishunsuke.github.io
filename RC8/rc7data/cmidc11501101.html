@@ -1,0 +1,187 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>JOINT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">JOINT<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ジョイント型座標から角度を抽出します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">JOINT(&lt;軸番号&gt;,&lt;ジョイント型&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ジョイント型&gt;で指定したジョイント型座標から、&lt;軸番号&gt;で指定した一つの軸の関節角度を抽出します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11000501.html" target="_top">LETJ</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFJNT lj1, lj2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFSNG lf1, lf2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM li1 As Integer</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf1 = JOINT(1, lj1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'lj1の1軸の関節角度をlf1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf2 = JOINT(li1, lj2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'lj2のli1の値の軸の関節角度をlf2に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">lf1 = JOINT(l, lj1 + (10, 10, 0, 0, 0, 0) )</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lj1 + (10, 10, 0, 0, 0, 0)の1軸の関節角度をlf1</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'に代入します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">lf1 = JOINT(l, lj1 + (10, 10, 0, 0) )</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lj1 + (10, 10, 0, 0)の1軸の関節角度をlf1に代入</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

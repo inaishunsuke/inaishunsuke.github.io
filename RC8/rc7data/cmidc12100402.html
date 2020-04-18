@@ -1,0 +1,265 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CAMMODE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CAMMODE<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">カメラ映像を格納する際の機能を設定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CAMMODE &lt;カメラ番号&gt;，&lt;機能&gt;，&lt;格納方法&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;カメラ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラ番号を指定します。（1または2）</div>
+            </div>
+            <div class="p">&lt;機能&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラの機能を指定します。（0または1）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：ノーマル（カメラの設定が通常の場合）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：リセット機能（カメラの動作をリセットしてから、カメラ映像を格納します。）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：フレーム取り込み</div>
+            </div>
+            <div class="p">&lt;格納方法&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">格納方法を指定します。（0または1）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">カメラの映像を1フレーム分格納します。垂直方向の分解能が最大になります。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">1：フィールド取り込み</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">フィールドシャッターカメラのシャッター機能を使う場合設定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">フィールド間の遅れ（1/60秒）がなく、ブレのない映像が取り込めます。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">ただし、垂直方向の分解能は1/2になります。</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">本命令を設定しない場合、初期設定値に基づきます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令は初期設定を変更しません。電源再立ち上げの場合設定は失われています。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">カメラの接続を確認します。カメラが正常でないと判断した場合、ステータスVISSTATUS(0)の値は-1、正常な場合0を返します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100401.html" target="_top">CAMIN</a>、<a href="cmidc12101105.html" target="_top">VISSTATUS</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMMODE 1,0,0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番の機能をノーマル、取り込み方法をフレ</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ームに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1 = VISSTATUS(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'正常の場合 I1 = 0</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF I1 = 0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番の映像を格納メモリ0番にテーブル0番(カ</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'メラの映像と'同じ輝度)で変換し格納します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISPLNOUT 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ0番の画像をモニタに出力(静止画像)し</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'表示位置設定</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISPRINT "取り込み正常"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'画面に文字を表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ELSE</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'表示位置設定</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISPRINT "カメラ異常"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'画面に文字を表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

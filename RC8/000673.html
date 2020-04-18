@@ -1,0 +1,1554 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>RC7Mから移植可能なコマンド</title>
+<meta name="description" content="" />
+<meta name="keywords" content="RC7Mから移植可能なコマンド" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="000673" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="14" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001102.html">プログラミング</a></li>
+<li><a href="000513.html">RC7Mのコマンド対応表</a></li>
+<li><span>RC7Mから移植可能なコマンド</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="000672.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="000674.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 673</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>RC7Mから移植可能なコマンド</h1>
+
+<p>下記コマンドはRC7Mと同一の仕様のコマンドです。</p>
+<p>RC7Mコマンド名の後ろに (ライブラリ)と記載があるコマンドはRC8では使用できません。</p>
+
+<!-- $RC7MCommand_OK_Start$ -->
+<table>
+	<tr>
+		<th>RC7Mコマンド名</th>
+		<th>RC8シリーズでの実装</th>
+		<th>RC8シリーズコマンド</th>
+		<th>備考</th>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12000201.html" target="rc7">#define</a></td>
+		<td>実行可能</td>
+		<td><a href="000112.html" class="xref">#Define</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12000203.html" target="rc7">#error</a></td>
+		<td>実行可能</td>
+		<td><a href="000123.html" class="xref">#Error</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12000301.html" target="rc7">#include</a></td>
+		<td>実行可能</td>
+		<td><a href="000115.html" class="xref">#Include</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc12000202.html" target="rc7">#undef</a></td>
+		<td>実行可能</td>
+		<td><a href="000113.html" class="xref">#Undef</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500201.html" target="rc7">ABS</a></td>
+		<td>実行可能</td>
+		<td><a href="000224.html" class="xref">Abs</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200503.html" target="rc7">ACCEL</a></td>
+		<td>実行可能</td>
+		<td><a href="000160.html" class="xref">Accel</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500301.html" target="rc7">ACOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000225.html" class="xref">Acos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200201.html" target="rc7">APPROACH</a></td>
+		<td>実行可能</td>
+		<td><a href="000161.html" class="xref">Approach</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700149.html" target="rc7">ArchMove</a> (ライブラリ)</td>
+		<td>実行可能</td>
+		<td><a href="000162.html" class="xref">ArchMove</a></td>
+		<td>ライブラリからステートメントになったから書式変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900301.html" target="rc7">AREA</a></td>
+		<td>実行可能</td>
+		<td><a href="000309.html" class="xref">Area</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501501.html" target="rc7">AREAPOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000271.html" class="xref">AreaPos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501502.html" target="rc7">AREASIZE</a></td>
+		<td>実行可能</td>
+		<td><a href="000272.html" class="xref">AreaSize</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200218.html" target="rc7">ARRIVE</a></td>
+		<td>実行可能</td>
+		<td><a href="000163.html" class="xref">Arrive</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501601.html" target="rc7">ASC</a></td>
+		<td>実行可能</td>
+		<td><a href="000275.html" class="xref">Asc</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500302.html" target="rc7">ASIN</a></td>
+		<td>実行可能</td>
+		<td><a href="000226.html" class="xref">Asin</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500303.html" target="rc7">ATN</a></td>
+		<td>実行可能</td>
+		<td><a href="000227.html" class="xref">Atn</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500304.html" target="rc7">ATN2</a></td>
+		<td>実行可能</td>
+		<td><a href="000228.html" class="xref">Atn2</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500701.html" target="rc7">AVEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000246.html" class="xref">AVec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300503.html" target="rc7">BUZZER</a></td>
+		<td>実行可能</td>
+		<td><a href="000369.html" class="xref">Buzzer</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100301.html" target="rc7">CALL</a></td>
+		<td>実行可能</td>
+		<td><a href="000125.html" class="xref">Call</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200701.html" target="rc7">CHANGETOOL</a></td>
+		<td>実行可能</td>
+		<td><a href="000164.html" class="xref">ChangeTool</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200702.html" target="rc7">CHANGEWORK</a></td>
+		<td>実行可能</td>
+		<td><a href="000165.html" class="xref">ChangeWork</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11800204.html" target="rc7">CLRERR</a></td>
+		<td>実行可能</td>
+		<td><a href="000105.html" class="xref">ClrErr</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500305.html" target="rc7">COS</a></td>
+		<td>実行可能</td>
+		<td><a href="000229.html" class="xref">Cos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200507.html" target="rc7">CURACC</a></td>
+		<td>実行可能</td>
+		<td><a href="000167.html" class="xref">CurAcc</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200509.html" target="rc7">CURDEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000168.html" class="xref">CurDec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200513.html" target="rc7">CUREXTACC</a></td>
+		<td>実行可能</td>
+		<td><a href="000171.html" class="xref">CurExtAcc</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200514.html" target="rc7">CUREXTDEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000172.html" class="xref">CurExtDec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200515.html" target="rc7">CUREXTSPD</a></td>
+		<td>実行可能</td>
+		<td><a href="000173.html" class="xref">CurExtSpd</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200301.html" target="rc7">CURFIG</a></td>
+		<td>実行可能</td>
+		<td><a href="000174.html" class="xref">CurFig</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200210.html" target="rc7">CURJNT</a></td>
+		<td>実行可能</td>
+		<td><a href="000177.html" class="xref">CurJnt</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900403.html" target="rc7">CUROPTMODE</a></td>
+		<td>実行可能</td>
+		<td><a href="000378.html" class="xref">CurOptMode</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200211.html" target="rc7">CURPOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000179.html" class="xref">CurPos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200512.html" target="rc7">CURSPD</a></td>
+		<td>実行可能</td>
+		<td><a href="000180.html" class="xref">CurSpd</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200703.html" target="rc7">CURTOOL</a></td>
+		<td>実行可能</td>
+		<td><a href="000181.html" class="xref">CurTool</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200212.html" target="rc7">CURTRN</a></td>
+		<td>実行可能</td>
+		<td><a href="000182.html" class="xref">CurTrn</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200704.html" target="rc7">CURWORK</a></td>
+		<td>実行可能</td>
+		<td><a href="000183.html" class="xref">CurWork</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400212.html" target="rc7">DEADMANSTATE</a></td>
+		<td>実行可能</td>
+		<td><a href="000380.html" class="xref">DeadManState</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200505.html" target="rc7">DECEL</a></td>
+		<td>実行可能</td>
+		<td><a href="000184.html" class="xref">Decel</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900809.html" target="rc7">DEFIO</a></td>
+		<td>実行可能</td>
+		<td><a href="000312.html" class="xref">DefIO</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500401.html" target="rc7">DEGRAD</a></td>
+		<td>実行可能</td>
+		<td><a href="000230.html" class="xref">DegRad</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200601.html" target="rc7">DELAY</a></td>
+		<td>実行可能</td>
+		<td><a href="000185.html" class="xref">Delay</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200202.html" target="rc7">DEPART</a></td>
+		<td>実行可能</td>
+		<td><a href="000186.html" class="xref">Depart</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200214.html" target="rc7">DESTJNT</a></td>
+		<td>実行可能</td>
+		<td><a href="000188.html" class="xref">DestJnt</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200215.html" target="rc7">DESTPOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000189.html" class="xref">DestPos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200216.html" target="rc7">DESTTRN</a></td>
+		<td>実行可能</td>
+		<td><a href="000190.html" class="xref">DestTrn</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900901.html" target="rc7">DIM</a></td>
+		<td>実行可能</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500901.html" target="rc7">DIST</a></td>
+		<td>実行可能</td>
+		<td><a href="000260.html" class="xref">Dist</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100401.html" target="rc7">DO...LOOP</a></td>
+		<td>実行可能</td>
+		<td><a href="000126.html" class="xref">Do...Loop</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200203.html" target="rc7">DRAW</a></td>
+		<td>実行可能</td>
+		<td><a href="000193.html" class="xref">Draw</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200204.html" target="rc7">DRIVE</a></td>
+		<td>実行可能</td>
+		<td><a href="000194.html" class="xref">Drive</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200205.html" target="rc7">DRIVEA</a></td>
+		<td>実行可能</td>
+		<td><a href="000195.html" class="xref">DriveA</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100402.html" target="rc7">EXIT DO</a></td>
+		<td>実行可能</td>
+		<td><a href="000127.html" class="xref">Exit</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100404.html" target="rc7">EXIT FOR</a></td>
+		<td>実行可能</td>
+		<td><a href="000127.html" class="xref">Exit</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500202.html" target="rc7">EXP</a></td>
+		<td>実行可能</td>
+		<td><a href="000231.html" class="xref">Exp</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200516.html" target="rc7">EXTSPEED</a></td>
+		<td>実行可能</td>
+		<td><a href="000196.html" class="xref">ExtSpeed</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11600204.html" target="rc7">False</a></td>
+		<td>実行可能</td>
+		<td><a href="000489.html" class="xref">定数</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501001.html" target="rc7">FIG</a></td>
+		<td>実行可能</td>
+		<td><a href="000261.html" class="xref">Fig</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100403.html" target="rc7">FOR...NEXT</a></td>
+		<td>実行可能</td>
+		<td><a href="000129.html" class="xref">For...Next</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900204.html" target="rc7">GETLANGUAGE</a></td>
+		<td>実行可能</td>
+		<td><a href="004555.html" class="xref">GetLanguage</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200901.html" target="rc7">GetSrvData</a></td>
+		<td>実行可能</td>
+		<td><a href="000199.html" class="xref">GetSrvData</a></td>
+		<td>機能整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400402.html" target="rc7">GIVEARM</a></td>
+		<td>実行可能</td>
+		<td><a href="000144.html" class="xref">GiveArm</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100601.html" target="rc7">GOTO</a></td>
+		<td>実行可能</td>
+		<td><a href="000131.html" class="xref">GoTo</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200402.html" target="rc7">HALT</a></td>
+		<td>実行可能</td>
+		<td><a href="000200.html" class="xref">Halt</a></td>
+		<td>メッセージ表示機能は機能廃止。</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200401.html" target="rc7">HOLD</a></td>
+		<td>実行可能</td>
+		<td><a href="000201.html" class="xref">Hold</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100501.html" target="rc7">IF...END IF</a></td>
+		<td>実行可能</td>
+		<td><a href="000132.html" class="xref">If...End If</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100502.html" target="rc7">IF...THEN...ELSE</a></td>
+		<td>実行可能</td>
+		<td><a href="000137.html" class="xref">If...Then...Else</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500203.html" target="rc7">INT</a></td>
+		<td>実行可能</td>
+		<td><a href="000232.html" class="xref">Int</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200403.html" target="rc7">INTERRUPT ON/OFF</a></td>
+		<td>実行可能</td>
+		<td><a href="000202.html" class="xref">Interrupt</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500801.html" target="rc7">J2P</a></td>
+		<td>実行可能</td>
+		<td><a href="000250.html" class="xref">J2P</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500802.html" target="rc7">J2T</a></td>
+		<td>実行可能</td>
+		<td><a href="000251.html" class="xref">J2T</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501101.html" target="rc7">JOINT</a></td>
+		<td>実行可能</td>
+		<td><a href="000262.html" class="xref">Joint</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400202.html" target="rc7">KILL</a></td>
+		<td>実行可能</td>
+		<td><a href="000145.html" class="xref">Kill</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400207.html" target="rc7">KILLALL</a></td>
+		<td>実行可能</td>
+		<td><a href="000146.html" class="xref">KillAll</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501607.html" target="rc7">LEN</a></td>
+		<td>実行可能</td>
+		<td><a href="000281.html" class="xref">Len</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000201.html" target="rc7">LET</a></td>
+		<td>実行可能</td>
+		<td><a href="000338.html" class="xref">Let</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000301.html" target="rc7">LETA</a></td>
+		<td>実行可能</td>
+		<td><a href="000339.html" class="xref">LetA</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000401.html" target="rc7">LETF</a></td>
+		<td>実行可能</td>
+		<td><a href="000342.html" class="xref">LetF</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000501.html" target="rc7">LETJ</a></td>
+		<td>実行可能</td>
+		<td><a href="000343.html" class="xref">LetJ</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000302.html" target="rc7">LETO</a></td>
+		<td>実行可能</td>
+		<td><a href="000340.html" class="xref">LetO</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000303.html" target="rc7">LETP</a></td>
+		<td>実行可能</td>
+		<td><a href="000341.html" class="xref">LetP</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000601.html" target="rc7">LETR</a></td>
+		<td>実行可能</td>
+		<td><a href="000344.html" class="xref">LetR</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000701.html" target="rc7">LETRX</a></td>
+		<td>実行可能</td>
+		<td><a href="000345.html" class="xref">LetRx</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000702.html" target="rc7">LETRY</a></td>
+		<td>実行可能</td>
+		<td><a href="000346.html" class="xref">LetRy</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000703.html" target="rc7">LETRZ</a></td>
+		<td>実行可能</td>
+		<td><a href="000347.html" class="xref">LetRz</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000801.html" target="rc7">LETX</a></td>
+		<td>実行可能</td>
+		<td><a href="000349.html" class="xref">LetX</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000802.html" target="rc7">LETY</a></td>
+		<td>実行可能</td>
+		<td><a href="000350.html" class="xref">LetY</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000803.html" target="rc7">LETZ</a></td>
+		<td>実行可能</td>
+		<td><a href="000351.html" class="xref">LetZ</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400211.html" target="rc7">LOCKSTATE</a></td>
+		<td>実行可能</td>
+		<td><a href="000381.html" class="xref">LockState</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500204.html" target="rc7">LOG</a></td>
+		<td>実行可能</td>
+		<td><a href="000233.html" class="xref">Log</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500205.html" target="rc7">LOG10</a></td>
+		<td>実行可能</td>
+		<td><a href="000234.html" class="xref">Log10</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500704.html" target="rc7">MAGNITUDE</a></td>
+		<td>実行可能</td>
+		<td><a href="000249.html" class="xref">Magnitude</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500207.html" target="rc7">MAX</a></td>
+		<td>実行可能</td>
+		<td><a href="000235.html" class="xref">Max</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500208.html" target="rc7">MIN</a></td>
+		<td>実行可能</td>
+		<td><a href="000236.html" class="xref">Min</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc20700147.html" target="rc7">MotionSkip</a> (ライブラリ)</td>
+		<td>実行可能</td>
+		<td><a href="000157.html" class="xref">MotionSkip</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11201001.html" target="rc7">MOTOR ｛ON | OFF｝</a></td>
+		<td>実行可能</td>
+		<td><a href="000206.html" class="xref">Motor</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200207.html" target="rc7">MOVE</a></td>
+		<td>実行可能</td>
+		<td><a href="000207.html" class="xref">Move</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500501.html" target="rc7">MPS</a></td>
+		<td>実行可能</td>
+		<td><a href="000237.html" class="xref">Mps</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11600201.html" target="rc7">OFF</a></td>
+		<td>実行可能</td>
+		<td><a href="000489.html" class="xref">定数</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11600202.html" target="rc7">ON</a></td>
+		<td>実行可能</td>
+		<td><a href="000489.html" class="xref">定数</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500702.html" target="rc7">OVEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000247.html" class="xref">OVec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500803.html" target="rc7">P2J</a></td>
+		<td>実行可能</td>
+		<td><a href="000252.html" class="xref">P2J</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500804.html" target="rc7">P2T</a></td>
+		<td>実行可能</td>
+		<td><a href="000253.html" class="xref">P2T</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11600203.html" target="rc7">PI</a></td>
+		<td>実行可能</td>
+		<td><a href="000489.html" class="xref">定数</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501301.html" target="rc7">POSRX</a></td>
+		<td>実行可能</td>
+		<td><a href="000266.html" class="xref">PosRx</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501302.html" target="rc7">POSRY</a></td>
+		<td>実行可能</td>
+		<td><a href="000267.html" class="xref">PosRy</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501303.html" target="rc7">POSRZ</a></td>
+		<td>実行可能</td>
+		<td><a href="000268.html" class="xref">PosRz</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501201.html" target="rc7">POSX</a></td>
+		<td>実行可能</td>
+		<td><a href="000263.html" class="xref">PosX</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501202.html" target="rc7">POSY</a></td>
+		<td>実行可能</td>
+		<td><a href="000264.html" class="xref">PosY</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501203.html" target="rc7">POSZ</a></td>
+		<td>実行可能</td>
+		<td><a href="000265.html" class="xref">PosZ</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500206.html" target="rc7">POW</a></td>
+		<td>実行可能</td>
+		<td><a href="000238.html" class="xref">Pow</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300502.html" target="rc7">PRINTDBG</a></td>
+		<td>実行可能</td>
+		<td><a href="000368.html" class="xref">PrintDbg</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500703.html" target="rc7">PVEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000248.html" class="xref">PVec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500403.html" target="rc7">RADDEG</a></td>
+		<td>実行可能</td>
+		<td><a href="000239.html" class="xref">RadDeg</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100701.html" target="rc7">REM</a></td>
+		<td>実行可能</td>
+		<td><a href="000133.html" class="xref">Rem</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300205.html" target="rc7">RESET</a></td>
+		<td>実行可能</td>
+		<td><a href="000366.html" class="xref">Reset</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200802.html" target="rc7">RESETAREA</a></td>
+		<td>実行可能</td>
+		<td><a href="000208.html" class="xref">ResetArea</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500209.html" target="rc7">RND</a></td>
+		<td>実行可能</td>
+		<td><a href="000240.html" class="xref">Rnd</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200208.html" target="rc7">ROTATE</a></td>
+		<td>実行可能</td>
+		<td><a href="000209.html" class="xref">Rotate</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200209.html" target="rc7">ROTATEH</a></td>
+		<td>実行可能</td>
+		<td><a href="000210.html" class="xref">RotateH</a></td>
+		<td>パス開始変位の書式変更<br />参考 <a href="000519.html" class="xref">パス開始変位量</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500502.html" target="rc7">RPM</a></td>
+		<td>実行可能</td>
+		<td><a href="000241.html" class="xref">Rpm</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400201.html" target="rc7">RUN</a></td>
+		<td>実行可能</td>
+		<td><a href="000147.html" class="xref">Run</a></td>
+		<td>サイクルオプションがなくなりました。<a href="000126.html" class="xref">Do...Loop</a>でリピートしてください。<br />
+		Resultオプションがなくなりました。<a href="000516.html" class="xref">エラー処理ルーチン</a>参照</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501401.html" target="rc7">RVEC</a></td>
+		<td>実行可能</td>
+		<td><a href="000270.html" class="xref">RVec</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100503.html" target="rc7">SELECT CASE</a></td>
+		<td>実行可能</td>
+		<td><a href="000135.html" class="xref">Select Case...End Select</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300204.html" target="rc7">SET</a></td>
+		<td>実行可能</td>
+		<td><a href="000365.html" class="xref">Set</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200801.html" target="rc7">SETAREA</a></td>
+		<td>実行可能</td>
+		<td><a href="000212.html" class="xref">SetArea</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500210.html" target="rc7">SGN</a></td>
+		<td>実行可能</td>
+		<td><a href="000242.html" class="xref">Sgn</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500306.html" target="rc7">SIN</a></td>
+		<td>実行可能</td>
+		<td><a href="000243.html" class="xref">Sin</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200501.html" target="rc7">SPEED</a></td>
+		<td>実行可能</td>
+		<td><a href="000215.html" class="xref">Speed</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500211.html" target="rc7">SQR</a></td>
+		<td>実行可能</td>
+		<td><a href="000244.html" class="xref">Sqr</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400205.html" target="rc7">STATUS</a></td>
+		<td>実行可能</td>
+		<td><a href="000148.html" class="xref">Status</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400203.html" target="rc7">SUSPEND</a></td>
+		<td>実行可能</td>
+		<td><a href="000149.html" class="xref">Suspend</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400206.html" target="rc7">SUSPENDALL</a></td>
+		<td>実行可能</td>
+		<td><a href="000150.html" class="xref">SuspendAll</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900404.html" target="rc7">SYSSTATE</a></td>
+		<td>実行可能</td>
+		<td><a href="000384.html" class="xref">SysState</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500805.html" target="rc7">T2J</a></td>
+		<td>実行可能</td>
+		<td><a href="000254.html" class="xref">T2J</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500806.html" target="rc7">T2P</a></td>
+		<td>実行可能</td>
+		<td><a href="000255.html" class="xref">T2P</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400401.html" target="rc7">TAKEARM</a></td>
+		<td>実行可能</td>
+		<td><a href="000151.html" class="xref">TakeArm</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400210.html" target="rc7">TAKEARMSTATE</a></td>
+		<td>実行可能</td>
+		<td><a href="000385.html" class="xref">TakeArmState</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500307.html" target="rc7">TAN</a></td>
+		<td>実行可能</td>
+		<td><a href="000245.html" class="xref">Tan</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11700203.html" target="rc7">TIMER</a></td>
+		<td>実行可能</td>
+		<td><a href="000388.html" class="xref">Timer</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500807.html" target="rc7">TINV</a></td>
+		<td>実行可能</td>
+		<td><a href="000256.html" class="xref">TInv</a></td>
+		<td>参考 <a href="000516.html" class="xref">エラー処理ルーチン</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900601.html" target="rc7">TOOL</a></td>
+		<td>実行可能</td>
+		<td><a href="000320.html" class="xref">Tool</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501503.html" target="rc7">TOOLPOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000273.html" class="xref">ToolPos</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501613.html" target="rc7">VAL</a></td>
+		<td>実行可能</td>
+		<td><a href="000287.html" class="xref">Val</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200602.html" target="rc7">WAIT</a></td>
+		<td>実行可能</td>
+		<td><a href="000218.html" class="xref">Wait</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900701.html" target="rc7">WORK</a></td>
+		<td>実行可能</td>
+		<td><a href="000321.html" class="xref">Work</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501504.html" target="rc7">WORKPOS</a></td>
+		<td>実行可能</td>
+		<td><a href="000274.html" class="xref">WorkPos</a></td>
+		<td></td>
+	</tr>
+</table>
+<!-- $RC7MCommand_OK_End$ -->
+
+<h2>RC8シリーズでは非推奨になったコマンド</h2>
+<p>非推奨になった下記コマンドはRC7M互換のために機能実装はされましたが、今後のサポートは保証しません。代替のコマンドに変更してください。</p>
+<p>またこれらの非推奨コマンドはマニュアル内でのコマンド一覧等には出力されません。コマンド名での検索のみヒットします。</p>
+<!-- $RC7MCommand_Hisui_Start$ -->
+<table>
+	<tr>
+		<th>RC7Mコマンド名</th>
+		<th>RC8シリーズでの実装</th>
+		<th>RC8シリーズコマンド</th>
+		<th>備考</th>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900302.html" target="rc7">CLEARLOG</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000393.html" class="xref">SysLog.Ctrl.Clear</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200221.html" target="rc7">CLRSPLINEPOINT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11400208.html" target="rc7">CONTINUERUN</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000582.html" class="xref">ContinueAll</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200213.html" target="rc7">CUREXJ</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000262.html" class="xref">Joint</a></td>
+		<td>Joint(Axis, CurJnt)に置換<br />参考 <a href="000170.html" class="xref">CurExJ</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200508.html" target="rc7">CURJACC</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000175.html" class="xref">CurJAcc</a></td>
+		<td>コマンド整理<br />参考 <a href="000175.html" class="xref">CurJAcc</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200510.html" target="rc7">CURJDEC</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000176.html" class="xref">CurJDec</a></td>
+		<td>コマンド整理<br />参考 <a href="000176.html" class="xref">CurJDec</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200511.html" target="rc7">CURJSPD</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000178.html" class="xref">CurJSpd</a></td>
+		<td>コマンド整理<br />参考 <a href="000178.html" class="xref">CurJSpd</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900803.html" target="rc7">DEFDBL</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000310.html" class="xref">DefDbl</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900801.html" target="rc7">DEFINT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000311.html" class="xref">DefInt</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900807.html" target="rc7">DEFJNT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000313.html" class="xref">DefJnt</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900806.html" target="rc7">DEFPOS</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000314.html" class="xref">DefPos</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900802.html" target="rc7">DEFSNG</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000315.html" class="xref">DefSng</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900804.html" target="rc7">DEFSTR</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000316.html" class="xref">DefStr</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900808.html" target="rc7">DEFTRN</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000317.html" class="xref">DefTrn</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc10900805.html" target="rc7">DEFVEC</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000319.html" class="xref">Dim</a></td>
+		<td>参考 <a href="000318.html" class="xref">DefVec</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200217.html" target="rc7">DESTEXJ</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000262.html" class="xref">Joint</a></td>
+		<td>Joint(Axis, DestJnt)に置換<br />参考 <a href="000187.html" class="xref">DestExJ</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200222.html" target="rc7">GETSPLINEPOINT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100302.html" target="rc7">GOSUB</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000324.html" class="xref">Sub...End Sub</a></td>
+		<td>参考 <a href="000130.html" class="xref">GoSub</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300201.html" target="rc7">IN</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000338.html" class="xref">Let</a></td>
+		<td>コマンド整理<br />参考 <a href="000363.html" class="xref">In</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200504.html" target="rc7">JACCEL</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000160.html" class="xref">Accel</a></td>
+		<td>コマンド整理<br />参考 <a href="000203.html" class="xref">JAccel</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200506.html" target="rc7">JDECEL</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000184.html" class="xref">Decel</a></td>
+		<td>コマンド整理<br />参考 <a href="000204.html" class="xref">JDecel</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200502.html" target="rc7">JSPEED</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000215.html" class="xref">Speed</a></td>
+		<td>コマンド整理</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11000704.html" target="rc7">LETT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000347.html" class="xref">LetRz</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11500808.html" target="rc7">NORMTRN</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000258.html" class="xref">TNorm</a></td>
+		<td>コマンド名称変更<br />参考 <a href="000257.html" class="xref">Normtrn</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11300202.html" target="rc7">OUT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000338.html" class="xref">Let</a></td>
+		<td>コマンド整理<br />参考 <a href="000364.html" class="xref">Out</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11501304.html" target="rc7">POST</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000268.html" class="xref">PosRz</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100304.html" target="rc7">RETURN</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000324.html" class="xref">Sub...End Sub</a></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11200220.html" target="rc7">SETSPLINEPOINT</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td></td>
+		<td>機能未対応</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900301.html" target="rc7">STARTLOG</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000391.html" class="xref">SysLog.Ctrl.Start</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11100202.html" target="rc7">STOP</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000200.html" class="xref">Halt</a></td>
+		<td>参考 <a href="000136.html" class="xref">Stop</a></td>
+	</tr>
+	<tr>
+		<td><a href="rc7data/cmidc11900303.html" target="rc7">STOPLOG</a></td>
+		<td>RC8シリーズ非推奨コマンド</td>
+		<td><a href="000392.html" class="xref">SysLog.Ctrl.Stop</a></td>
+		<td>コマンド名称変更</td>
+	</tr>
+</table>
+<!-- $RC7MCommand_Hisui_End$ -->
+ <!-- コンテンツの中で確認すべき事項 -->
+
+
+ <!-- コンテンツの中で仕様の意図などを記述しておく -->
+
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 673</p>
+<p class="pre_next"><a href="000672.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="000674.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

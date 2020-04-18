@@ -1,0 +1,155 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CURJNT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CURJNT<span class="comment1">
+		　（システム変数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ロボットの現在角度をJ型で得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CURJNT</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">ロボットの現在の各軸エンコーダで検出した関節角度がJ型データの形式で格納されています。</div>
+            <div class="p">ロボットが動作中の場合、この命令を実行した時点での値が取得されます。</div>
+            <div class="p">目標ポーズを取得する場合は、DESTJNTを使ってください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200214.html" target="_top">DESTJNT</a>、<a href="cmidc11200211.html" target="_top">CURPOS</a>、<a href="cmidc11200212.html" target="_top">CURTRN</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">マシンロック運転中は各軸のエンコーダ値で検出した関節角度ではなく、仮想的な関節角度（指令角度）となります。 </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM lj1 As Joint</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lj1 = CURJNT </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'現在の関節角度をlj1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">lj1 = CURJNT + (10, 10, 0, 0, 0, 10)</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'現在の関節角度 + (10, 10, 0, 0, 0, 10)をlj1に</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'代入します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">lj1 = CURJNT + (10, 10, 0, 0)</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'現在の関節角度 + (10, 10, 0, 0)をlj1に代入します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

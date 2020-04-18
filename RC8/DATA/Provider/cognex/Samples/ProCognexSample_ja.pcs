@@ -1,0 +1,28 @@
+'!TITLE "ProCognexSample.pcs"
+
+Sub Main 
+	Dim caoCtrl As Object
+	Dim bstrResult As String
+	
+	caoCtrl = Cao.AddController( "InSight", "caoProv.Cognex.In-Sight", "", "conn=eth:127.0.0.1, timeout=1000" )
+	
+	' オフライン状態にする
+	caoCtrl.SetOnline 0
+	
+	' ジョブの読み込み
+	caoCtrl.LoadFile "Sample.job"
+	Delay 500
+	
+	' オンラインにする
+	caoCtrl.SetOnline 1
+	
+	' 実行と結果(WriteMessageコマンド)の取得
+	bstrResult = caoCtrl.SendMessageAndWait
+	
+	' 結果の表示とV11に代入
+	PrintDbg bstrResult
+	V11 = "V(" & bstrResult & ")"
+	
+End Sub
+
+

@@ -1,0 +1,6 @@
+例：PB1 のCLICKED を選択した場合．
+    Sub PB1_CLICKED()
+        Set IO[128]    'IO 128番をON
+        Run PRO100     'PRO100 を起動
+        Run PRO200     'PRO200 を起動
+    End Sub

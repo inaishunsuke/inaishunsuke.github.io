@@ -1,0 +1,23 @@
+'!TITLE "<anyfeed>"
+
+Sub Main 
+
+	Dim m_caoCtrl as Object	' CaoControllerオブジェクト用
+
+	' 接続
+	m_caoCtrl = cao.AddController("anyfeed", "CaoProv.FlexFactory.anyFeed", "", "conn=com:2:9600,Timeout=2000")
+
+	' 初期化
+	call m_caoCtrl.Execute("Init", "")
+	
+	' 速度の設定
+	call m_caoCtrl.Execute("SetFlipFwdSpeed", 10)
+	
+	' 動作
+	call m_caoCtrl.Execute("Ffwd", "")
+
+	' 切断
+	cao.Controllers.Remove m_caoCtrl.Index
+	m_caoCtrl = Nothing
+	
+End Sub

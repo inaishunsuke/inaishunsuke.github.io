@@ -1,0 +1,233 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>LET</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">LET<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">変数に値を代入します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">[LET] &lt;変数名&gt; = &lt;演算式&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">[LET]は省略可能です。</div>
+            <div class="p">基本的には、&lt;変数名&gt;と&lt;演算式&gt;の型は、同じでなければなりません。</div>
+            <div class="p">ただし、変数名と演算式の型が違う場合は以下のように変換されます。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">&lt;変数名&gt;の変数の型に変換されます。</div>
+                <div class="p">実数が整数に変換される場合は、小数点以下は切り捨てられます。</div>
+                <div class="p">倍精度実数変数が単精度実数変数に変換される場合は、値は有効数字7桁に丸めたものになります。</div>
+              </li>
+              <li class="item">
+                <div class="p">演算は、精度の高い方の型の精度で演算されます。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFINT li1, li2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">LET li1 = li2 + 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(li2 + 1)の値をli1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">li1 = li2 + 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(li2 + 1)の値をli1に代入します(上記命令文と同</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'じ意味です)。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFPOS lp1, lp2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFJNT lj1, lj2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">lp1 = lp2 + (10, 10, 10, 0, 0, 0)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(lp2 + (10, 10, 10, 0, 0, 0) )の値をlp1に代入</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">lj1 = lj2 + (10, 20, 30, 40, 0, 0)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(lj2 + (10, 20, 30, 40, 0, 0) )の値をlj1に代</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'入します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFPOS lp1, lp2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFJNT lj1, lj2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">lp1 = lp2 + (10, 10, 10, 20)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(lp2 + (10, 10, 10, 20) )の値をlp1に代入しま</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'す。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">lj1 = lj2 + (10, 20, 30, 40)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(lj2 + (10, 20, 30, 40) )の値をlj1に代入しま</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'す。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

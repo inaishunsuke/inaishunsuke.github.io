@@ -1,0 +1,109 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>pltMove</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">pltMove<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">標準パレタイジング テンプレート1</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">pltMove (&lt;パレタイジング番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">pltInitializeで定義された標準パレタイジング動作を実行します。</div>
+            <div class="p">コメントに従って回避点などを挿入できます。</div>
+            <div class="p">コントローラのソフトバージョンがVer.1.2＊以前の場合はVer.1.2互換のクラスのものを使用してください。パレタイジングのクラスのものを使用するとコンパイル異常が発生します。</div>
+            <div class="p">コントローラソフトのバージョン確認方法は、操作ガイド「5.7 [設定（メイン）]ウィンドウの表示、各モジュールのバージョン情報の表示、[F6 設定]-[F6 保守.]-[F2 バージョン]」を参照してください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">mcNextPos ：次ポジションを格納するP型変数番号</div>
+            <div class="p">mcApprLen ：アプローチ長を格納するF型変数番号</div>
+            <div class="p">mcDepLen  ：デパート長を格納するF型変数番号</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">これらの定義がユーザ使用の変数番号と競合する場合はマクロ定義し直してください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20400114.html" target="_top">pltInitialize</a>、<a href="cmidc20400123.html" target="_top">pltMove0</a>、<a href="cmidc20400115.html" target="_top">pltKernel</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-remarks">
+          <img src="common/cmd-remarks.jpg">
+          <br>
+          <div id="cmd-remarksgroup">
+            <div class="p">次ポジションを取得した時点でパレタイジングカウンタはインクリメントされます。したがって、取得だけして動作しなかった場合などは、pltDecCntなどでデクリメントする必要があります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL pltMove(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'パレタイジング番号1番のパレタイジング動作を実行</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

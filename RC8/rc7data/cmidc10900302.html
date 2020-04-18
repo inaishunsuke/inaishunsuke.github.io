@@ -1,0 +1,132 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>POSTUREAREA</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">POSTUREAREA<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.3.0以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">高感度位置姿勢検知機能の設定を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">POSTUREAREA	&lt;位置&gt;,&lt;範囲(ベクトル)&gt;,&lt;I/O番号&gt;,&lt;検知位置格納ポジション型変数番号&gt;[ ,&lt;検知時エラー設定&gt;][ ,TAR_POSTURE(&lt;姿勢&gt; , &lt;誤差範囲&gt;)][ ,TAR_EXJOINT（&lt;軸番号&gt; , &lt;位置&gt; , &lt;誤差範囲&gt;）]</div>
+            <div id="para">
+              <div class="paratitle1">付加軸を2軸以上指定する場合は、</div>
+            </div>
+            <div class="p">POSTUREAREA	&lt;位置&gt;,&lt;範囲(ベクトル)&gt;,&lt;I/O番号&gt;,&lt;検知位置格納ポジション型変数番号&gt;[ ,&lt;検知時エラー設定&gt;][ ,TAR_POSTURE(&lt;姿勢&gt; , &lt;誤差範囲&gt;)][ ,TAR_EXJOINT（（&lt;軸番号&gt; ,&lt;位置&gt; ,&lt;誤差範囲&gt;） ,（&lt;軸番号&gt; ,&lt;位置&gt; ,&lt;誤差範囲&gt;）［ ,（&lt;軸番号&gt; ,&lt;位置&gt; ,&lt;誤差範囲&gt;）・・・］）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">高感度位置姿勢検知機能の位置(範囲)、姿勢、付加軸角度を宣言します。</div>
+            <div class="p">指定した位置、姿勢、付加軸角度が全て範囲内であるとき位置と姿勢を同時にチェックできますのでカメラのシャッタートリガとして使用できます。</div>
+            <div class="p">高感度位置姿勢検知機能は1ms間隔で検知チェックを行います。</div>
+            <div class="p">&lt;位置&gt;：位置をポジション型変数で指定します。詳細は干渉エリアコマンド(AREA)を参照ください。</div>
+            <div class="p">&lt;範囲(ベクトル)&gt;：検知と判断する範囲を指定します。中心から端点までのベクトルを使用してエリアの大きさを指定します。詳細は干渉エリアコマンド(AREA)を参照ください。</div>
+            <div class="p">&lt;I/O番号&gt;：検知時、ONにするI/O番号を指定します。I/Oを使わない場合は-1を入力してください。</div>
+            <div class="p">&lt;検知位置格納ポジション型変数番号&gt;：検知をしたときの現在位置をポジション型変数に格納できます。ポジション型変数を指定してください。変数への格納をしない場合は-1を入力してください。</div>
+            <div class="p">&lt;検知時エラー設定&gt;：検知時のエラー出し方を設定します。</div>
+            <div class="ptxt-ind5">
+              <div class="p">0：検知エリアに入ったとき、エラー出力なし。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">1：検知エリアに入ったとき、エラー出力あり。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">2：検知エリアに入ったとき、エラー出力なし。（手動に切り替えて操作可）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">3：検知エリアから出たとき、エラー出力なし。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">4：検知エリアから出たとき、エラー出力あり。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">5：検知エリアから出たとき、エラー出力なし。（手動に切り替えて操作可）</div>
+            </div>
+            <div class="p">TAR_POSTURE(&lt;姿勢&gt; , &lt;誤差範囲&gt;)：検知姿勢を指定します(省略可)。</div>
+            <div class="p">&lt;姿勢&gt;：検知する姿勢を指定します。ポジション型変数で指定する場合は位置の要素は無視されます。数値指定の場合は(Rx, Ry, Rz)で指定します。4軸ロボットの場合は(Rz）もしくは(0, 0, Rz)で指定します。</div>
+            <div class="p">&lt;誤差範囲&gt;：検知する姿勢の範囲を指定します。&lt;姿勢&gt;からの誤差量を角度で指定します。-1を指定すると姿勢をチェックしません。TAR_EXJOINT（&lt;軸番号&gt; , &lt;位置&gt; , &lt;誤差範囲&gt;）：検知する付加軸角度を指定します(省略可)。</div>
+            <div class="p">&lt;軸番号&gt;：検知する付加軸の軸番号を指定します。</div>
+            <div class="p">&lt;位置&gt;：付加軸の検知する位置を指定します。</div>
+            <div class="p">&lt;誤差範囲&gt;：検知する位置の許容誤差を指定します。-1を指定すると付加軸位置をチェックしません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc10900301.html" target="_top">AREA</a>、<a href="cmidc11200802.html" target="_top">RESETAREA</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">高感度位置姿勢検知機能はオプション機能です。機能ライセンスを購入してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">設定できるエリアは1つです。</div>
+              </li>
+              <li class="item">
+                <div class="p">プログラムでのみ設定可能です。TPおよびWINCAPSでは設定できません。</div>
+              </li>
+              <li class="item">
+                <div class="p">電源OFFすると設定の保持はされません。</div>
+              </li>
+              <li class="item">
+                <div class="p">モータOFF時は機能しませんがマシンロック時は8msで検知可能です。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">POSTUREAREA, P1,V0,24,-1,0, TAR_POSTURE ( V2 , 1 ), TAR_EXJOINT ( ( 7 , 30 , 4 ), ( 8 , 90 , 1) )</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

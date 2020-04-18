@@ -1,0 +1,91 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>RPM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">RPM<span class="comment1">
+		　（関数）</span><span class="comment2">
+		　【Ver.2.8 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">指定した軸番号の回転数(rpm)をPTP動作時の最大内部速度に対する割合（%）に変換します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">RPM（&lt;軸番号&gt;，&lt;数式&gt;）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">指定した軸番号の回転数(rpm)をPTP動作時の最大内部速度に対する割合（%）に変換します。</div>
+            <div class="p">単位は、rpmです。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200501.html" target="_top">SPEED</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">内部速度を変換するコマンドですので実際の動きは外部速度指定の影響を受けます。</div>
+            <div class="p">例：SPEED RPM（7,50)と指定し、外部速度50％の場合、7軸の動きは25rpmとなります。</div>
+            <div class="p">付加軸の場合、回転軸を指定すると指定する回転数は出力段の回転数を指します。</div>
+            <div class="p">直動軸を指定すると入力段の回転数(モータの回転数)となります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SPEED RPM(7, 50)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'7軸の内部速度を50rpmにします。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,170 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ATN2</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ATN2<span class="comment1">
+		　（関数）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">数式1を数式2で除算した逆正接(アークタンジェント)を得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ATN2(&lt;数式1&gt;,&lt;数式2&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;数式1&gt;を &lt;数式2&gt;で除算した値に対する逆正接値を得ます。</div>
+            <div class="p">得られる値は度で、-180から180までの範囲です。</div>
+            <div class="p">&lt;数式&gt;に倍精度実数が含まれる場合、得られる値は倍精度となりますが、他の場合には単精度となります。</div>
+            <div class="p">ATN2の数値範囲は以下のようになります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">
+                  </div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">第一象限</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">第二象限</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">第三象限</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">第四象限</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">下限値</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">0</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">90</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">-180</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">-90</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">上限値</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">90</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">180</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">90</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">- 0</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11500306.html" target="_top">SIN</a>、<a href="cmidc11500305.html" target="_top">COS</a>、<a href="cmidc11500307.html" target="_top">TAN</a>、<a href="cmidc11500302.html" target="_top">ASIN</a>、<a href="cmidc11500301.html" target="_top">ACOS</a>、<a href="cmidc11500303.html" target="_top">ATN</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">DEFSNG lf1, lf2, lf3, lf4, lf5, lf6, lf7, lf8</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf1 = ATN2(1, 2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(1, 2)の逆正接値をlf1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf2 = ATN2(lf4, lf5) </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(lf4, lf5)の逆正接値をlf2に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lf3 = ATN2(lf6, lf7) * lf8 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(lf6, lf7)の逆正接値にlf8を掛けた値をlf3に代入</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

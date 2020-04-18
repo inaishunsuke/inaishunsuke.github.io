@@ -1,0 +1,167 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DEF FN</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DEF FN<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ユーザ定義関数を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">DEF FN &lt;関数名&gt;[&lt;後置子&gt;] = &lt;定数&gt;</div>
+            <div class="p">DEF FN &lt;関数名&gt;[&lt;後置子&gt;](&lt;引数&gt;[,&lt;引数&gt;…]) = &lt;数式&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">FNで始まる&lt;関数名&gt;をユーザ定義関数として宣言します。</div>
+            <div class="p">&lt;引数&gt;には、&lt;数式&gt;の中で使用する変数名を指定します。</div>
+            <div class="p">&lt;後置子&gt;は省略可能ですが、これを付けることによって、同時に変数の型を宣言することができます。後置子には次のものが使用できます。</div>
+            <div class="ptxt-ind5">
+              <div class="p">整数型後置子：%</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">単精度型後置子：!</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">倍精度型後置子：#</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">文字列型後置子：$</div>
+            </div>
+            <div class="p">後置子を省略すると、単精度実数型とみなされます。</div>
+            <div class="p">変数名が同じで、型の違う変数を宣言することはできません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEF FND$ = "DENSO"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'FND$をユーザ定義関数として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEF FNLAP#(radius) = 2 * PI * radius</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'FNLAP#(radius)を倍精度実数型のユーザ定義関</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'数として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEF FNAREA(radius) = PI * POW(radius, 2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'FNAREA(radius)を単精度実数型のユーザ定義関</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'数として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRINT #1, FND$</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'"DENSO"をch1から出力します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRINT #2, HANKEI</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRINT #1, FNLAP#(HANKEI)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(2 * PI * HANKEI)の値をch1から出力します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRINT #2, FNAREA(HANKEI)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'(PI * POW(HANKEI, 2)の値をch2から出力しま</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'す。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

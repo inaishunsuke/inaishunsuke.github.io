@@ -1,0 +1,261 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>GIVEARM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">GIVEARM<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">現在取得しているアームグループを解放します。</div>
+            <div class="p">アームグループ０（ロボットのみ）の場合、ロボット制御権を開放します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">GIVEARM </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">現在取得しているアームグループを解放します。これにより別のタスクがアームグループの制御権を取得できるようになります。</div>
+            <div class="p">アームグループを取得していないタスクがGIVEARMコマンドを実行しようとした場合は、エラーとなります。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">次の場合には、自動的にロボット制御権が解放されます。したがって、GIVEARMコマンドを省略してもかまわない場合があります。</div>
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">ENDコマンドを実行した場合（呼び出したプログラムの最後にあるENDコマンドは除く）</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">KILLコマンドを実行した場合</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">ティーチングペンダントまたはI/Oによって、ロボットコントローラが初期化された場合</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11400401.html" target="_top">TAKEARM</a>、<a href="cmidc11400403.html" target="_top">TAKEVIS</a>、<a href="cmidc11400404.html" target="_top">GIVEVIS</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">GIVEARM実行時は、現在取得しているアームグループの軸が完全に停止するのを待ちます。したがって、GIVEARMの前にパス動作指定をしてもパス動作しません。 </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボット動作を行うプログラムの先頭でTAKEARMを実行します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, lp1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, lp2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">GIVEARM </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'1終了時にGIVEARMでロボット制御権を解放します。</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'直後のENDで自動的に解放するので、必ずしも実行する</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'必要はありません。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸有りの例）：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ１を取得。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">GIVEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'現在取得しているアームグループ１を解放します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ2を取得。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'プログラム停止時、現在取得しているアームグループ</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'２を解放します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

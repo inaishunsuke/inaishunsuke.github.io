@@ -1,0 +1,188 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>WAIT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">WAIT<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">条件プログラム停止を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">WAIT &lt;条件式&gt; [,&lt;タイムアウト時間&gt;][,&lt;格納変数&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;条件式&gt;が成立するまでプログラムの実行を停止します。</div>
+            <div class="p">&lt;タイムアウト時間&gt;を設定すると、指定時間を経過した後にWAIT文の実行を終了し、次のコマンドに制御が移ります。これによって、無限停止を防止できます。</div>
+            <div class="p">&lt;タイムアウト時間&gt;の単位はmsです。</div>
+            <div class="p">&lt;条件式&gt;または&lt;タイムアウト時間&gt;の条件成立を監視するために再評価する間隔は、タスクの優先度に依存します。</div>
+            <div class="p">[Ver.1.8以降]では、&lt;格納変数&gt;を設定すると条件式が成立して、WAITステートメントを抜けたとき指定した変数にTRUE(1)が入り、タイムアウトで抜けたときは指定した変数にFALSE(0)が入ります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200601.html" target="_top">DELAY</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">タイムアウト時間を使用する際には、命令実行中に瞬時停止を行ない再起動すると、一時停止中も指定時間が経過することに注意してください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFINT li1, li2, li3, li4, li5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WAIT li1 = 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'li1 = 1が成立するまで待ちます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WAIT li2 = 0, 2000 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'li2 = 0が成立するまで待ち、2秒経</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'過しても成立しなければ次の文へ移</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WAIT li3 = li4, li5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'li3 = li4が成立するまで待ち、li5</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'の値の時間が経過しても成立しなけ</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'れば次の文へ移ります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WAIT IO[10] = ON </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'IOの10番がONになるまで待ちます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">[Ver.1.8以降]</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WAIT li3 = li4, li5, li6</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'li3 = li4が成立するまで待ち、li5</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'の値の時間が経過しても成立しなけ</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'れば次の文へ移ります。このとき、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'li5の値の時間までにli3=li4が成立</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'したらli6=TRUEが入り、条件式が成</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'立せずにタイムアウトしたら</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'li6=FALSEが入ります。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

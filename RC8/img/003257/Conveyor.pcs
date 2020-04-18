@@ -1,0 +1,24 @@
+﻿'!TITLE "コンベア軸動作"
+
+#Define ArmGroupNo 20 		' コンベア軸のアームグループ
+#Define JntNo 7			' コンベア軸の軸番号
+#Define TaskConvSpd 100		' コンベア軸の動作速度
+#Define MaxConvSpd 360		' コンベア軸の最大速度
+#Define PitchLength 100		' 1回の動作でのコンベア軸の移動量
+#Define IntervalTime 200	' コンベアの動作間隔
+
+Sub Main 
+	TakeArm ArmGroupNo		' コンベア軸のアームグループ取得
+        HighPathAccuracy true           ' 高軌跡を有効にする
+	Speed TaskConvSpd / MaxConvSpd * 100	' コンベア軸の内部速度設定
+	
+	' IO128がOnになるまでトラッキングを繰り返す
+	Do 
+		Drive (JntNo, PitchLength)			' コンベア軸動作実行
+		Delay IntervalTime				' 動作間のインターバル
+
+	Loop Until IO128 = On
+	
+End Sub
+
+

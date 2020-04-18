@@ -1,0 +1,146 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>PROGRAM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">PROGRAM<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">プログラム名を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">PROGRAM &lt;プログラム名&gt; [(&lt;引数&gt;[,&lt;引数&gt;…])]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;プログラム名&gt;で指定した文字列を、プログラム名として宣言します。</div>
+            <div class="p">プログラム名の宣言は、プログラムの先頭の行で行ないます。先頭にプログラム名の宣言がない場合には、ファイル名がプログラム名になります。</div>
+            <div class="p">プログラム名が、PRO&lt;番号&gt;という形式の名前になっている場合は、引数を付けることはできません。</div>
+            <div class="p">プログラム名の先頭の文字はアルファベットでなければなりません。プログラム名は64文字までです。</div>
+            <div class="p">&lt;引数&gt;は、呼び出し側から渡される引数データになります。CALLステートメントから変数が引数として渡された場合には、PROGRAMステートメント内で&lt;引数&gt;で指定した変数の値を変更すると、呼び出し側で&lt;引数&gt;に指定した変数の値も変わります。</div>
+            <div class="p">&lt;引数&gt;の型は、CALLステートメントの引数の型と同じでなければなりません。</div>
+            <div class="p">型は、後置子またはAS表現を用いて以下のように行ないます。</div>
+            <div class="source06">
+              <div class="p">PROGRAM  SUB0(aa%,bb!)</div>
+            </div>
+            <div class="source06">
+              <div class="p">PROGRAM  SUB0(aa AS INTEGER,bb AS SINGLE)</div>
+            </div>
+            <div class="p">&lt;引数&gt;に配列変数を使用するときには、呼び出し側のDIMステートメントで定義した配列の添字の最大値と、添字の数を入力します。</div>
+            <div class="p">&lt;引数&gt;の最大個数は、32個です。</div>
+            <div class="p">外部より起動可能なプログラムはPRO&lt;番号&gt;のものに限られます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11100301.html" target="_top">CALL</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM PRO1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'PRO1をプログラム名として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM SUB2( la, lb%, lc# )</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'la, lb%, lc#の引数を持たせたSUB2をプログラムと</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'して宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM SUB3( lb%( 12, 5 ) )</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'SUB3をプログラムとして宣言し、2次元配列lb%で引</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'数を受け取ります。この例では、配列の添字は12, 5で</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'す。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM SUB0( la%, lb! )</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">PROGRAM SUB0( la As Integer, lb As Single )</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

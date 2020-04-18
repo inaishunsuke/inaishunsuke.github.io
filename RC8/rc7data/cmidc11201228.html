@@ -1,0 +1,158 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ST_SetDampRate</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ST_SetDampRate<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.1.9 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限時の粘性割合を設定します。(６軸専用命令)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ST_SetDampRate &lt;X方向粘性割合&gt;,&lt;Y方向粘性割合&gt;,&lt;Z方向粘性割合&gt;,&lt;X回り粘性割合&gt;,&lt;Y回り粘性割合&gt;,&lt;Z回り粘性割合&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">ST_SetFrcCoordにて設定された座標系のＸ軸方向、Ｙ軸方向、Ｚ軸方向、Ｘ軸回り、Ｙ軸回り、Ｚ軸回りの粘性割合を設定します。</div>
+            <div class="p">設定値は0～100の範囲で設定します。0の時最も粘性が小さくなります。小数点２桁まで有効です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11201229.html" target="_top">ST_ResetDampRate</a>、<a href="cmidc11201215.html" target="_top">ST_SetFrcCoord</a>、<a href="cmidc11201218.html" target="_top">ST_SetCompRate</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限中は、実行できません。力制限中に本ステートメントを実行すると、エラー「60fa 力制限中です」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">コントローラ電源立ち上げ直後は、設定値は初期化され、X軸方向,Y軸方向,Z軸方向,X軸回り,Y軸回り,Z軸回りすべて１００となります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ST_SetCompRateにて設定した柔らかさ割合より小さい値を設定しないでください。柔らかさ割合より小さい値を設定した場合、ロボットが振動し、エラー停止する場合があります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ST_SetDampRate実行後、ST_SetCompRateを設定すると、粘性割合は、ST_SetCompRateの設定値となります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ST_SetFrcCoord 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限座標系をツール座標に設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">ST_SetCompRate 100,0,100,100,100,100</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'柔らかさ割合を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">ST_SetDampRate 100,20,100,100,100,100</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'粘性割合を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ST_SetCompControl</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ツール座標系のＹ方向の柔らかさ割合を0%、粘性割合</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'を20%に設定し、力機能を有効にする。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

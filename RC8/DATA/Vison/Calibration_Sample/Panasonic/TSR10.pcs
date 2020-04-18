@@ -1,0 +1,45 @@
+'!TITLE "PV_Calibration"
+
+' 注意
+' 1. ロボットコントローラとPanasonic PVが、同一のサブネットマスク内になるようにIPアドレス及び、サブネットマスクを設定してください。
+' 2. このPacscriptを実行してから、操作盤を開いてください。
+
+' 機器のIPアドレス
+#define IPAddress "192.168.0.2"
+
+Sub Main
+	Dim ctrl as Object
+	Dim bmp as Object
+	Dim sResult as String
+	Dim VResult as Vector
+
+	' 接続処理
+	ctrl = cao.AddController("PV", "CaoProv.Panasonic.PV", "", _
+								"conn=eth:" & IPAddress)
+
+	bmp = ctrl.AddVariable("@BITMAP")
+
+	Do
+		
+		' 操作盤に渡すように画像を格納
+		vars.ItemValue(0) = bmp.Value		
+
+		' 検査実行
+		sResult = ctrl.Start
+
+		On Error Resume Next
+
+		' 結果をV型へ変換
+		VResult = "V(" & sResult & ")"
+
+		' 操作盤に渡すように結果を変数に変換
+		vars.ItemValue(3) = POSX(VResult) / 100
+		vars.ItemValue(4) = POSY(VResult) / 100
+
+		On Error Goto 0
+
+		Delay 500
+	Loop
+End Sub
+
+

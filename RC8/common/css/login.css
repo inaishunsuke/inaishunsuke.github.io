@@ -1,0 +1,291 @@
+/* CSS Document */
+.vmid{ vertical-align: middle}
+/*
+body{
+	margin:0;
+	padding:0;
+	width:100%;
+	height:100%;
+	background-color:#000000;
+	background-image:url(../images/log/back.jpg);
+	background-repeat: no-repeat;
+	background-position: center center;
+	
+	text-align: center;
+	color:#333333;
+	font-size:12px;
+}
+*/
+td{
+	font-size:12px;
+	line-height:1.4em;
+}
+a:link {
+	color: #333333;
+	text-decoration:underline;
+}
+a:visited {
+	color: #333333;
+	text-decoration:underline;
+}
+a:hover {
+	color: #333333;
+	text-decoration:none;
+}
+a:active {
+	color: #333333;
+}
+
+input.txt {
+	width:300px;
+	margin:0;
+	padding:2px;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	vertical-align:middle;
+	color:#333333;
+	background:#CCCCCC;
+}
+input.txt2 {
+
+	margin:0;
+	padding:0;
+	border-style:solid;
+	border-width:1px;
+	border-color:#AAAAAA;
+	vertical-align:middle;
+	color:#FFFFFF;
+	background:#CCCCCC;
+}
+
+
+@charset "utf-8";
+
+/* =========================================================
+
+ログインページのスタイルを定義
+
+01. login
+02. header
+03. main
+04. input
+
+========================================================= */
+
+
+body {
+	margin:0;
+	padding:0;
+	text-align: center;
+	height:100%;
+	width:100%;
+	background-color:#f7f7f7;
+}
+
+#wrapper {
+	padding:0;
+	margin:0 auto;
+    text-align: left;
+	width:100%;
+    /*width:1024px;*/
+}
+
+#main { 
+   background:#fff;
+   margin:0 auto; 
+   padding-top:19px;
+   padding-bottom:46px;
+   width:100%;
+}
+
+.content {
+   margin:0 auto; 
+   width:955px;
+}
+
+
+/* 01.login
+--------------------------------------------------------- */
+#login {
+   margin:0 auto; 
+   width:100%;
+   }
+
+/* 02.header
+--------------------------------------------------------- */
+#login #header {
+   height:100px;
+   border-bottom-width:1px;
+   border-bottom-style:solid;
+   }
+
+/* 03.main
+--------------------------------------------------------- */
+#login #main {
+   padding:64px 0;
+   position:relative;
+   }
+
+#login #main #title { 
+   margin:0 auto; 
+   width:745px; 
+   }
+
+#login #main #login_table {
+   background:url(../img/login/bg_main.png);
+   background-position: 0 0;
+   background-repeat:no-repeat;
+   padding:30px 0; 
+   height:313px;
+   margin:0 auto; 
+   width:745px;   
+   } 
+
+#login #main #login_table table {
+   height:250px;
+   margin:0 31px;
+   padding:0;
+   width:683px;
+   }
+
+#login #main #login_table table td {
+  width:341px;
+   }
+
+#login #main #login_table table td#logo {
+   border-right:1px solid #999;
+   padding-right:20px;
+   text-align:center;
+   vertical-align:middle;
+   width:341px;
+   }
+
+#login #main #login_table table td#logo div {
+   margin:0 auto;
+   text-align:center;
+}
+
+#login #main div#login_btn { padding-top:10px; }
+
+#login #main #login_table table td#logo images {
+   vertical-align:middle;
+   margin:0 auto;
+   text-align:center;
+   }
+
+#login #main #login_table table td#input_area {
+   width:341px;
+   }
+
+#login #main #login_table table td#input_area div {
+   margin:0 auto;
+   width:260px;
+   }
+
+#login #main #login_table table td#input_area dl {
+   margin-bottom:17px;
+   }
+
+#login #main #login_table table td#input_area dl dt {
+   color:#333;
+   font-weight:700;
+   line-height:1;
+   margin-bottom:7px;
+   }
+
+#login #main table td#input_area dl dd  input { height: 2em; padding:2px; }
+
+/*--- #about  ---*/
+#login #main #login_table td#input_area #about { margin-top:10px; text-align:center; }
+#login #main #login_table td#input_area #about ul li { line-height:24px; text-align:center;  }
+#login #main #login_table td#input_area #about ul li a { color:#000; text-align:center; }
+
+
+/* 04. input
+--------------------------------------------------------- */
+#login #main #input_area dl dd input {
+   background:#fffbf2;
+   border:1px solid #999;
+   width:258px;
+   }
+
+
+/* 05 .error
+--------------------------------------------------------- */
+
+#login #main p.error_comment  {
+	width: 378px;
+	margin:0;
+	background-image:url(../img/login/erro_message_top.gif);
+	background-position:0 middle;
+	background-repeat:no-repeat;
+	margin:0 auto;
+}
+
+p.error_comment span {
+	display: block;
+	margin-bottom: 0 !important;
+	padding: 6px 15px 5px 15px;
+	background-image:url(../img/login/erro_message_bottom.gif);
+	background-position:left bottom;
+	background-repeat: no-repeat;
+	color: #FFF;
+	vertical-align:middle;
+}
+
+p.error_comment images {
+	margin: 0 5px 0 0;
+
+}
+
+/* 04. footer
+--------------------------------------------------------- */
+#footer {
+   background:#f7f7f7;
+   border-top-width:1px;
+   border-top-style:solid;
+   height:auto;
+   margin:0 auto;
+   padding:10px 0 100px;
+   text-align:center; 
+   width:100%;
+   }
+
+#footer .content {
+   margin:0 auto;
+   text-align:center;
+   width:955px;
+   }
+
+#footer ul#footer_link {
+   float:left;
+   width:624px;
+}
+
+#footer ul#footer_link {
+   margin-left:-6px;
+}
+
+#footer ul#footer_link li {
+   float:left;
+   text-align:left;
+}
+
+#footer ul#footer_link li a {
+   border-right-width:1px;
+   border-right-style:solid;
+   display:block;
+   padding:0 7px;
+   text-decoration:underline;
+}
+
+#footer #copy {
+   color:#333;
+   float:right;
+   text-align:right;
+   width:300px;
+}
+
+
+

@@ -1,0 +1,31 @@
+'!TITLE "ProPVSample.pcs"
+
+Sub Main
+	On Error GoTo ErrorProc
+	
+	Dim ctrl As Object
+	
+	' 接続処理
+	ctrl = Cao.AddController( "PV", "CaoProv.Panasonic.PV", "", _
+	"conn=eth:192.168.0.112, timeout=10000" )
+	
+	' 品番を1に変更
+	ctrl.Xtype 1
+	
+	' 検査実行
+	S11 = ctrl.Start
+	
+	' 実行結果をV型変数へ書き込む
+	V11 = "V(" & S11 & ")"
+	
+EndProc:
+	Cao.Controllers.Clear
+	ctrl = Nothing
+	Exit Sub
+	
+ErrorProc:
+	PrintDbg Hex( Err.OriginalNumber )
+	GoTo EndProc
+End Sub
+
+

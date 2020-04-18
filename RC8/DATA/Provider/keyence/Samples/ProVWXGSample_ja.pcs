@@ -1,0 +1,145 @@
+'!TITLE "Keyence XG テンプレート"
+
+#Define IPADDRESS "192.168.0.3" 	' KEYENCE XG のIPアドレス
+#Define SD_NO 1 		' 使用するSDカード番号
+#Define PROG_NO 1 		' 使用する検査設定番号
+#Define CAL_NO 0		' 使用するvisオブジェクトのCal番号
+
+#Define VAL_INDEX 11	' 使用する変数の番号
+						' I[VAL_INDEX] : ワークを見つけた数
+						' V[VAL_INDEX～] : ワークの視覚座標(x,y,angle)
+						' P[VAL_INDEX～] : ワークのロボット座標
+
+#Define HOME_INDEX 0	' P[HOME_INDEX] : ホームポジション 
+#Define START_INDEX 1	' P[START_INDEX] : 開始位置
+#Define DISC_INDEX 2	' P[DISC_INDEX] : プレース位置
+
+
+Sub Main 
+	
+	' ------- 視覚処理 -------
+	Call RunVision
+
+	' ------- ロボット移動位置計算 -------
+	Call TranceRobotPosition
+
+	' ------- ロボット動作 -------
+	Dim lCnt as Long	' カウンタ
+
+	TakeArm Keep = 0
+
+	' ホーム位置に移動
+	Move P, @P P[HOME_INDEX]
+
+	For lCnt = 0 to I[VAL_INDEX] -1
+	
+		' 動作開始位置に移動
+		Move P, @P P[START_INDEX]
+
+		' ------- ピック位置での動作 -------
+		'アプローチ動作  P[VAL_INDEX+lCnt]上空100mmにアプローチ
+		Approach P, P[VAL_INDEX+lCnt], @0 100
+		' 下降動作    P[VAL_INDEX+lCnt]に下降
+		Move L, @0 P[VAL_INDEX+lCnt]
+		' チャックやアンチャック動作等を必要に応じてここに記述
+		Delay 500
+		' 上昇動作    200mm
+		Depart L, @0 200
+
+		' ------- プレース位置での動作 -------
+		'アプローチ動作  P[DISC_INDEX]上空100mmにアプローチ
+		Approach P, P[DISC_INDEX], @0 100
+		' 下降動作    P[DISC_INDEX]に下降
+		Move L, @0 P[DISC_INDEX] 
+		' チャックやアンチャック動作等を必要に応じてここに記述
+		Delay 500
+		' 上昇動作    200mm
+		Depart L, @0 200
+	Next
+
+	' 動作開始位置に移動
+	Move P, @P P[START_INDEX]
+	' ホーム位置に移動
+	Move P, @P P[HOME_INDEX]
+
+	GiveArm
+
+End Sub
+
+
+' ------------------ 視覚処理 ------------------
+Sub RunVision
+
+	On Error Goto ErrProc		' 異常処理ルーチン
+	
+	Dim caoXG As Object			' プロバイダ用変数
+	Dim sResult As String		' 結果取得用変数 S型
+	Dim vntRet As Variant		' 結果取得用変数 Variant型
+	
+	Dim vntValues As Variant	' 結果分解用変数
+	Dim lCnt As Long			' カウンタ
+	
+	' 見つけた数を0個にしておく
+	I[VAL_INDEX] = 0
+
+	' KEYENCE XG に接続
+	caoXG = Cao.AddController("XG", "CaoProv.KEYENCE.VWXG", "", "Conn=eth:" & IPADDRESS)
+	
+	' 現在の検査設定番号を取得
+	vntRet = caoXG.ReadInspectSetting
+	
+	' 検査設定番号チェック
+	If ((vntRet(0) <> SD_NO) Or (vntRet(1) <> PROG_NO)) Then
+		' 検査設定番号を使用する番号に切り替える
+		caoXG.ChangeInspectSetting SD_NO, PROG_NO
+		' 検査設定番号が切り替え終わるのを待つ
+		Delay 1000 
+	End If
+	
+	' 計測実行(全トリガ) & 結果出力取得
+	sResult = caoXG.TriggerAndGetResult(-1)
+	
+	' 結果を","で区切る
+	vntValues = Split(sResult, ",")
+	
+	' 先頭に見つけた個数があるので、代入する
+	I[VAL_INDEX] = vntValues(0)
+	
+	' ワークのX,Y,Angleを代入する
+	Dim lTemp As Long
+
+	For lCnt = 0 To I[VAL_INDEX] -1
+		lTemp = lCnt*3
+		V[VAL_INDEX + lCnt] = V(vntValues(1+lTemp), vntValues(2+lTemp), vntValues(3+lTemp))
+	Next
+
+	Exit Sub
+
+ErrProc:
+	' 異常が発生した時は、エラーコードを表示して終わる
+	PrintDbg "ErrorCode : " & Hex(Err.OriginalNumber)
+	Cao.Controllers.Remove caoXG.Index
+	caoXG = Nothing
+
+End Sub
+
+
+' ------------------ ロボット移動位置計算 ------------------
+Sub TranceRobotPosition
+
+	Dim lCnt As Long			' カウンタ
+	Dim TargetVect As Vector	' ロボット座標一時格納用変数
+	
+	For lCnt = 0 To I[VAL_INDEX] - 1
+		' visオブジェクトで視覚座標からロボット座標に変換
+		' (キャリブレーションはvisオブジェクトで事前に行うこと)
+		TargetVect = Vis.Trans(CAL_NO, PosX(V[VAL_INDEX+lCnt]), PosY(V[VAL_INDEX+lCnt]))
+		
+		' P型に代入 姿勢は現在の姿勢 Figは-2 
+		P[VAL_INDEX+lCnt] = CurPos
+		LetP P[VAL_INDEX+lCnt] = TargetVect
+		LetRz P[VAL_INDEX+lCnt] = PosZ(V[VAL_INDEX+lCnt])
+		LetF P[VAL_INDEX+lCnt] = -2
+	Next
+	 
+End Sub

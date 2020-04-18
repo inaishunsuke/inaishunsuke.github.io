@@ -1,0 +1,233 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DIM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DIM<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">配列を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">DIM &lt;変数名&gt;[&lt;後置子&gt;] [(&lt;要素数&gt;[,&lt;要素数&gt;[,&lt;要素数&gt;]])][AS&lt;変数型&gt;][,&lt;変数名&gt;[&lt;後置子&gt;]…]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;変数名&gt;で指定した変数を配列変数として宣言します。</div>
+            <div class="p">&lt;後置子&gt;を付けることによって、同時に変数の型を宣言することができます。</div>
+            <div class="p">後置子には次のものが使用できます。</div>
+            <div class="p">   整数型後置子：%</div>
+            <div class="p">   単精度実数型後置子：!</div>
+            <div class="p">   倍精度実数型後置子：#</div>
+            <div class="p">   文字列型後置子：$</div>
+            <div class="p">後置子を省略すると、単精度実数型とみなされます。</div>
+            <div class="p">&lt;要素数&gt;には、配列の要素の最大値を指定します。要素数は1以上でなければなりません。</div>
+            <div class="p">要素の総数は32767以下でなければなりません。</div>
+            <div class="p">配列の次元は3次元までです。</div>
+            <div class="p">配列で使用可能な添字の範囲は0～（要素数 - 1）となります。</div>
+            <div class="p">AS&lt;変数型&gt;を付けることによって変数の型を宣言することができます。</div>
+            <div class="p">AS表現と後置子は同時に使用できません。</div>
+            <div class="p">AS表現における&lt;変数型&gt;には次のものが使用できます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">変数型</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">識別子</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">変数型</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">識別子</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">長整数型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">INTEGER</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ベクトル型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">VECTOR</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">単精度実数型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">SINGLE</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ポジション型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">POSITION</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">倍精度実数型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">DOUBLE</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ジョイント型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JOINT</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">文字列型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">STRING</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">同次変換型</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">TRANS</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp1(5)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp1を大きさ(5)の単精度実数型の配列変数として宣</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp2(10, 10)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp2を大きさ(10, 10)の単精度実数型の配列変数と</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'して宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp3(20, 5, 10)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp3を大きさ(20, 5, 10)の単精度実数型の配列変数</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp4%(3, 3, 3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp4を大きさ(3, 3, 3)の整数型の配列変数として宣</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp5!(4, 3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp5を大きさ(4, 3)の単精度実数型の配列変数とし</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'て宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM samp6#(3)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp6を大きさ(3)の倍精度実数型の配列変数として</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

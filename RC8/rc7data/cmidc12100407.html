@@ -1,0 +1,249 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISDEFTABLE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISDEFTABLE<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">カメラ映像の取り込み、画像出力の際のルックアップテーブルデータを設定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISDEFTABLE &lt;テーブル番号&gt;，&lt;入力値&gt;，&lt;出力値&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;テーブル番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ルックアップテーブル番号を指定します。（5～15）</div>
+            </div>
+            <div class="p">&lt;入力値&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">テーブルの入力値を指定します。（0～255）</div>
+            </div>
+            <div class="p">&lt;出力値&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">テーブルの出力値を指定します。（0～255）</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">ルックアップテーブルを用いて変換した例</div>
+              <div class="figure">
+                <img src="image/cmidc12100407_01.jpg">
+              </div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">本命令を設定しない場合、初期設定値に基づきます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令は2～3(秒)の実行時間を要します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">テーブル番号0～4はあらかじめ有用と考えられるテーブルが設定されています。本命令では変更はできません。</div>
+                      <div class="p">テーブル0番：ノーマル（0～255）</div>
+                      <div class="p">テーブル1番：70% 輝度圧縮 （0～175）</div>
+                      <div class="p">テーブル2番：γ補正</div>
+                      <div class="p">テーブル3番：反転</div>
+                      <div class="p">テーブル4番：70% 輝度圧縮反転</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令実行時に電源をOFFしないでください。次の電源ON時に正常終了しなかったと判断し、視覚に関する情報を初期化します。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100401.html" target="_top">CAMIN</a>、<a href="cmidc12100404.html" target="_top">VISCAMOUT</a>、<a href="cmidc12100405.html" target="_top">VISPLNOUT</a>、<a href="cmidc12100408.html" target="_top">VISREFTABLE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番からの映像(動画像)をモニタにテーブル1</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'番(0～175約75%輝度圧縮)で変換し表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DELAY 5000</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'5秒停止</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISDEFCHAR 4,4,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 0 TO 255</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISPRINT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISDEFTABLE 5,I1,255-I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'テーブル5番の設定</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1,5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ1番からの映像(動画像)を反転しモニタに表</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'示します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+'!TITLE "<Variable>"
+
+Sub Main 
+
+	Dim m_Ctrl as Object	' CaoController Object
+	Dim m_Value as Object	' CaoVariable Object
+
+	' Connect
+	m_Ctrl = cao.AddController("RC", "CaoProv.DENSO.RC8", "", "Server=192.168.0.1")
+
+	' Create P10 Variable
+	m_Value =  m_Ctrl.AddVariable("P10", "")
+
+	Get and Put P10 Variable
+	Dim vntPotision as Variant
+	vntPotision = m_Value.Value ' Get P10 Variable
+	m_Value.Value = Array(50, 50, 50, 0, 0, 0, -1) Put P10 Variable
+
+	' DisConnect
+	m_Ctrl.Variables.Remove m_Value.Index
+	cao.Controllers.Remove m_Ctrl.Index
+
+End Sub
+
+

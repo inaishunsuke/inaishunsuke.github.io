@@ -1,0 +1,90 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ndOnbI</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ndOnbI<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">10進数を2進数に変換して指定ポートより出力</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ndOnbI (&lt;整数変数番号&gt;，&lt;最下位桁出力ポート番号&gt;，&lt;最上位桁出力ポート番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">従来言語のONB命令と同等な機能を提供します。</div>
+            <div class="p">整数変数値を2進数変換し、指定のポートから出力します。</div>
+            <div class="p">整数値を出力する形式のONB命令はndOnbライブラリを使います。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20300103.html" target="_top">ndInb</a>、<a href="cmidc20300105.html" target="_top">ndOnb</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-remarks">
+          <img src="common/cmd-remarks.jpg">
+          <br>
+          <div id="cmd-remarksgroup">
+            <div class="p">出力ポートは連続した16ポート以内としてください。16ポートを超える指定をした場合、下位ポート&gt;上位ポートの場合、出力不可のポートを指定した場合は処理されません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL ndOnbI(1,104,119）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'出力ポート104～119を16ビットの2進数とみなして、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'I[1]の値を変換し出力します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

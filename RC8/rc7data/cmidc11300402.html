@@ -1,0 +1,241 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>INPUTB</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">INPUTB<span class="comment2">
+		　【Ver.1.5 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">１バイトデータをRS-232CおよびEthernetポートから入力します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">INPUTB [#＜ポート番号＞,]＜入力データ格納I変数＞[,WTIME=&lt;タイムアウト時間&gt; [,RVAL=&lt;格納変数&gt;]]</div>
+            <div class="p">＜ポート番号＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">入力ポート番号</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">(１：コントローラRS-232Cポート、-1：μVisionボードRS-232Cポート</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">4～7：Ethernetサーバポート、8～15：Ethernetクライアントポート)</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">省略時　1：コントローラRS-232Cポート</div>
+            </div>
+            <div class="p">＜入力データ格納I変数＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">入力データが格納されるI型変数の番号</div>
+            </div>
+            <div class="p">＜タイムアウト時間＞　[RC7_Ver2.2以降]</div>
+            <div class="p">入力データがない場合、指定時間を経過した後にinputb文の実行を終了し、次のコマンドに制御が移ります。単位はmsですが、実際の遅延時間は1/60s単位で増減します。</div>
+            <div class="p">＜格納変数＞　[RC7_Ver2.2以降]</div>
+            <div class="p">＜タイムアウト時間＞の設定と対で使います。入力データを受けて正常に抜けた場合TRUE(1)が入り、タイムアウトで抜けたときは指定した変数にFALSE(0)が入ります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">＜入力データ格納I変数＞で指定されたI型変数に、ポートから入力したデータを格納します。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">タイムアウト時間を設定せずにこのコマンドでデータ入力を行なう場合、データがポートに存在しないと無限待ちとなります。データの有無の確認にはcom_stateコマンドを使用してください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'!TITLE "＜タイトル＞"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM sample</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">defint li</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">INPUTB #1,I10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'I10にRS-232Cポートから入力したデータを格納</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">INPUTB #1,I10,WTIME=100,RVAL=li</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'入力がない場合100msec時間後次のコマン</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ドへ処理が移ります。liにはタイムアウト</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'で抜けたことを表す0が入ります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

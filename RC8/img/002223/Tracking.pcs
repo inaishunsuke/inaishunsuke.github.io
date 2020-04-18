@@ -1,0 +1,101 @@
+'!TITLE "トラッキング動作テンプレート"
+
+Sub Main
+	TakeArm Keep = 0
+	
+	' ホームポジションへ移動
+	Move P, P[50]
+
+	' 分割領域カウンタ
+	Dim divCount As Integer
+	divCount = 0
+
+	' トラッキング範囲取得
+	Dim trckArea As Variant
+	Dim trckRange As Double
+	trckArea = TrackCurStartArea(1)
+	trckRange = (trckArea(1) - trckArea(0))
+
+	' コンベアベクトル取得
+	Dim convVec As Vector
+	convVec = TrackConveyorVector(1)
+
+	' IO128がOnになるまでトラッキングを繰り返す
+	Do
+		' 分割領域カウンタのインクリメント
+		divCount = divCount + 1
+		If (divCount > I[10]) Then
+			divCount = 1
+		End If
+
+		' 開始位置へ移動
+		Move P, P[51]
+
+		' バッファからワークのデータを取り出し、トラッキング対象ワークに設定
+		P[10] = TrackTargetPos( 1, -1, -1, 4 )
+
+		' 現在の分割領域に応じて、トラッキング対象ワークをオフセットさせる
+		Dim curDivNo As Integer
+		curDivNo = (divCount - 1)
+		P[10] = P[10] - (convVec * (curDivNo * trckRange))
+
+		' トラッキングモード開始
+		TrackStart 1, 2
+
+		' トラッキング対象ワークがトラッキング範囲内に入るまで待つ
+		Dim timeoutFlg As Integer
+		Wait TrackInRange(1, (-trckRange * curDivNo)), 10000, timeoutFlg
+		If (timeoutFlg = 0) Then
+			PrintMsg "Timeout in TrackInRange"
+			Set IO[129], 1000
+			Stop
+		End If
+
+		' コンベア追従動作を行いながら、トラッキング対象ワークから指定距離離れたアプローチ位置へ移動
+		TrackApproach P, P[10], 50
+
+		' コンベア追従動作を行いながら、トラッキング対象ワークに移動
+		TrackMove L, P[10]
+
+		' コンベア追従動作を行いながら、トラッキング対象ワーク上で四角形の軌跡を描く
+		TrackMove L, P[10] + P(0, 50, 0)
+		TrackMove L, P[10] + P(-100, 50, 0)
+		TrackMove L, P[10] + P(-100, -50, 0)
+		TrackMove L, P[10] + P(0, -50, 0)
+		TrackMove L, P[10]
+
+		' ワークの把持動作を実行
+		Call Picking
+
+		' コンベア追従動作を行いながら、現在位置からツール座標-Z方向に移動
+		TrackDepart L, 50
+
+		' トラッキングモード終了
+		TrackStop
+
+		' 排出位置上空へ移動
+		Approach P, P[52], 50
+
+		' 排出位置へ移動
+		Move L, P[52]
+
+		' ワークの排出動作を実行
+		Call Placing
+
+	Loop Until IO[128] = On
+	
+End Sub
+
+' [ユーザ記述]
+' ワークの把持動作を行うサブプロシージャ
+Sub Picking
+	' ---------ワークの把持動作を記述--------
+	
+End Sub
+
+' [ユーザ記述]
+' ワークの排出動作を行うサブプロシージャ
+Sub Placing
+	' ---------ワークの排出動作を記述---------
+	
+End Sub

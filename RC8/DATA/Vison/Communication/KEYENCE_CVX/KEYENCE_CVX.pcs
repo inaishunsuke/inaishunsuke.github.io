@@ -1,0 +1,134 @@
+'!TITLE "KEYENCE_CVX.pcs"
+'
+'キーエンスCV-Xシリーズと通信するための関数ライブラリ
+'
+static D_dnCvxData(30) as Double		'受信データ(double) [Receive Data(double)]
+'このサンプルではスタティック変数をデータの受け渡しのために用いていますが，
+'スタティック変数の変わりにユーザー様でローカル変数を用いて頂いても結構です．
+
+Sub InitData
+	Dim iCnt as Integer
+	For iCnt = 0 to 30
+		D_dnCvxData(iCnt) = 0
+	Next	
+End Sub
+
+Function ConnectCVX(ByVal iLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	If Comm.State(iLineNo) = 0 Then Comm.Open iLineNo	'通信ポートオープン
+	Comm.Clear iLineNo	'通信バッファクリア	
+	ConnectCVX = -1
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	ConnectCVX = 0
+End Function
+
+
+Function DisConnectCVX(ByVal iLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+
+	Comm.Close iLineNo
+	DisConnectCVX = -1
+
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	DisConnectCVX = 0
+End Function
+
+
+Function X_R0(ByVal iLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output iLineNo, "R0"
+	strResult = Comm.Input(iLineNo, 2000)
+	If(strResult = "R0") then
+		X_R0 = -1
+	Else
+		PrintMsg strResult
+		X_R0 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_R0 = 0
+End Function
+
+
+Function X_S0(ByVal iLineNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output iLineNo, "S0"
+	strResult = Comm.Input(iLineNo, 2000)
+	If(strResult = "S0") then
+		X_S0 = -1
+	Else
+		PrintMsg strResult
+		X_S0 = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_S0 = 0
+End Function
+
+
+Function X_PW(ByVal iLineNo as Integer, ByVal iSDNo as Integer, ByVal lProgNo as Integer) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+
+	Comm.Output iLineNo, "PW," & iSDNo & "," & lProgNo
+	strResult = Comm.Input(iLineNo, 3000)
+	If(Left(strResult,2) = "PW") then
+		X_PW = -1
+	Else
+		PrintMsg strResult
+		X_PW = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_PW = 0
+End Function
+
+
+Function X_T(ByVal iLineNo as Integer, ByVal iTriggerNo as Integer, ByRef strResultPacket as String) as Integer
+	On Error Goto ErrorProc
+	Dim strResult as String
+	Dim vntValue as Variant
+	Dim Icnt as Integer
+
+	If iTriggerNo > 0 then
+		Comm.Output iLineNo, "T" & iTriggerNo
+	Else
+		Comm.Output iLineNo, "TA"
+	End If
+	strResult = Comm.Input(iLineNo, 2000)
+	If (Left(strResult,2) = "T" & iTriggerNo) or (Left(strResult,2) = "TA") then
+		strResultPacket = Comm.Input(iLineNo, 3000)
+
+'		結果を変数に入れる
+		vntValue = Split(strResultPacket,",")			'結果をコンマで分割
+		For Icnt = 0 to Ubound(vntValue)				'要素数だけ繰り返す
+			D_dnCvxData(Icnt) = Val(vntValue(Icnt))		'文字を数値に変換して格納
+		Next
+		X_T = -1
+	Else
+		PrintMsg strResult
+		X_T = 0
+	End If
+	Exit Function
+
+ErrorProc:
+	PrintMsg HEX(Err.Number) & " : " & Err.Description
+	X_T = 0
+End Function
+

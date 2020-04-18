@@ -1,0 +1,176 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SETSPLINEPOINT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SETSPLINEPOINT<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.2.3 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">自由曲線動作の通過点を登録します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SETSPLINEPOINT ＜自由曲線の軌道番号＞、＜通過点＞</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;自由曲線の軌道番号&gt;で指定した自由曲線軌道の通過点として、&lt;通過点&gt;にて指定したポイントを登録します。　&lt;通過点&gt;はＰ型、Ｊ型変数になります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200221.html" target="_top">CLRSPLINEPOINT</a>、<a href="cmidc11200222.html" target="_top">GETSPLINEPOINT</a>、<a href="cmidc11200207.html" target="_top">MOVE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">1つの自由曲線で登録可能な通過点の数は、最大で200点です。それ以上登録した場合、エラー「685A 自由曲線登録データ数オーバ」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">通過点未登録の自由曲線動作を実行した場合、エラー「685B 自由曲線番号指定異常」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">軌道番号は、20まで指定できます。20を超えた番号を指定した場合、エラー「685B 自由曲線番号指定異常」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">指定した通過点が動作範囲外の場合、エラー6070番台（J*ソフトリミットオーバ、可動範囲外）が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">通過点教示時にツール座標、ワーク座標を設定した場合、本コマンド実行の前にCHANGETOOLコマンド、CHANGEWORKコマンドを実行し、教示時と同じツール座標、ワーク座標に変更してください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM PRO1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CLRSPLINEPOINT 5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'軌道番号5番の自由曲線で通過点をすべてクリアする。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SETSPLINEPOINT 5, P4</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'軌道番号5番の自由曲線でP4を1番目の通過とする。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SETSPLINEPOINT 5, P1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'軌道番号5番の自由曲線でP1を2番目の通過点とする。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SETSPLINEPOINT 5, J5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'軌道番号5番の自由曲線でJ5を3番目の通過点をする。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">MOVE S, 5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'P4,P1を通過しJ5へ移動する自由曲線動作を実行する。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

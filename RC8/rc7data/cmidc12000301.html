@@ -1,0 +1,119 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>#include</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">#include<span class="comment1">
+		　（プリプロセッサステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">プリプロセッサプログラムを取り込みます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">#include "[パス]ファイル名"</div>
+            <div class="p">#include &lt;[パス]ファイル名&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">#include文を置いた場所に、プリプロセッサプログラムファイルを取り込みます。ファイルのパスを省略すると" "の場合は、カレントディレクトリ、システムディレクトリの順で、ファイルを探します。&lt; &gt;の場合は、システムディレクトリだけからファイルを探します。パスをフルパスで指定すると、そのディレクトリだけを探します。</div>
+            <div class="p">#include文で指定したファイルの中に、さらに#include文を含むことができ、8回までのネストが可能です。</div>
+            <div class="p">指定可能なファイルの拡張子はHとPACがあります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div id="para">
+              <div class="paratitle1">フォルダ機能[RC7_Ver.2.2以降]使用時の注意</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">フォルダ間の区切りを表す'\'の表示は、表示系によって'＼'で表示されます。</div>
+                  <div class="p">例）「ペンダントは'＼'表示」、　「ミニペンダントは'\'表示」</div>
+                  <div class="p">これは表示上だけの違いであり、内部的には同じものとして扱われます。</div>
+                </div>
+              </div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">(1) #include &lt;ファイル名&gt;</div>
+              <div class="p">システムフォルダを探します。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">(2) #include "ファイル名"</div>
+              <div class="p">      include文の記載してあるPACの存在するフォルダ内を探します。</div>
+              <div class="figure">
+                <img src="image/cmidc12000301_01.jpg">
+              </div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">(3) #include"\(フォルダパス)\ファイル名"</div>
+              <div class="p">ルートからのフォルダパス先のフォルダ内を探します。</div>
+              <div class="figure">
+                <img src="image/cmidc12000301_02.jpg">
+              </div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">(4) #include"..\ファイル名"または　#include".\ファイル名"</div>
+              <div class="p">..\:　1つ上のフォルダ内を探します。</div>
+              <div class="p">.\ :　include文の記載してあるPACのフォルダ内を探します。</div>
+              <div class="p">例）#include ".\..\TEST.H"  </div>
+              <div class="p">　　1つ上のTEST.Hを探します。</div>
+              <div class="figure">
+                <img src="image/cmidc12000301_03.jpg">
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">#include "samp1.h"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp1.hファイルをこの行に展開します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

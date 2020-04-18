@@ -1,0 +1,207 @@
+#pragma encryption
+#include <PanelMain.h> raw
+
+' ---------------------
+' èâä˙âªèàóù
+' ---------------------
+Sub Panel_INITIALIZE()
+	Dim lIndex as long
+
+	lIndex = vars.ItemValue(1)
+
+	nbCalNo.Value = lIndex
+
+	if (DispCal(lIndex) = FALSE) then
+		lblInfo.Caption = "Info: ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉìî‘çÜÇ™ïsê≥Ç≈Ç∑ÅD"
+	End if
+End Sub
+
+' ---------------------
+' CalDataï€ë∂èàóù
+' ---------------------
+Sub fkSaveCal_CLICKED()
+	On Error Goto ErrProc
+#pragma encrypt(ON)
+DAGEnDKuVthZuMqJqGK0RD0HYJAJw36b6SulTcKl
+z0WY6ayAqw+bCwhgqX2ROeBJCDWcY3TW1OPp09+b
+/TV51lMqs79H5GjjllQQBsh1Sb+S4i3vkmitmCCR
+#pragma encrypt(OFF)
+	lblInfo.Caption = "Info: ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉìåãâ Çï€ë∂ÇµÇ‹ÇµÇΩ"
+
+	exit sub
+ErrProc:
+	lblInfo.Caption = "Info: ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉìåãâ ÇÃï€ë∂Ç…é∏îsÇµÇ‹ÇµÇΩ"
+End Sub
+
+Sub fkChangeCal_CLICKED()
+	vars.ItemValue(2) = nbCalNo.Value
+
+	pagechange Calibration
+End Sub
+
+Sub fkChangeMain_CLICKED()
+	vars.ItemValue(2) = nbCalNo.Value
+
+	pagechange Main
+End Sub
+
+Sub nbCalNo_DONE()
+	Dim lIndex as long
+
+	lIndex = nbCalNo.Value
+
+	if (DispCal(lIndex) = FALSE) then
+		lblInfo.Caption = "Info: ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉìî‘çÜÇ™ïsê≥Ç≈Ç∑ÅD"
+	Else
+		lblInfo.Caption = "Info:"
+	End if
+
+End Sub
+
+
+Function DispCal(ByVal lIndex as long) as long
+	Dim vntCalData as Variant
+	Dim vntCalPos as Variant
+
+	On Error goto ErrProc
+
+	vntCalData = vis.GetCalData(lIndex)
+	vntCalPos = vis.GetCalPos(lIndex)
+
+	' ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉìåãâ ÇÃï\é¶
+	if ((vartype(vntCalData) And 8192) <> 0) then
+		nbCalRX.Value = Format(vntCalData(3), "#.0000")
+		nbCalRY.Value = Format(vntCalData(7), "#.0000")
+		nbCalRZ.Value = Format(vntCalData(11), "#.0000")
+		nbCalOX.Value = Format(vntCalData(1), "#.0000")
+		nbCalOY.Value = Format(vntCalData(5), "#.0000")
+		nbCalOZ.Value = Format(vntCalData(9), "#.0000")
+		nbCalNX.Value = Format(vntCalData(0), "#.0000")
+		nbCalNY.Value = Format(vntCalData(4), "#.0000")
+		nbCalNZ.Value = Format(vntCalData(8), "#.0000")
+	end if	
+
+	if ((vartype(vntCalPos) And 8192) <> 0) then
+		nbVisPosX1.Value = Format(vntCalPos(0), "#.00")
+		nbVisPosY1.Value = Format(vntCalPos(1), "#.00")
+		' Z : vntCalPos(2) 
+		nbVisPosX2.Value = Format(vntCalPos(3), "#.00")
+		nbVisPosY2.Value = Format(vntCalPos(4), "#.00")
+		' Z : vntCalPos(5) 
+		nbVisPosX3.Value = Format(vntCalPos(6), "#.00")
+		nbVisPosY3.Value = Format(vntCalPos(7), "#.00")
+		' Z : vntCalPos(8) 
+
+		nbRobPosX1.Value = Format(vntCalPos(9), "#.00")
+		nbRobPosY1.Value = Format(vntCalPos(10), "#.00")
+		nbRobPosZ1.Value = Format(vntCalPos(11), "#.00")
+		' RX : vntCalPos(12)
+		' RY : vntCalPos(13)
+		' RZ : vntCalPos(14)
+
+		nbRobPosX2.Value = Format(vntCalPos(15), "#.00")
+		nbRobPosY2.Value = Format(vntCalPos(16), "#.00")
+		nbRobPosZ2.Value = Format(vntCalPos(17), "#.00")
+		' RX : vntCalPos(18)
+		' RY : vntCalPos(19)
+		' RZ : vntCalPos(20)
+
+		nbRobPosX3.Value = Format(vntCalPos(21), "#.00")
+		nbRobPosY3.Value = Format(vntCalPos(22), "#.00")
+		nbRobPosZ3.Value = Format(vntCalPos(23), "#.00")
+		' RX : vntCalPos(24)
+		' RY : vntCalPos(25)
+		' RZ : vntCalPos(26)
+
+	end if
+
+	DispCal = TRUE
+
+	Exit Function
+
+ErrProc:
+	DispCal = FALSE
+End Function
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION=""
+BG=3
+FG=0
+TIMEOUT=200
+TIMEOUTMODE=0
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=0
+FONTTYPE=0
+BORDERSTYLE=0
+CONTROLSORT=0
+add_widget 2,"Label1",0,0,640,370,0,0,0,1,0," ",2,0,"","",1,1;
+add_widget 2,"Label2",0,0,460,35,0,8,0,1,0,"ÉLÉÉÉäÉuÉåÅ[ÉVÉáÉì",1,2,"","",1,1;
+add_widget 2,"Label3",229,4,150,26,0,7,0,1,0,"∑¨ÿÃﬁ⁄∞ºÆ›î‘çÜ",1,0,"","",1,1;
+add_widget 5,"nbCalNo",387,4,65,26,-1,1,0,3,1,"NB1",2,0,0;
+add_widget 9,"grpVision",10,50,230,286,10,0,0,1,0,"Vision",2,0,2,0;
+add_widget 9,"grpRobot",250,50,210,286,10,0,0,1,0,"Robot",2,0,2,0;
+add_widget 9,"grpCalData",469,14,163,322,10,0,0,1,0,"CalData",2,0,2,0;
+add_widget 7,"grpPoint",20,70,430,76,14,8,0,1,0,1;
+add_widget 2,"lblVisPoint1",20,70,70,30,0,14,0,1,0,"Œﬂ≤›ƒ1",1,0,"","",1,1;
+add_widget 2,"lblVisPosX1",117,80,30,25,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 5,"nbVisPosX1",147,80,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 2,"lblVisPosY1",117,113,30,25,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 5,"nbVisPosY1",147,114,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 2,"lblRobPosX1",347,77,20,20,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 5,"nbRobPosX1",366,77,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 2,"lblRobPosY1",347,99,20,20,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 5,"nbRobPosY1",366,99,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 2,"lblRobPosZ1",347,121,20,20,0,7,0,1,0,"Çy",1,0,"","",1,1;
+add_widget 5,"nbRobPosZ1",366,121,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 2,"Label11",476,302,47,25,0,7,0,1,0,"ÇmÇy",1,0,"","",1,1;
+add_widget 5,"nbCalRX",523,30,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label12",476,268,47,25,0,7,0,1,0,"ÇmÇx",1,0,"","",1,1;
+add_widget 5,"nbCalRY",523,64,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label13",476,234,47,25,0,7,0,1,0,"ÇmÇw",1,0,"","",1,1;
+add_widget 5,"nbCalRZ",523,98,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label14",476,200,47,25,0,7,0,1,0,"ÇnÇy",1,0,"","",1,1;
+add_widget 5,"nbCalOX",523,132,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label15",476,166,47,25,0,7,0,1,0,"ÇnÇx",1,0,"","",1,1;
+add_widget 5,"nbCalOY",523,166,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label16",476,132,47,25,0,7,0,1,0,"ÇnÇw",1,0,"","",1,1;
+add_widget 5,"nbCalOZ",523,200,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label17",476,98,47,25,0,7,0,1,0,"ÇqÇy",1,0,"","",1,1;
+add_widget 5,"nbCalNX",523,234,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label18",476,64,47,25,0,7,0,1,0,"ÇqÇx",1,0,"","",1,1;
+add_widget 5,"nbCalNY",523,268,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"Label19",476,30,47,25,0,7,0,1,0,"ÇqÇw",1,0,"","",1,1;
+add_widget 5,"nbCalNZ",523,302,102,25,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 2,"lblRobPoint1",250,70,70,30,0,14,0,1,0,"Œﬂ≤›ƒ1",1,0,"","",1,1;
+add_widget 7,"Rect1",20,160,430,76,14,8,0,1,0,1;
+add_widget 7,"Rect2",20,250,430,76,14,8,0,1,0,1;
+add_widget 2,"lblVisPoint2",20,160,70,30,0,14,0,1,0,"Œﬂ≤›ƒ2",1,0,"","",1,1;
+add_widget 2,"lblVisPoint3",20,250,70,30,0,14,0,1,0,"Œﬂ≤›ƒ3",1,0,"","",1,1;
+add_widget 2,"lblRobPoint2",250,160,70,30,0,14,0,1,0,"Œﬂ≤›ƒ2",1,0,"","",1,1;
+add_widget 2,"lblRobPoint3",250,250,70,30,0,14,0,1,0,"Œﬂ≤›ƒ3",1,0,"","",1,1;
+add_widget 2,"lblVisPosX2",120,170,30,25,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 2,"lblVisPosY2",120,200,30,25,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 5,"nbVisPosX2",150,170,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 5,"nbVisPosY2",150,200,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 2,"lblRobPosX2",347,167,20,20,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 2,"lblRobPosY2",347,189,20,20,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 2,"lblRobPosZ2",347,211,20,20,0,7,0,1,0,"Çy",1,0,"","",1,1;
+add_widget 5,"nbRobPosX2",366,167,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 5,"nbRobPosY2",366,189,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 5,"nbRobPosZ2",366,211,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 2,"lblVisPosX3",120,260,30,25,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 2,"lblVisPosY3",120,290,30,25,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 5,"nbVisPosX3",150,260,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 5,"nbVisPosY3",150,290,80,25,-1,1,0,1,5,"NB1",2,1,      0;
+add_widget 2,"lblRobPosX3",347,257,20,20,0,7,0,1,0,"Çw",1,0,"","",1,1;
+add_widget 2,"lblRobPosY3",347,279,20,20,0,7,0,1,0,"Çx",1,0,"","",1,1;
+add_widget 2,"lblRobPosZ3",347,301,20,20,0,7,0,1,0,"Çy",1,0,"","",1,1;
+add_widget 5,"nbRobPosX3",366,257,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 5,"nbRobPosY3",366,279,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 5,"nbRobPosZ3",366,301,75,20,-1,1,0,1,5,"NB1",1,1,      0;
+add_widget 12,"fkSaveCal","CalDataï€ë∂",1;
+add_widget 12,"fkChangeCal","∑¨ÿÃﬁ⁄∞ºÆ›âÊñ ",5;
+add_widget 2,"lblInfo",0,340,640,26,0,-1,0,1,0,"Info:",1,2,"","",1,1;
+add_widget 12,"fkChangeMain","ÉÅÉCÉìâÊñ ",6;
+'<<--TPDESIGNER_RESERVED-->>
+#endif

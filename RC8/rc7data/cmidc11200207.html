@@ -1,0 +1,547 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>MOVE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">MOVE<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ロボットを指定座標へ移動します。</div>
+            <div class="p">EXオプション(付加軸相対動作)またはEXA オプション（付加軸絶対動作）を付けることにより、ロボットと付加軸を同期(同時発着)で動作させることができます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">&lt;補間方法&gt;が自由曲線以外の場合</div>
+                <div class="p">MOVE ＜補間方法＞，［＠＜パス開始変位＞］＜ポーズ＞［＜EXまたはEXAオプション＞］［，［＠＜パス開始変位＞］＜ポーズ＞［＜EXまたはEXAオプション＞］…］［，＜動作オプション＞］［，NEXT］</div>
+              </li>
+              <li class="item">
+                <div class="p">&lt;補間方法&gt;が自由曲線の場合【Ver.2.3以降】</div>
+                <div class="p">MOVE S, ［＠＜パス開始変位＞］＜軌道番号＞［＜EXまたはEXAオプション＞］［，＜動作オプション＞］［，NEXT］</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">現在位置から指定座標＜ポーズ＞へ移動します。</div>
+            <div class="p">&lt;ポーズ&gt;はポジション型（P型）、ジョイント型（J型）、同次変換型（T型）が使用できます。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ポジション型は、変数、番号付き変数によるポーズ列、定数および、現在位置</div>
+                <div class="p">（*,CURPOS）が使用できます。</div>
+              </li>
+              <li class="item">
+                <div class="p">ジョイント型は、変数、番号付き変数によるポーズ列および、現在角度（CURJNT）が使用できます。</div>
+              </li>
+              <li class="item">
+                <div class="p">同次変換型は、変数、番号付き変数によるポーズ列が使用できます。</div>
+              </li>
+            </ul>
+            <div class="p">ポーズ列の表し方： P[3 TO 6]　　P[3]からP[6]まで。</div>
+            <div class="p">&lt;補間方法&gt;にはP、L、C、Sの4種類の選択ができます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">補間方法</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">P（またはPTPと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">現在位置から指定座標へPTP制御で移動します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">L</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">現在位置から指定座標へCP制御で移動します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">C</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">現在位置から経由ポーズを通り、目的ポーズへ円弧補間をして移動します。</div>
+                  <div class="p">姿勢は、現在位置の姿勢から目的ポーズの姿勢へ補間動作します。（経由ポーズの姿勢は無視されます）</div>
+                  <div class="p">円弧補間では、経由ポーズ、目的ポーズの2点の指示が必要です。</div>
+                  <div class="p">(Cにはポーズ列は使えません)</div>
+                  <div class="p">経由ポーズにパス開始変位を指定しても動作は変化しません。</div>
+                  <div class="p">円弧補間動作終了時のパスは、MOVE C, P1, @P P2のように指定します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">S　自由曲線</div>
+                  <div class="p">【Ver.2.3以降】</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">現在位置から、SETSPLINEPOINTで登録した通過点を通り、最終の通過点へ移動します。軌道は滑らかな曲線になります。ツール端の速度は加減速時を除き、曲線上を一定速度で動作します。</div>
+                  <div class="p">姿勢は、通過点毎にパス動作で通過します。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;軌道番号&gt;は自由曲線の軌道番号です。　SETSPLINEPOINTで＜軸番号＞毎に登録された通過点を通る自由曲線になります。最大20まで指定できます。</div>
+            <div class="p">&lt;パス開始変位&gt;の値は指定座標(ポーズ)を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。パス開始タイミングを変えるための目安となる数値であり、アーム先端がその中に入ったときに次の制御へ移るわけではありません。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">省略するとデフォルト値@0として処理します。</div>
+              </li>
+              <li class="item">
+                <div class="p">@0とすると、エンド動作で動きます。</div>
+              </li>
+              <li class="item">
+                <div class="p">@Pとすると、パス動作で動きます。</div>
+              </li>
+              <li class="item">
+                <div class="p">@Eとすると、エンコーダ値によって目標位置への到達を確認し、次の動作に移ります。</div>
+              </li>
+            </ul>
+            <div class="p">&lt;動作オプション&gt;にはSPEED、ACCEL、DECELがあります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">動作オプション</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">SPEED（またはSと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">移動速度を指定します。意味はSPEED文と同じです。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">加速度を指定します。意味はACCEL文と同じです。ただし、減速度の指定はできません。減速度の指定はDECEL文を使ってください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">減速度を指定します。意味はDECEL文と同じです。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;NEXTオプション&gt;を付けると、ロボットの動作完了を待たずに次の非動作命令に続きます。ただし、以下の命令は、ロボットの動作完了（パス開始）まで実行待ちになります。　ロボット動作命令（CHANGETOOL、CHANGEWORK、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL）、最適可搬質量設定ライブラリ（aspACLD、aspChange）、アーム動作ライブラリ（mvSetPulseWidthなど）</div>
+            <div class="p">また、動作オプションと併用した場合、NEXTオプションは無効になります。&lt;NEXTオプション&gt;を付けた場合、ステップ停止を実行すると、次の動作命令実行待ちの場合は、その動作を終了後に停止します。したがって、停止までの移動が長くなりますので注意してください。</div>
+            <div class="p">また、ティーチチェックモードでは、NEXTオプションは無効になります。</div>
+            <div class="p">MOVE P,P[3 TO 5] または、MOVE P,P3,P6,P9 のような表現は、それぞれ</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">MOVE P,P[3 TO 5] →</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">MOVE P,P3,NEXT</div>
+                  <div class="p">MOVE P,P4,NEXT</div>
+                  <div class="p">MOVE P,P5</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">MOVE P,P3,P6,P9  →</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">MOVE P,P3,NEXT</div>
+                  <div class="p">MOVE P,P6,NEXT</div>
+                  <div class="p">MOVE P,P9</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">と表現したのと同じ意味になります。（処理効率は左側の表現の方が良い）</div>
+            <div class="p">従って、</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">IOBLOCK ONとOFFの間に、これらの表現があったとしても、最終ポーズ（P5とかP9）の動作が開始されるまで、次の非動作命令は実行されません。「<a href="cmidc11300203.html" target="_top">IOBLOCK ON/OFF</a>」を参照してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">NEXTオプションを付けた場合も最終ポーズ（P5, P9）の動作が開始されるまで、次の非動作命令は実行されません。</div>
+              </li>
+            </ul>
+            <div class="p">EXまたはEXAオプションは下記書式で指定します。</div>
+            <div class="p">＜EXまたはEXAオプション＞の書式</div>
+            <div class="p">EX（（＜軸番号＞，＜相対移動量＞）［，（＜軸番号＞，＜相対移動量＞）…］）</div>
+            <div class="p">EXA（（＜軸番号＞，＜軸座標＞）［，（＜軸番号＞，＜軸座標＞）…］）</div>
+            <div class="p">＜軸番号＞には付加軸のみを指定でき、ロボット軸は指定できません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200501.html" target="_top">SPEED</a>、<a href="cmidc11200204.html" target="_top">DRIVE</a>、<a href="cmidc11200205.html" target="_top">DRIVEA</a></div>
+            <div class="p">(付加軸を動かすコマンドはMOVEのEXまたはEXAオプション、<a href="cmidc11200204.html" target="_top">DRIVE</a>、<a href="cmidc11200205.html" target="_top">DRIVEA</a>のみです。)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ポジション型、同次変換型にてポーズ指定した場合、指定されたポーズがロボットの動作範囲外となることがあります。その場合、エラー6070番台 (J*ソフトリミットオーバ、可動範囲外、特異点です) が発生します。特に16～31の形態を指定した場合はご注意ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作、円弧補間動作において、現在とっている形態（操作ガイド「4.1.3　腕・ひじ・手首の形態について」参照）と指定座標の形態が異なる場合、エラー607F（ロボット形態不一致）が発生します。ただし、ロボット形態が変化する動作が可能な場合は、エラーは発生しません。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作、円弧補間動作、自由曲線動作において、特異点（操作ガイド「4.1.3　腕・ひじ・手首の形態について [ 2 ] 形態の境界」参照）近傍を通るとき、エラー6080番台（指令速度制限オーバ）を発生し、停止することがあります。この場合、スピードを落とすか、最適可搬質量設定モード（p. 4-8「4.6 最適可搬質量設定機能」 参照）を2または3にして使用してください。それでもエラーが発生する場合は、特異点近傍の軌道を回避してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作において、動作終了時の形態と指定されたポーズの形態が一致せず、ワーニング601C（形態を変更してください）が発生する場合があります。動作終了時の形態で再度、教示いただくようお願いします（ただし、ワーニングが発生しても動作には影響しません）。</div>
+              </li>
+              <li class="item">
+                <div class="p">円弧補間動作時のパス動作、エンコーダ値確認動作は、目的ポーズにパス開始変位量を指定してください。経由ポーズにパス開始変位量を指定しても、動作は変化しません。</div>
+              </li>
+              <li class="item">
+                <div class="p">円弧補間動作は、経由ポーズの姿勢が無視されます。したがって、ツール端が経由ポーズを通過しない場合があります。ツール端が経由ポーズを通過するようにするには、ツール定義にてツール端にツール座標を設定してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">円弧補間動作にて、前動作がパスの場合、パス動作中に瞬時停止をかけて再起動すると、「エラー60de　指定した回転動作と異なる動作をします」が発生する場合があります。</div>
+              </li>
+              <li class="item">
+                <div class="p">円弧補間動作において、現在のポーズと目的ポーズが一致している場合、動作しません。また、現在のポーズと経由ポーズが一致している場合、経由ポーズと目的ポーズが一致している場合、目的ポーズへ向けてCP動作となります。</div>
+              </li>
+              <li class="item">
+                <div class="p">自由曲線動作において、SETSPLINEPOINTで登録した通過点の形態が現在の形態と異なる場合エラー「607F ロボット形態不一致」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">自由曲線動作において、通過点間の移動距離が短く、姿勢変化が大きい場合、エラー6080番台「指令速度制限オーバ」を発生し停止することがあります。この場合、スピードを落とすか、最適可搬質量設定モードを2または3にしてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">1つの自由曲線上をパス動作で繰返し動作させたい場合は、その自由曲線を2つの軌道番号に登録し、動作毎に軌道番号を切り替えてください。同じ軌道番号の自由曲線をパス動作させるとエラーが発生する場合があります。</div>
+              </li>
+            </ul>
+            <div id="para">
+              <div class="paratitle1">付加軸の注意事項</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">無限回転の設定になっている軸はEXAオプション(絶対動作命令)は実行できません。</div>
+                </li>
+                <li class="item">
+                  <div class="p">ポーズ列を扱う場合は、注意が必要です。</div>
+                  <div class="p">例：MOVE P,P[3 TO 5] EX((7,30))は</div>
+                  <div class="p">MOVE P,P3,NEXT</div>
+                  <div class="p">MOVE P,P4,NEXT</div>
+                  <div class="p">MOVE P,P5 EX((7,30))</div>
+                  <div class="p">と記述したのと同じになります。</div>
+                  <div class="p">よって7軸はロボットがP5の座標へ移動するのと同期(同時発着)します。</div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DIM li1 As Integer</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="p">6軸</div>
+                  </td>
+                  <td valign="top" align="left">
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, (740, 0, 480, 180, 0, 180, 5), NEXT</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(740, 0, 480, 180, 0, 180)でロボット形態5の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'座標へ(PTP制御) 移動します。</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'動作開始後、次命令を実行します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="p">4軸</div>
+                  </td>
+                  <td valign="top" align="left">
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, (100, 200, 300, 45, 1), NEXT</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(740, 0, 480, 180, 0, 180)でロボット形態1の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'座標へ(PTP制御) 移動します。</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'動作開始後、次命令を実行します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE L, lp1, SPEED = 100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp1の座標へ(CP制御, 内部速度=100%) </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, @30 lp2, lp3, S = lil</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp2(@30)、lp3の座標へ順に</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'(PTP制御,内部速度= li1)動作します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE L, @20 lp4, @50 lp5, @100 lp6</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp4(@20)、lp5(@50), lp6(@100) の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'座標へ順に(CP制御)動作します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE L, @P P[6 TO 15], lp7</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'P[6]からP[15]まで順にパス動作で</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'移動し、lp7の座標へ(CP制御) 動作</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE C, lp1, @p lp2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp1を通りlp2へ移動する円弧補間</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'動作をします。lp2にてパス動作し、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'次の制御に移ります。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸の例）：</div>
+              <div class="figure">
+                <img src="image/cmidc11200207_01.jpg">
+              </div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボット軸と付加軸を含むアームグループ2を取得</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P,P0 EX((7,30),(8,10))</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボットのP0への移動と、7軸、8軸の相対移動</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'が同時発着します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P,P1 EXA((7,30))</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボットのP1への移動と、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'7軸の絶対移動が同時発着します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例3（自由曲線動作の例）【Ver.2.3以降】：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE S, @P 2, S=10, NEXT</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">' 軌道番号2の自由曲線を内部速度10％で</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">' パス動作します。動作開始後、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">' 次命令を実行します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

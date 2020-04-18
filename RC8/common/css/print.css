@@ -1,0 +1,38 @@
+@charset "utf-8";
+
+/*---------------------------------------------*/
+
+* html body { zoom: 80%; }
+
+
+#top .main      { float: left; margin: 0px; }
+#top .sidebar   { display: none;  background: none; } 
+#top .content   { background: none; } 
+#wrap           { background: none; }
+#langArea       { display: none; background: none; }
+#header         { display: none; background: none; }
+#pageMenu       { display: none; background: none; }
+#footer         { display: none; background: none; }
+
+/*
+body       { background: none; }
+#header    { display: none; background: none; }
+#footer    { display: none; background: none; }
+#topicPath { display: none; background: none; }
+#gnav      { display: none; background: none; }
+
+.main    { float: none; margin: 0px auto; }
+.sidebar { display: none; background: none; }
+
+#top .main    { float: right; width: 595px; margin: 0px; }
+#top .sidebar { display: block; float: left; width: 152px; } 
+
+#top #header  { display: block; }
+#top #footer  { display: block; }
+*/
+
+#top #gnav    { display: block; }
+
+.pre_next       { display: none; background: none; }
+#relate         { display: none; background: none; }
+

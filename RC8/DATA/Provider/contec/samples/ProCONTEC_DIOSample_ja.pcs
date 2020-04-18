@@ -1,0 +1,28 @@
+'!TITLE "ProDIOSample_ja.pcs"
+
+Sub Main
+	On Error Goto ErrorProc
+
+	Dim ctrl as Object				' CaoControllerオブジェクト用
+	Dim varIO0 As Object			' DIOボードにアクセスする変数オブジェクト用
+	Dim vntOut as variant = 255		' デジタル出力用(指定値=11111111)
+
+	' 接続処理
+	ctrl = cao.AddController("DIO", "CaoProv.CONTEC.DIO","","DeviceName=DIO000")
+
+	' 変数オブジェクト生成(データ長の指定(8bit))
+	varIO0 = ctrl.AddVariable("IO0", "Len=8" )
+
+	' 指定値を出力
+	varIO0.Value = vntOut
+
+EndProc:
+	Cao.Controllers.Clear
+	ctrl = Nothing
+	Exit Sub
+
+ErrorProc:
+	PrintDbg Hex(Err.OriginalNumber)
+	Goto EndProc
+End Sub
+

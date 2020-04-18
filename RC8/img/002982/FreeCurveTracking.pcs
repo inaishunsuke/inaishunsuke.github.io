@@ -1,0 +1,84 @@
+'!TITLE "トラッキング動作"
+#Define ConvNum 1 				' コンベア番号
+#Define PathNum 1 				' 経路番号
+#Define AbortIONum 128 			' 動作完了をチェックするIO番号
+#Define ApproachLength 50 		' アプローチ長
+#Define DepartLength 50 		' デパート長
+#Define HomePos 50 				' 開始位置を格納している変数番号
+#Define InitPos 51 				' 開始位置を格納している変数番号
+#Define TargetPos 10 			' コンベア基準座標をを格納する変数番号
+#Define TargetPosBase 11 		' ベース座標系でのコンベア基準座標をを格納する変数番号
+#Define FirstPathPoint 12 		' 経路点DB内の経路点番号1の座標をを格納する変数番号
+#Define FirstPathPointWork 13 	' 現在のワーク座標系での経路点番号1の座標をを格納する変数番号
+#Define EjectPos 52 			' ワーク排出位置を格納する変数番号
+
+Sub Main
+	TakeArm Keep = 0
+	
+	' ホームポジションへ移動
+	Move P, P[HomePos]
+	
+	' IO[AbortIONum]がOnになるまでトラッキングを繰り返す
+	Do
+		' 開始位置へ移動
+		Move P, P[InitPos]
+		
+		' バッファからワークのデータを取り出し、トラッキング対象ワークに設定
+		P[TargetPos] = TrackTargetPos( ConvNum )
+		
+		' コンベア基準座標をベース座標系に変換
+		P[TargetPosBase] = ConvertPosWork( P[TargetPos], -1, 0 )
+		
+		' 指定された経路点の位置を取得
+		P[FirstPathPoint] = GetPathPoint( PathNum, 1 )
+		
+		' 指定された経路点の位置を現在のワーク座標系での位置に変換する
+		P[FirstPathPointWork] = ConvertPosWork( P[FirstPathPoint], P[TargetPosBase], -1 )
+		
+		' トラッキングモード 開始
+		TrackStart ConvNum
+		
+		' コンベア追従動作を行いながら、経路点番号1で指定された場所から指定距離離れたアプローチ位置へ移動
+		TrackApproach P, P[FirstPathPointWork], ApproachLength
+		
+		' コンベア追従動作を行いながら、経路点番号1で指定された場所に移動
+		TrackMove L, P[FirstPathPointWork]
+		
+		'自由曲線動作を開始
+		TrackMove S, P[TargetPos], PathNum
+		
+		' ワークの把持動作を実行
+		Call Picking
+		
+		' コンベア追従動作を行いながら、現在位置からツール座標-Z方向に移動
+		TrackDepart L, DepartLength
+		
+		' トラッキングモード終了
+		TrackStop
+		
+		' 排出位置上空へ移動
+		Approach P, P[EjectPos], DepartLength
+		
+		' 排出位置へ移動
+		Move L, P[EjectPos]
+		
+		' ワークの排出動作を実行
+		Call Placing
+		
+	Loop Until IO[AbortIONum] = On
+	
+End Sub
+
+' [ユーザ記述]
+' ワークの把持動作を行うサブプロシージャ
+Sub Picking
+	' ---------ワークの把持動作を記述--------
+	
+End Sub
+
+' [ユーザ記述]
+' ワークの排出動作を行うサブプロシージャ
+Sub Placing
+	' ---------ワークの排出動作を記述---------
+	
+End Sub

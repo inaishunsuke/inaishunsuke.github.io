@@ -1,0 +1,517 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>WINDMAKE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">WINDMAKE<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">画像処理する範囲を指定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">WINDMAKE &lt;ウィンドウ形状&gt;，&lt;ウィンドウ番号&gt;，&lt;パラメータ1&gt;，&lt;パラメータ2&gt;，…</div>
+            <div class="p">直線ウィンドウ（2点指定）： </div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE P，&lt;ウィンドウ番号&gt;，&lt;始点X座標&gt;，&lt;始点Y座標&gt;，&lt;終点X座標&gt;，&lt;終点Y座標&gt;</div>
+            </div>
+            <div class="p">直線ウィンドウ（長さ、角度指定）：</div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE L，&lt;ウィンドウ番号&gt;，&lt;長さ&gt;［，&lt;角度&gt;］</div>
+            </div>
+            <div class="p">円ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE C，&lt;ウィンドウ番号&gt;，&lt;半径&gt;</div>
+            </div>
+            <div class="p">楕円ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE E，&lt;ウィンドウ番号&gt;，&lt;幅&gt;，&lt;高さ&gt;</div>
+            </div>
+            <div class="p">扇ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE S，&lt;ウィンドウ番号&gt;，&lt;外径&gt;，&lt;内径&gt;，&lt;開始角度&gt;，&lt;終了角度&gt;，&lt;刻み角&gt;［，&lt;モード&gt;］</div>
+            </div>
+            <div class="p">矩形ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">WINDMAKE R，&lt;ウィンドウ番号&gt;，&lt;幅&gt;，&lt;高さ&gt;［，&lt;角度&gt;［，&lt;モード&gt;］］</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ウィンドウ形状&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ウィンドウの形状を指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">P： 直線ウィンドウ Point to Point （2点指定）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">L： 直線ウィンドウ Line （長さ、角度指定）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">C： 円ウィンドウ Circle</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">E： 楕円ウィンドウ Ellipse</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">S： 扇ウィンドウ Section </div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">R： 矩形ウィンドウ Rectangle</div>
+            </div>
+            <div class="p">&lt;ウィンドウ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ウィンドウの番号を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;パラメータ&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">各ウィンドウ形状を設定する場合の値を指定します。</div>
+            </div>
+            <div class="p">直線ウィンドウ（2点指定）：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;始点X座標&gt; 直線の始点X座標を指定します。（0 ～ 511）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;始点Y座標&gt; 直線の始点Y座標を指定します。（0 ～ 479）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;終点X座標&gt; 直線の終点X座標を指定します。（0 ～ 511）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;終点Y座標&gt; 直線の終点Y座標を指定します。（0 ～ 479）</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_01.jpg">
+            </div>
+            <div class="p">直線ウィンドウ（長さ、角度指定）：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;長さ&gt; 直線の長さを指定します。（1～512）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;角度&gt; 直線の角度を指定します。省略時は0&deg;が設定されます。</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_02.jpg">
+            </div>
+            <div class="p">円ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;半径&gt; 円の半径を指定します。（1～240）</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_03.jpg">
+            </div>
+            <div class="p">楕円ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;幅&gt; 楕円の幅を指定します。（１～256）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;高さ&gt; 楕円の高さを指定します。（１～240）</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_04.jpg">
+            </div>
+            <div class="p">扇ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;外径&gt; 扇の外径を指定します。（外形 &gt; 内径）（1～9999）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;内径&gt; 扇の内径を指定します。（外形 &gt; 内径）（1～9999）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;開始角度&gt; 扇の開始角度を指定します。     （-720～720）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;終了角度&gt; 扇の終了角度を指定します。     （-720～720）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;刻み角&gt; 処理する際の分解能を指定します。 （0.1～360）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;モード&gt; 描画する際のモードを指定します。 （0～2）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0： VISPROJ、VISEDGEの走査方向を子午線方向に指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1： VISPROJ、VISEDGEの走査方向を円周方向に指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">2： VISPROJ、VISEDGEの走査方向を指定しません。</div>
+            </div>
+            <div class="ptxt-ind15">
+              <div class="p">省略時は 2を指定します。</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_05.jpg">
+            </div>
+            <div class="p">矩形ウィンドウ：</div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;幅&gt; 矩形の幅を指定します。（1～512）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;高さ&gt; 矩形の高さを指定します。（1～480）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;角度&gt; 描画する直線の角度を指定します。省略時は、0&deg;が設定されます。（-720～720）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">&lt;モード&gt; 描画する際のモードを指定します。（0～2）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0： VISPROJ、VISEDGEの走査方向を幅方向に指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1： VISPROJ、VISEDGEの走査方向を高さ方向に指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">2： VISPROJ、VISEDGEの走査方向を指定しません。</div>
+            </div>
+            <div class="ptxt-ind15">
+              <div class="p">省略時は 0を指定します。</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100501_06.jpg">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">本命令は初期設定を変更しません。電源再立ち上げの場合、初期設定値が復活します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">恒久的に変更する必要がある場合、WINCAPSⅢにより編集してください。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100703.html" target="_top">VISHIST</a>、<a href="cmidc12100706.html" target="_top">VISBINA</a>、<a href="cmidc12100708.html" target="_top">VISFILTER</a>、<a href="cmidc12100709.html" target="_top">VISMASK</a>、<a href="cmidc12100711.html" target="_top">VISMEASURE</a>、<a href="cmidc12100712.html" target="_top">VISPROJ</a>、<a href="cmidc12100713.html" target="_top">VISEDGE</a>、<a href="cmidc12100801.html" target="_top">VISREADQR</a>、<a href="cmidc12100901.html" target="_top">BLOB</a>、<a href="cmidc12101006.html" target="_top">SHMODEL</a>、<a href="cmidc12101008.html" target="_top">SHCORNER</a>、<a href="cmidc12101010.html" target="_top">SHCIRCLE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPLNOUT 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE P,1,50,100,100,150</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'直線ウィンドウ(2点指定)を作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE L,2,100,45</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'直線ウィンドウ(長さ、角度指定)を作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE C,3,50</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'円ウィンドウを作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE E,4,50,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'楕円ウィンドウを作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE S,5,100,80,90,300,1,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'扇ウィンドウを作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,6,100,50,45,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'矩形ウィンドウを作成します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 1,100,100,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 2,150,150,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 3,200,200,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 4,250,250,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 4</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 5,300,300,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMEASURE 6,350,350,1,1,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 6</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

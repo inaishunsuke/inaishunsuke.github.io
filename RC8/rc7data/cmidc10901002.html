@@ -1,0 +1,227 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>EXTERN</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">EXTERN<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【RC7_Ver.2.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">他のプログラムで定義されているFOLDER変数を参照することを宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">EXTERN DEFINT &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFSNG &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFDBL &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFSTR &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFVEC &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFPOS &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFJNT &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DEFTRN &lt;変数名&gt;[,&lt;変数名&gt;…]</div>
+            <div class="p">EXTERN DIM &lt;変数名&gt; &lt;後置子&gt;[(&lt;要素数&gt;[,&lt;要素数&gt;[,&lt;要素数&gt;]])][AS&lt;変数型&gt;][,&lt;変数名&gt;…]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">他のプログラムで定義されているFOLDER変数を参照することを宣言します。</div>
+            <div id="para">
+              <div class="paratitle1"> FOLDER変数探索方法</div>
+              <ol type="1" class="list1">
+                <li class="item">
+                  <div class="p">EXTERNが宣言されているPACが存在するフォルダーにFOLDER変数が存在するか探索する。</div>
+                </li>
+                <ul type="disc" class="list2">
+                  <li class="item">
+                    <div class="p">FOLDER変数が存在する場合は探索終了。</div>
+                  </li>
+                  <li class="item">
+                    <div class="p">存在しない場合は2)へ進む。</div>
+                  </li>
+                </ul>
+                <li class="item">
+                  <div class="p">１つ上のフォルダーに移りFOLDER変数が存在するか探索する。</div>
+                </li>
+                <ul type="disc" class="list2">
+                  <li class="item">
+                    <div class="p">FOLDER変数が存在する場合は探索終了。</div>
+                  </li>
+                  <li class="item">
+                    <div class="p">存在しない場合は(2)を繰り返す。</div>
+                  </li>
+                  <li class="item">
+                    <div class="p">フォルダーのトップを探索してもFOLDER変数が存在しない場合はコンパイルエラーになる。</div>
+                  </li>
+                </ul>
+              </ol>
+            </div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">リスト1</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">説明</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRO1</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">EXTERN DEFINT AA</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">DEFINT AA</div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="middle" align="left">
+                  <div class="p">リスト1は同じ変数名がPACプログラムの中で宣言されているのでコンパイルエラーになります。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">リスト2</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">説明</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRO1</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">EXTERN DEFINT AA</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">EXTERN DEFINT AA</div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="middle" align="left">
+                  <div class="p">リスト2は同じEXTERN変数名が同一のPACファイルに宣言されているのでコンパイルエラーになります。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">リスト3</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">説明</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PRO1</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">EXTERN DEFINT AA</div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">PRO2</div>
+                  </div>
+                  <div class="source02">
+                    <div class="p">EXTERN DEFINT AA</div>
+                  </div>
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="middle" align="left">
+                  <div class="p">リスト3で別のPACファイルに同じEXTERN変数が宣言されている場合は宣言可能です。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">リスト4</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">説明</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="figure">
+                    <img src="image/cmidc10901002_01.jpg">
+                  </div>
+                </td>
+                <td valign="middle" align="left">
+                  <div class="p">リスト４で別のフォルダーで同じEXTERN宣言されている場合は宣言可能です。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">
+            </div>
+            <div class="p">ペンダントでプログラム編集や、WINCAPSⅢから＜マップ／実行プログラム＞をコントローラに送信するとEXTERN変数はクリアされます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc10901001.html" target="_top">FOLDER</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div class="p">FOLDERに記載の用例を参照。</div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

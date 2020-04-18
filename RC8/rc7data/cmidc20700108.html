@@ -1,0 +1,131 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetGravity</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetGravity<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">各関節の静荷重（重力トルク）を補正し、重力バランスを設定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetGravity</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">ロボットの各関節は、重力により、下向きの静荷重（重力トルク）を受けます。重力トルクは、ツールやワークの質量、重心位置、ロボットの姿勢により変化します。電流制限を設定し、モータのトルクを制限した場合、制限トルクが重力トルク以下になれば重力方向に動作してしまいます。その為、制限トルクから重力トルク分を補正し、電流制限設定時でも重力方向に動作しない様に重力バランスを設定する機能です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700112.html" target="_top">SetCurLmt</a>、<a href="cmidc20700109.html" target="_top">ResetGravity</a>、<a href="cmidc20700110.html" target="_top">SetGrvOffset</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">先端負荷質量と負荷重心位置を正確に設定して下さい。正確に設定されていない状態で、電流制限設定値を小さく(30以下程度)設定すると重力落下する場合がありますのでご注意ください。先端負荷質量と負荷重心位置設定は、プログラム1のp. 4-15「4.7「使用条件」における最適可搬質量設定機能」を参照ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">先端負荷質量と負荷重心位置が正確に分からない場合、正確に設定しても電流制限設定時に重力落下する場合は、重力補償補正機能(SetGrvOffset)を使用し、重力補償値の補正する事が可能です。重力補償補正ライブラリを参照ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">使用条件の重力補償有効無効設定をペンダントで１に設定した場合、重力補償が有効になります。ペンダントで有効設定した場合、コントローラ電源を立ち上げ、キャリブレーション実行直後から、重力補償が有効になります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetGravity</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'重力補償を有効。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Delay 100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'重力補償が反映されるのを待つ。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetCurLmt (2,30)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2軸の電流制限値を30％に設定する。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

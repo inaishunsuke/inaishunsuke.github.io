@@ -1,0 +1,142 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>#define</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">#define<span class="comment1">
+		　（プリプロセッサステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">プログラム中の指定した定数またはマクロ名を、指定文字列で置き換えます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">#define &lt;記号定数&gt; &lt;文字列&gt;</div>
+            <div class="p">または</div>
+            <div class="p">#define &lt;マクロ名(引数)&gt; &lt;引数を含む文字列&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">プログラム中の&lt;記号定数&gt;または&lt;マクロ名&gt;を指定文字列で置き換えます。マクロ名の場合には、引数も含めて置き換えられます。</div>
+            <div class="p">プログラム中の&lt;記号定数&gt;または、&lt;マクロ名&gt;がダブルクォーテーション" "で囲まれた文字列は置き換えられません。</div>
+            <div class="p">#define文は1行に書かなければなりません。</div>
+            <div class="p">&lt;記号定数&gt;と&lt;文字列&gt;の間には、必ず1個以上のスペース文字を置かなければなりません。</div>
+            <div class="p">マクロ名と引数を囲む ( ) との間に、スペース文字を置いてはいけません。</div>
+            <div class="p">&lt;記号定数&gt;と&lt;マクロ名&gt;は再定義できますが、いったん#undefで無効化する必要があり、後から定義された方が有効になります。</div>
+            <div class="p">&lt;記号定数&gt;と&lt;マクロ名&gt;は、64文字以内でなければなりません。</div>
+            <div class="p">マクロ名は1つのプログラムで最大2048個まで使えます。また、マクロ関数の引数は数に制限がありません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12000202.html" target="_top">#undef</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">#DEFINE NAME "Denso Corporation"</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'NAMEという記号定数に"Denso Corporation"を割り</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'当てます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">#DEFINE mAREA(radius) PI * POW(radius, 2)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'mAREA(radius)をマクロ関数として宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S1 = NAME</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S1に"Denso Corporation"が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">D1 = mAREA(10)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'D1に PI*POW(10,2)の計算値が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

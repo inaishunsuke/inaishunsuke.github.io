@@ -1,0 +1,336 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SPEED</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SPEED<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">現在取得しているアームグループ軸の内部移動速度を指定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SPEED ＜移動速度＞</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">＜移動速度＞には、現在取得しているアームグループ軸の、最大内部移動速度の比率(%)を0.1～100の実数で指定しします。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">0.1以下の値を指定した場合、0より大きいときはエラーになりませんが、実際の速度と異なることがあります。</div>
+                </div>
+              </div>
+            </div>
+            <div class="p">実際の速度値は(外部×内部÷100)です。</div>
+            <div class="p">SPEEDを設定するとJSPEED 、ACCEL、DECEL、JACCEL、JDECELの値も自動的に設定されます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">
+                  </div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">CP制御</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">PTP制御</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">速度設定</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">SPEED</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JSPEED</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">加速度設定</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JACCEL</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">減速度設定</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JDECEL</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">現在速度取得</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURSPD</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURJSPD</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">現在加速度取得</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURACC</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURJACC</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">現在減速度取得</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURDEC</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CURJDEC</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">例：SPEED 50の時次の値に設定されます。</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JSPEED</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">50</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p"> (SPEEDと同じ値)</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">25 </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">(SPEED＊SPEED÷100)</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">25</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p"> (SPEED＊SPEED÷100)</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">25</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">(SPEED＊SPEED÷100)</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">JDECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">25</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">(SPEED＊SPEED÷100)</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">アームグループを設定せずに速度を設定しようとした場合は、エラーとなります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200503.html" target="_top">ACCEL</a>、<a href="cmidc11200505.html" target="_top">DECEL</a>、<a href="cmidc11200502.html" target="_top">JSPEED</a>、<a href="cmidc11500501.html" target="_top">MPS</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1"> 例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DIM li1 As Integer</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SPEED 100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'手先の移動速度を100に設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SPEED li1/100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'手先の移動速度を(li1/100)の値に設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸の例）：</div>
+              <div class="figure">
+                <img src="image/cmidc11200501_01.jpg">
+              </div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ１を取得（7軸、8軸を含むアームグループ）</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SPEED 100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループの軸(7軸、8軸)の速度が設定されます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

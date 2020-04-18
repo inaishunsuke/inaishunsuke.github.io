@@ -1,0 +1,285 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>STOPEND</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">STOPEND<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">連続起動またはCYCLEオプション付きで起動されたプログラムをサイクル停止させるステートメントです。このステートメントを含むプログラムを、サイクル起動した場合は、このステートメントを実行しても、動作に影響しません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">STOPEND</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">プログラムの実行中にSTOPEND文に出会うと、実行中のプログラムをサイクル停止します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11100202.html" target="_top">STOP</a>、<a href="cmidc11200402.html" target="_top">HALT</a>、<a href="cmidc11100201.html" target="_top">END</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div class="p">REM 複数条件判断を行ないます。</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SELECT CASE Index </div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexの値がCASE文の値と一致した場合、そのコマンドが</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'実行されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが0の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">STOP</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'プログラムを終了します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 1 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが1の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">HALT "STOP"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'プログラム実行を一時停止します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが2の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">HOLD "STOP"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'プログラム実行を一時停止します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが3の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">STOPEND</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'連続起動されたプログラムをサイクル停止します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 4</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが4の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="3">
+                  <div class="source03">
+                    <div class="p">ON li1 + li2 GOSUB *samp1, *samp2, *samp3</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'li1 + li2の値と同じ順位に書かれた</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ラベル名のサブルーチンを呼び出します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 5 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが5の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="3">
+                  <div class="source03">
+                    <div class="p">ON li1 + li2 GOTO *samp1, *samp2, *samp3</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'li1 + li2の値と同じ順位に書かれた</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ラベルへジャンプします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">CASE 6</div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'Indexが6の場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">END </div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'プログラムによる動作の終了を宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END SELECT </div>
+                  </div>
+                </td>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source_ptxt">
+                    <div class="p">'複数条件判断文の終了を宣言します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

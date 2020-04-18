@@ -1,0 +1,116 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>aspACLD</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">aspACLD<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">内部負荷条件値を変更します。負荷条件値は、先端負荷質量（g）、負荷重心位置（mm）（注1）ですべて指定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">aspACLD (&lt;先端負荷質量&gt;，&lt;先端負荷重心位置X座標&gt;，&lt;先端負荷重心位置Y座標&gt;，&lt;先端負荷重心位置Z座標&gt;)（注1）</div>
+            <div class="p">注1：４軸ロボットのVer.1.9以降の場合</div>
+            <div class="p">aspACLD (&lt;先端負荷質量&gt;，&lt;先端負荷重心位置X座標&gt;，&lt;先端負荷重心位置Y座標&gt;，&lt;先端負荷イナーシャ&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">先端負荷質量は、ロボットの第6軸に取り付く負荷（ツール+ワーク）の質量です。単位は（g）で指定します。</div>
+            <div class="p">負荷重心位置は、負荷の重心位置をツール0座標系で指定します。単位は（mm）です。</div>
+            <div class="p">負荷イナーシャは、負荷の重心位置を原点としたZ軸まわりのイナーシャです。単位はkgcm<sup>2</sup>です。</div>
+            <div class="p">６軸ロボットの例で説明すると、ツール0座標系の原点は、6軸フランジ中心、Y成分はフランジ中心からФ5H7（Ф6H7）ピン穴方向（オリエントベクトル方向）、Z成分は、フランジ中心を通りフランジ面に垂直な方向（アプローチベクトル方向）、X成分は、オリエントベクトルをY軸、アプローチベクトルをZ軸としたときの右手座標系におけるX軸方向（ノーマルベクトル方向）になります。プログラミングマニュアルⅠの「4.7「使用条件」における最適可搬質量設定機能」を参照してください。</div>
+            <div class="p">先端負荷質量、負荷重心位置X、負荷重心位置Y、負荷重心位置Z（負荷イナーシャ）の4つの値の中の1つだけ変更する場合でも、4つの値をすべて記述してください。</div>
+            <div class="p">負荷条件値の切り替えには、約0.1秒の実行時間がかかります。頻繁に負荷条件を切り替えると動作時間遅れの要因になります。また、パス動作中に負荷条件値を切り替える場合、エンド動作になりますので、障害物近傍のパス動作中にモードを変更しないようご注意ください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">プログラミングマニュアルⅠの「4.7「使用条件」における最適可搬質量設定機能」</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">先端負荷質量はロボット毎に設定された範囲内の整数で指定してください。それ以外の数値を指定すると、「60d2　先端負荷設定値が許容値を超えました」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">先端負荷重心位置は、ロボット毎に設定された範囲を満たすように入力してください。範囲を満たさない場合、「60d2先端負荷設定値が許容値を超えました」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">内部負荷条件値は、外部負荷条件値に対し、以下の範囲に設定してください。範囲を満たさない場合、「60d2 先端負荷設定値が許容値を超えました」が発生します。</div>
+                <div class="p">0.5×外部負荷条件値≦内部負荷条件値≦外部負荷条件値</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL aspACLD(8500,-50,100,80)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'内部先端負荷条件値を先端負荷質量8500(g)、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'負荷重'心位置X成分-50（mm）、Y成分100</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'（mm）、Z成分80（mm）に設定します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

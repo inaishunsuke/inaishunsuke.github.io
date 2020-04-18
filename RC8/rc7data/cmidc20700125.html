@@ -1,0 +1,116 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetForce_HM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetForce_HM<span class="comment1">
+		　（ライブラリ）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">HM／HSロボットにてＺ軸の推力（単位：Ｎ）を指定した電流制限ライブラリです。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetForce_HM (&lt;推力（単位：Ｎ）&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">Ｚ軸のモータ電流を制限することにより、推力を制限します。単位はＮ（ニュートン）です。</div>
+            <div class="p">周辺機器との接触時に生じる衝撃力により最大推力は大きく違いますが、この指定できる推力は衝突時の衝撃力がほぼ"０"の時の推力です。（極低速で衝突した場合）またメカの摩擦によりＺ軸の位置によっても推力は違ってきますのであくまでも目安と考えてください。（保証値ではありません）また電流制限ライブラリ（SetCurlmt）と同様に許容値を超える設定をした場合は許容値に制限されます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700126.html" target="_top">SetForce_HC</a>、<a href="cmidc20700112.html" target="_top">SetCurLmt</a>、<a href="cmidc20700113.html" target="_top">ResetCurLmt</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">電流制限実施中は、モータ電流が制限されるため、最高速度、最高加速度で動作できません。電流制限は必要なステップのみ使用してください。また電流制限を使用する際は、加速度を下げてください。 </div>
+              </li>
+              <li class="item">
+                <div class="p">電流制限にて推力を制限しても高速でワークが衝突すると、ワークとハンドの慣性で衝撃力が発生します。電流制限はワークが接触する前からセットし、かつ速度を下げてください。 </div>
+              </li>
+              <li class="item">
+                <div class="p">電流制限は、ロボット停止状態でセットしてください。パス動作中にセットすると、エラーが発生することがあります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボット制御権を取得（TAKEARM）したタスクにて実行してください。ロボット制御権未取得の場合は、エラー「21F7　アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">使用条件の"25:電流制限リセット"設定値の１bit目が"０"（初期値）の場合は、モータ電源入時にサーボロック解除がリセット(サーボロック)されます。モータ電源投入直後からサーボロック解除を有効にする場合は、電流制限リセット設定値に"＋１"を設定してください。設定方法は"OffSrvlock"の注意事項を参照してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">このコマンドを解除するときは"ResetCurlmt(3)"を実行してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">細かい設定を行っても摩擦等の関係から指定した推力が出力されない場合があります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL  SetForce_HM(10.0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'10.0(N)の推力を指定する</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

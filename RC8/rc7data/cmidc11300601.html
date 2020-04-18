@@ -1,0 +1,415 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>set_button</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">set_button<span class="comment2">
+		　【Ver.1.5 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ボタンパラメータの設定を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">set_button ＜ボタン番号＞,＜パラメータ種類＞,＜変更パラメータ値＞</div>
+            <div class="p">＜ボタン番号＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">操作盤に配置されるボタンの全体の中での番号</div>
+            </div>
+            <div class="p">＜パラメータ種類＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">色、位置などボタンの属性（下表を参照）</div>
+            </div>
+            <div class="p">＜変更パラメータ値＞</div>
+            <div class="ptxt-ind10">
+              <div class="p">ボタンそれぞれがもつ変更パラメータ値（下表を参照）</div>
+            </div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">＜パラメータ種類＞</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">＜変更パラメータ値＞（注1）</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">１</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">左上X座標</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０～６４０、ドット単位</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">２</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">左上Y座標</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０～３５０、ドット単位</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">３</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">右下X座標</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０～６４０、ドット単位</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">４</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">右下Y座標</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０～３５０、ドット単位</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">５</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ボタン種類</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">　０：なにもなし</div>
+                  <div class="p">　１：ラベル</div>
+                  <div class="p">　２：線</div>
+                  <div class="p">１７：２Ｄボタン（変数変更）</div>
+                  <div class="p">１８：３Ｄボタン（変数変更）</div>
+                  <div class="p">１９：３Ｄボタン（変数変更）</div>
+                  <div class="p">２０：円（変数変更）</div>
+                  <div class="p">３３：２ＤＬＥＤ（ランプ）</div>
+                  <div class="p">３４：円ＬＥＤ（ランプ）</div>
+                  <div class="p">３５：３Ｄボタン（ＩＯ変更）</div>
+                  <div class="p">３６：予約（使用しないでください。）</div>
+                  <div class="p">３７：予約（使用しないでください。）</div>
+                  <div class="p">３８：ボックス</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">６</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ボタンステータス</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">　０：文字センタリング</div>
+                  <div class="p">　１：文字左つめ</div>
+                  <div class="p">　２：文字右つめ</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">７</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">背景色</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">　０：黒</div>
+                  <div class="p">　１：青</div>
+                  <div class="p">　２：緑</div>
+                  <div class="p">　３：シアン</div>
+                  <div class="p">　４：赤</div>
+                  <div class="p">　５：マジェンタ</div>
+                  <div class="p">　６：茶</div>
+                  <div class="p">　７：明るい灰色</div>
+                  <div class="p">　８：灰色</div>
+                  <div class="p">　９：明るい青</div>
+                  <div class="p">１０：明るい緑</div>
+                  <div class="p">１１：明るいシアン</div>
+                  <div class="p">１２：明るい赤</div>
+                  <div class="p">１３：明るいマジェンタ</div>
+                  <div class="p">１４：黄</div>
+                  <div class="p">１５：白</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">8</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">文字色</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">　０：黒</div>
+                  <div class="p">　１：青</div>
+                  <div class="p">　２：緑</div>
+                  <div class="p">　３：シアン</div>
+                  <div class="p">　４：赤</div>
+                  <div class="p">　５：マジェンタ</div>
+                  <div class="p">　６：茶</div>
+                  <div class="p">　７：明るい灰色</div>
+                  <div class="p">　８：灰色</div>
+                  <div class="p">　９：明るい青</div>
+                  <div class="p">１０：明るい緑</div>
+                  <div class="p">１１：明るいシアン</div>
+                  <div class="p">１３：明るいマジェンタ</div>
+                  <div class="p">１４：黄</div>
+                  <div class="p">１５：白</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">9</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">使用可能状態</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０：使用せず</div>
+                  <div class="p">１：使用する</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">10</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">可視状態</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">０：見せない</div>
+                  <div class="p">１：見せる</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">11</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">変数種類（注2）</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">１：整数</div>
+                  <div class="p">２：実数</div>
+                  <div class="p">３：倍精度実数</div>
+                  <div class="p">４：文字列（３２文字まで）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">12</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">変数番号</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">変数変更ボタンにより変更される変数番号</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">13</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">I/O番号</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">IO変更ボタンにより変更される変数番号(128~511)</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">14</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">表示ページ番号</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">ボタンが表示されるページ番号</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">注１：</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">変更パラメータ値に整数以外の値を指定するとエラー"データタグ異常"が発生します。整数値で入力してください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">注２：</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">数値入力ボタンで実数、倍精度実数を使用する場合、実数では１３文字、倍精度実数では２２文字の領域を必要としますのでボタン領域をそれに合わせて設定してください。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;パラメータ種類&gt;の値を&lt;変更パラメータ値&gt;に変えて、&lt;ボタン番号&gt;で指定した番号のボタンの仕様を変更します。</div>
+            <div id="para">
+              <div class="paratitle1">ボタン種類別サンプル例</div>
+              <div class="p">ボタン種類ごとのサンプル例を示します。</div>
+              <div class="p">①ラベル</div>
+              <div class="p">②線</div>
+              <div class="p">③２Dボタン（変数変更）</div>
+              <div class="p">④３Dボタン(変数変更)</div>
+              <div class="p">⑤３Dボタン(変数変更)</div>
+              <div class="p">⑥円</div>
+              <div class="p">⑦２DLED</div>
+              <div class="p">⑧円LED</div>
+              <div class="p">⑨３Dボタン（IO変更）</div>
+              <div class="p">⑩ボックス</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc11300601_01.jpg">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'!TITLE "＜タイトル＞"</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM sample1</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">set_button (btn_no),(1),(minx)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">set_button (btn_no),(2),(miny)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">set_button (btn_no),(3),(maxx)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">set_button (btn_no),(4),(maxy)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">&middot;</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

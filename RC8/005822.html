@@ -1,0 +1,1153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>コンベアトラッキング</title>
+<meta name="description" content="" />
+<meta name="keywords" content="コンベアトラッキング" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="005822" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="12" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="005817.html">パラメータリスト</a></li>
+<li><span>コンベアトラッキング</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="005821.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005823.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 5822</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>コンベアトラッキング</h1>
+<p>コンベアトラッキング機能で使用するパラメータです。</p>
+<h2>ティーチングペンダントでの設定</h2>
+<p>下表の自動設定欄に&quot;A&quot;が付いているものは、コンベアトラッキングの一連の設定操作の中で自動的に設定されます。操作については、コンベアトラッキング取扱説明書の「<a href="005332.html">センサトラッキングのセットアップ</a>」、または「<a href="005342.html">ビジョントラッキングのセットアップ</a>」を参照してください。<br />
+手動で行いたい場合は、「トラッキング」の「詳細」メニューで設定ができます。操作については、コンベアトラッキング取扱説明書のセンサトラッキングの「<a href="005487.html">パラメータ設定</a>」、またはビジョントラッキングの「<a href="005488.html">パラメータ設定</a>」を参照してください。</p>
+<h2>パラメータ一覧</h2>
+<p>各パラメータ毎にコンベア1～16用があります。1～4、209～212…と各4つずつ番号が振り分けられています。例えば番号212はコンベア8用になります。（Ver.1.11.*以前はコンベア1用とコンベア2用のみ使用可能です。）</p>
+<table>
+<tbody>
+<tr>
+<th scope="col">番号</th>
+<th scope="col">項目名</th>
+<th scope="col">単位</th>
+<th scope="col">初期値</th>
+<th scope="col">内容</th>
+<th scope="col">自動設定</th>
+</tr>
+<tr>
+<td>1～4<br /></td>
+<td rowspan="4">コンベアタイプ</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベアのタイプを設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>209～212</td>
+</tr>
+<tr>
+  <td>413～416</td>
+</tr>
+<tr>
+  <td>617～620</td>
+</tr>
+<tr>
+<td>5～8</td>
+<td rowspan="4">マスタ／スレーブ設定</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コントローラがマスタかスレーブかを設定します。<br />
+0：マスタ<br />
+1：スレーブ</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>213～216</td>
+</tr>
+<tr>
+  <td>417～420</td>
+</tr>
+<tr>
+  <td>621～624</td>
+</tr>
+<tr>
+<td>9～12</td>
+<td rowspan="4">マスタロボットアドレス</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0.0.0.0</td>
+<td rowspan="4">マスタコントローラのIPアドレスを設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>217～220</td>
+</tr>
+<tr>
+  <td>421～424</td>
+</tr>
+<tr>
+  <td>625～628</td>
+</tr>
+<tr>
+<td>13～44</td>
+<td rowspan="4">アドレススレーブロボット</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0.0.0.0</td>
+<td rowspan="4">スレーブコントローラのIPアドレスを設定します。8台設定可能です。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>221～252</td>
+</tr>
+<tr>
+  <td>425～456</td>
+</tr>
+<tr>
+  <td>629～660</td>
+</tr>
+<tr>
+<td>45～48</td>
+<td rowspan="4">スレーブロボット数</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">スレーブコントローラの台数を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>253～256</td>
+</tr>
+<tr>
+  <td>457～460</td>
+</tr>
+<tr>
+  <td>661～664</td>
+</tr>
+<tr>
+<td>49～52</td>
+<td rowspan="4">コンベア軸番号</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベアのエンコーダが接続される軸番号を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>257～260</td>
+</tr>
+<tr>
+  <td>461～464</td>
+</tr>
+<tr>
+  <td>665～668</td>
+</tr>
+<tr>
+<td>53～56</td>
+<td rowspan="4">エンコーダ回転方向</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベアを上流から下流に送った際のエンコーダの回転方向を設定します。<br />
+0：不定<br />
+1：正転<br />
+-1：逆転</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>261～264</td>
+</tr>
+<tr>
+  <td>465～468</td>
+</tr>
+<tr>
+  <td>669～672</td>
+</tr>
+<tr>
+<td>57～60</td>
+<td rowspan="4">エンコーダパルス数</td>
+<td rowspan="4">pulse/rev</td>
+<td rowspan="4">0</td>
+<td rowspan="4">エンコーダのパルス数を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>265～268</td>
+</tr>
+<tr>
+  <td>469～472</td>
+</tr>
+<tr>
+  <td>673～676</td>
+</tr>
+<tr>
+<td>61～64</td>
+<td rowspan="4">コンベア送り量</td>
+<td rowspan="4">mm/rev</td>
+<td rowspan="4">0</td>
+<td rowspan="4">エンコーダ1回転あたりのコンベアの進み量を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>269～272</td>
+</tr>
+<tr>
+  <td>473～476</td>
+</tr>
+<tr>
+  <td>677～680</td>
+</tr>
+<tr>
+<td>65～68</td>
+<td rowspan="4">コンベアCALDATA値X, Y</td>
+<td rowspan="4">rad</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベアの進行方向を示すベース座標Z軸回りの回転角度を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>273～276</td>
+</tr>
+<tr>
+  <td>477～480</td>
+</tr>
+<tr>
+  <td>681～684</td>
+</tr>
+<tr>
+<td>69～72</td>
+<td rowspan="4">コンベアCALDATA値Z</td>
+<td rowspan="4">rad</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベアの進行方向を示すベース座標XY平面から見た傾きを設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>277～280</td>
+</tr>
+<tr>
+  <td>481～484</td>
+</tr>
+<tr>
+  <td>685～688</td>
+</tr>
+<tr>
+<td>73～76</td>
+<td rowspan="4">トラッキング範囲上流限界</td>
+<td rowspan="4">mm</td>
+<td rowspan="4">0</td>
+<td rowspan="4">ロボットがコンベア追従動作を開始することのできる上流側の位置を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>281～284</td>
+</tr>
+<tr>
+  <td>485～488</td>
+</tr>
+<tr>
+  <td>689～692</td>
+</tr>
+<tr>
+<td>77～80</td>
+<td rowspan="4">トラッキング範囲下流限界</td>
+<td rowspan="4">mm</td>
+<td rowspan="4">0</td>
+<td rowspan="4">ロボットがコンベア追従動作をやめ減速を開始する下流側の位置を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>285～288</td>
+</tr>
+<tr>
+  <td>489～492</td>
+</tr>
+<tr>
+  <td>693～696</td>
+</tr>
+<tr>
+<td>81～84</td>
+<td rowspan="4">トラッキング開始範囲</td>
+<td rowspan="4">mm</td>
+<td rowspan="4">0</td>
+<td rowspan="4">トラッキング範囲上流限界を上流側に一定量オフセットした位置です。</td>
+<td rowspan="4">-</td>
+</tr>
+<tr>
+  <td>289～292</td>
+</tr>
+<tr>
+  <td>493～496</td>
+</tr>
+<tr>
+  <td>697～700</td>
+</tr>
+<tr>
+<td>85～88</td>
+<td rowspan="4">IO割込番号</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">I/O番号を設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>293～296</td>
+</tr>
+<tr>
+  <td>497～500</td>
+</tr>
+<tr>
+  <td>701～704</td>
+</tr>
+<tr>
+<td>89～92</td>
+<td rowspan="4">割込タイミング</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">信号の種類を設定します。<br />
+0：立ち上がり<br />
+1：立ち下がり<br />
+2：両方</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>297～300</td>
+</tr>
+<tr>
+  <td>501～504</td>
+</tr>
+<tr>
+  <td>705～708</td>
+</tr>
+<tr>
+<td>93～96</td>
+<td rowspan="4">最小ワーク間隔(視覚センサ)</td>
+<td rowspan="4">mm</td>
+<td rowspan="4">0</td>
+<td rowspan="4">トラッキングバッファ内に存在するワークと重複するデータをTrackSetVisionコマンドで登録しないようにするための閾値です。</td>
+<td rowspan="4">-</td>
+</tr>
+<tr>
+  <td>301～304</td>
+</tr>
+<tr>
+  <td>505～508</td>
+</tr>
+<tr>
+  <td>709～712</td>
+</tr>
+<tr>
+<td>97～100</td>
+<td rowspan="4">CALDATA値（00）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="48">視覚キャリブレーションの計算結果が設定されます。<br />
+・Ver.1.11.*以前とVer.1.12.*以降で異なります。<br />
+・センサトラッキングとビジョントラッキングで異なります。<br />
+詳細はコンベアトラッキング取扱説明書の「<a href="002221.html">用語と定義</a>」を参照してください。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>305～308</td>
+</tr>
+<tr>
+  <td>509～512</td>
+</tr>
+<tr>
+  <td>713～716</td>
+</tr>
+<tr>
+<td>101～104</td><td rowspan="4">CALDATA値（01）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>309～312</td>
+</tr>
+<tr>
+  <td>513～516</td>
+</tr>
+<tr>
+  <td>717～720</td>
+</tr>
+<tr>
+<td>105～108</td>
+<td rowspan="4">CALDATA値（02）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>313～316</td>
+</tr>
+<tr>
+  <td>517～520</td>
+</tr>
+<tr>
+  <td>721～724</td>
+</tr>
+<tr>
+<td>109～112</td>
+<td rowspan="4">CALDATA値（03）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>317～320</td>
+</tr>
+<tr>
+  <td>521～524</td>
+</tr>
+<tr>
+  <td>725～728</td>
+</tr>
+<tr>
+<td>113～116</td>
+<td rowspan="4">CALDATA値（10）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>321～324</td>
+</tr>
+<tr>
+  <td>525～528</td>
+</tr>
+<tr>
+  <td>729～732</td>
+</tr>
+<tr>
+<td>117～120</td>
+<td rowspan="4">CALDATA値（11）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>325～328</td>
+</tr>
+<tr>
+  <td>529～532</td>
+</tr>
+<tr>
+  <td>733～736</td>
+</tr>
+<tr>
+<td>121～124</td>
+<td rowspan="4">CALDATA値（12）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>329～332</td>
+</tr>
+<tr>
+  <td>533～536</td>
+</tr>
+<tr>
+  <td>737～740</td>
+</tr>
+<tr>
+<td>125～128</td>
+<td rowspan="4">CALDATA値（13）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>333～336</td>
+</tr>
+<tr>
+  <td>537～540</td>
+</tr>
+<tr>
+  <td>741～744</td>
+</tr>
+<tr>
+<td>129～132</td>
+<td rowspan="4">CALDATA値（20）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>337～340</td>
+</tr>
+<tr>
+  <td>541～544</td>
+</tr>
+<tr>
+  <td>745～748</td>
+</tr>
+<tr>
+<td>133～136</td>
+<td rowspan="4">CALDATA値（21）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>341～344</td>
+</tr>
+<tr>
+  <td>545～548</td>
+</tr>
+<tr>
+  <td>749～752</td>
+</tr>
+<tr>
+<td>137～140</td>
+<td rowspan="4">CALDATA値（22）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>345～348</td>
+</tr>
+<tr>
+  <td>549～552</td>
+</tr>
+<tr>
+  <td>753～756</td>
+</tr>
+<tr>
+<td>141～144</td>
+<td rowspan="4">CALDATA値（23）</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>349～352</td>
+</tr>
+<tr>
+  <td>553～556</td>
+</tr>
+<tr>
+  <td>757～760</td>
+</tr>
+<tr>
+<td>149～152</td>
+<td rowspan="4">キャリブレーション種類</td>
+<td rowspan="4">-</td>
+<td rowspan="4">0</td>
+<td rowspan="4">キャリブレーションの種類を設定します。<br />
+0：センサ<br />
+1：カメラ</td>
+<td rowspan="4">
+A</td>
+</tr>
+<tr>
+  <td>357～360</td>
+</tr>
+<tr>
+  <td>561～564</td>
+</tr>
+<tr>
+  <td>765～768</td>
+</tr>
+<tr>
+<td>153～176</td>
+<td rowspan="4">コンベア基準座標<br />
+(X、Y、Z、RX、RY、RZ)</td>
+<td rowspan="4">mm、deg</td>
+<td rowspan="4">0</td>
+<td rowspan="4">コンベア基準位置とワーク把持基本姿勢からなるポジション型データです。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>361～384</td>
+</tr>
+<tr>
+  <td>565～588</td>
+</tr>
+<tr>
+  <td>769～792</td>
+</tr>
+<tr>
+<td>177～180</td>
+<td rowspan="4">パルスカウンタサイズ</td>
+<td rowspan="4">bit</td>
+<td rowspan="4">32</td>
+<td rowspan="4">エンコーダのカウンタサイズを設定します。</td>
+<td rowspan="4">A</td>
+</tr>
+<tr>
+  <td>385～388</td>
+</tr>
+<tr>
+  <td>589～592</td>
+</tr>
+<tr>
+  <td>793～796</td>
+</tr>
+<tr>
+<td>181～184</td>
+<td rowspan="4">エンコーダ値LPF時定数</td>
+<td rowspan="4">ms</td>
+<td rowspan="4">40</td>
+<td rowspan="4">エンコーダからの入力値にフィルタをかけて急激な値の変動を抑制します。<br />
+  値を大きくしすぎると、入力値の変動に対する応答性が下がります。</td>
+<td rowspan="4">-</td>
+</tr>
+<tr>
+  <td>389～392</td>
+</tr>
+<tr>
+  <td>593～596</td>
+</tr>
+<tr>
+  <td>797～800</td>
+</tr>
+<tr>
+<td>185～188</td>
+<td rowspan="4">速度比例ゲイン</td>
+<td rowspan="4">-</td>
+<td rowspan="4">1.0000</td>
+<td rowspan="4">コンベアの速度を上げた際に、ロボットの追従精度が悪化する場合に使用します。<br />
+  ロボットがワークに追いつけない場合は、値を1より大きくしてください。<br />
+  ロボットがワークを追い越す場合は、値を1よりも小さくしてください。</td>
+<td rowspan="4">-</td>
+</tr>
+<tr>
+  <td>393～396</td>
+</tr>
+<tr>
+  <td>597～600</td>
+</tr>
+<tr>
+  <td>801～804</td>
+</tr>
+<tr>
+<td>189～192</td>
+<td rowspan="4">定常偏差調整量</td>
+<td rowspan="4">mm</td>
+<td rowspan="4">0.0000</td>
+<td rowspan="4">ワークに対してロボットが常に一定量ずれて追従する場合に使用します。<br />
+  ロボットがワークに追いつけない場合は、正の値[mm]で指定します。<br />
+  ロボットがワークを追い越す場合は、負の値[mm]で指定します。</td>
+<td rowspan="4">
+-</td>
+</tr>
+<tr>
+  <td>397～400</td>
+</tr>
+<tr>
+  <td>601～604</td>
+</tr>
+<tr>
+  <td>805～808</td>
+</tr>
+<tr>
+<td>197</td>
+<td>マルチキャスト. グループアドレス</td>
+<td>-</td>
+<td>239.0.0.1</td>
+<td>マルチキャスト通信で使用するグループアドレスを指定します。<br />
+  通常は、デフォルト値を使用してください。設定を変更する場合は、クラスD（224.0.0.0～239.255.255.255）のIPアドレスを使用してください。</td><td>
+-</td>
+</tr>
+<tr>
+<td>198</td>
+<td>マルチキャスト. ポート</td>
+<td>-</td>
+<td>5011</td>
+<td>マルチキャスト通信で使用するポート番号を指定します。<br />
+  通常は、デフォルト値を使用してください。</td>
+<td>-</td>
+</tr>
+<tr>
+<td>199</td>
+<td>マルチキャスト. インターフェース</td>
+<td>-</td>
+<td>255.255.255.255</td>
+<td><p>マルチキャスト通信を行うEthernetボードのIPアドレスを指定します。</p>
+  <p>標準搭載のEthernetコネクタでマルチキャスト通信する場合、デフォルト値（&quot;255.255.255.255&quot;）を使用してください。<br />
+またEthernetボードを増設してマルチキャスト通信する場合はそのIPアドレスを入力してください。<br />
+マスタコントローラの増設ボードで通信する場合は、そのIPアドレスを、スレーブコントローラの増設ボードで通信する場合は、そのIPアドレスを入力します。  </p></td>
+<td>-</td>
+</tr>
+<tr>
+<td>204</td>
+<td>コンベア送り量下限値</td>
+<td>mm/rev</td>
+<td>1.0000</td>
+<td>キャリブレーション時にコンベア送り量がこの値より小さいとエラーになります。</td>
+<td>-</td>
+</tr>
+<tr>
+  <td>205～208</td>
+  <td rowspan="4">最小ワーク間隔(センサ)</td>
+  <td rowspan="4">mm</td>
+  <td rowspan="4">0</td>
+  <td rowspan="4">トラッキングバッファ内に存在するワークと重複するデータをTrackSetSensorコマンドで登録しないようにするための閾値です。</td>
+  <td rowspan="4">-</td>
+</tr>
+<tr>
+  <td>409～412</td>
+</tr>
+<tr>
+  <td>613～616</td>
+</tr>
+<tr>
+  <td>817～820</td>
+</tr>
+<tr>
+  <td>821～836</td>
+  <td>IO割込設定</td>
+  <td>-</td>
+  <td>0</td>
+  <td><p>0(デフォルト) :センサからの割り込みタイミングで取得したエンコーダ値を、TrackSetVisionやTrackSetSensorを実行した後クリアします。</p>
+    <p>1 :センサからの割り込みタイミングで取得したエンコーダ値を、TrackSetVisionやTrackSetSensorを実行した後クリアしません。<br />
+      このコンベアのエンコーダ値は、次回コンベアのエンコーダ値を取得するまで保持されます。これにより、例えば同じ長さの2台のコンベアを並列に設置した設備にて、1つのエンコーダ値を共有することが可能になります。</p></td>
+  <td>-</td>
+</tr>
+<tr>
+  <td>837～852 </td>
+  <td>ゼロ点座標X</td>
+  <td>-</td>
+  <td>0</td>
+  <td><a href="002221.html#visionPos">ビジョンセンサ検出位置</a>を定義するための画像座標上の基準点のX座標です。</td>
+  <td>A</td>
+</tr>
+<tr>
+  <td>853～868 </td>
+  <td>ゼロ点座標Y</td>
+  <td>-</td>
+  <td>0</td>
+  <td><a href="002221.html#visionPos">ビジョンセンサ検出位置</a>を定義するための画像座標上の基準点のY座標です。</td>
+  <td>A</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 5822</p>
+<p class="pre_next"><a href="005821.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005823.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

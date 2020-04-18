@@ -1,0 +1,993 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>TrackBufferSort</title>
+<meta name="description" content="" />
+<meta name="keywords" content="TrackBufferSort" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="002285" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="17" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001102.html">プログラミング</a></li>
+<li><a href="001301.html">プログラマーズマニュアル</a></li>
+<li><a href="001303.html">コマンドリファレンス</a></li>
+<li><a href="005672.html">機能別</a></li>
+<li><a href="005749.html">ロボット</a></li>
+<li><a href="005753.html">トラッキング</a></li>
+<li><span>TrackBufferSort</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="005492.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005349.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 2285</p>
+<div id="detail">
+<div class="category" id="category_command">
+<!-- $statement$ -->
+<!-- $CLASS_ROBOT_CONVEYOR$ --><!-- コマンド名 -->
+<h1>TrackBufferSort</h1>
+<!-- 機能の概要 -->
+<div class="cmd-func">
+    <h2>機能</h2>
+    <p class="brief"><a href="002221.html#trackBuf">トラッキングバッファ</a>内のデータの並び順を変更します。</p>
+    <div class="notelv4"><p>このコマンドはVer.1.12.*から有効です。</p></div>
+</div>
+
+<!-- 構文の説明 -->
+<div class="cmd-formatblock">
+
+    <h2>構文</h2>
+    <div class="cmd-format1">
+		<pre><span class="cmd-format_prename">TrackBufferSort</span> <var><span class="cmd-format_arg1">コンベア番号</span></var><span class="cmd-format_arg2_prestr">,</span> <var><span class="cmd-format_arg2">ソート種別1</span></var>[<span class="cmd-format_arg3_prestr">,</span> <var><span class="cmd-format_arg3">ソート種別2</span></var>]</pre>
+	</div>
+    
+	<h3>指定項目</h3>
+	<dl>
+		<dt><var>コンベア番号</var></dt>
+		<dd class="cmd-format_arg1_brief">
+			<p>使用するコンベア番号（1～16）を<a href="000451.html">整数型</a>データで指定します。</p>
+		</dd>
+            <!-- arg1_param
+                 default=,
+                 min=,
+                 max=, -->
+
+		<dt><var id="timeout">ソート種別1</var></dt>
+		<dd class="cmd-format_arg2_brief">
+			<p><a href="002221.html#trackBuf">トラッキングバッファ</a>内の全データを対象にしたソート種別を<a href="000451.html">整数型</a>データで指定します。<br />
+			  電源を切ると、設定したソート種別はデフォルトの設定値&quot;0&quot;に戻ります。</p>
+			<p>ソート種別1では、下記ソート方法の組合せを選択します。</p>
+			<ul>
+				<li>ユーザデータによるソートの実施有無</li>
+				<li>その他のソート方法</li>
+			</ul>
+			<p>各設定値に対する、ソート方法の組合せの内容は下記のとおりです。</p>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 0</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>下流から順番にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークを下流から順にソートします。</p>
+						<p>デフォルトのソート方法です。TrackBufferSortコマンドを実行しない場合はこのソート方法でソートされます。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に0を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_1.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 1</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>下流から順番にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのデータを下流から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に1を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_2.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 2</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>ワークをコンベアの動作方向に対して左側から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークをコンベアの動作方向に対して左側から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に2を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_3.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 3</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>ワークをコンベアの動作方向に対して左側から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのデータをコンベアの動作方向に対して左側から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に3を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_4.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 4</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>ワークを上流から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークを上流から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に4を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_5.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 5</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>ワークを上流から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのデータを上流から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に5を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_6.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 6</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>ワークをコンベアの動作方向に対して右側から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークをコンベアの動作方向に対して右側から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に6を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_7.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 7</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>ワークをコンベアの動作方向に対して右側から順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのデータをコンベアの動作方向に対して右側から順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に7を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_8.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 8</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>属性データの数値の大きい順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークを属性データの数値の大きい順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に8を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_9.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 9</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>属性データの数値の大きい順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのワークを属性データの数値の大きい順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に9を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_10.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 10</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>有り</td>
+							  <td>ワークを属性データの数値の小さい順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>ユーザデータの小さい順にソートした後、同じユーザデータを持つワークを属性データの数値の小さい順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に10を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_11.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : 11</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>属性データの数値の小さい順にソート</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのワークを属性データの数値の小さい順にソートします。</p>
+					<h5>ソート結果</h5>
+						<p>ソート種別1に11を設定して実行すると、以下の様な順番にワークはソートされます。</p>
+						<p><img src="img/002285/002285_12.png" alt="" width="540"/></p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+			<table border="1">
+			  <tbody>
+				<tr>
+				  <td>
+					<h4>設定値 : -1</h4>
+						<table border="1">
+						  <tbody>
+							<tr>
+							  <th>ユーザデータによるソート</th>
+							  <th>ソート方法</th>
+							</tr>
+							<tr>
+							  <td>無し</td>
+							  <td>無し</td>
+							</tr>
+						  </tbody>
+						</table>
+						<p>全てのデータのソートを行わず、バッファ内の並びは変化しません。</p>
+						<p>ソート種別2によるソートのみを行いたい場合に指定します。</p>
+				  </td>
+				</tr>
+			  </tbody>
+			</table>
+
+		  </dd>
+            <!-- arg2_param
+                 default=,
+                 min=,
+                 max=, -->
+
+		<dt><var>ソート種別2</var></dt>
+		<dd class="cmd-format_arg3_brief">
+			<p>ソート種別1で指定したソートを実施した後に、個別にソートしたいデータとソート方法を指定します。</p>
+			<ul>
+				<li><a href="002221.html#trackBuf">トラッキングバッファ</a>内の指定したユーザデータを持つデータを対象にしたソート方法を<a href="005067.html">バリアント(Variant)型</a>の1次配列で指定します。省略可能です。</li>
+				<li>ソート種別1で、ユーザデータによるソートを実施しない場合(ソート種別1の設定値 : 1,3,5,7,9,11)、ソート種別2で指定したソートは実施されません。</li>
+				<li>各要素の値は、下記のように「対象となるユーザデータ」と「ソート方法」からなる、要素数が２の<a href="000451.html">整数型</a>データの1次配列で指定します。</li>
+			</ul>
+		</dd>
+           <!-- arg3_param
+                 default=,
+                 min=,
+                 max=, -->
+
+		<pre><code>ソート種別2 = Array(Array(対象ユーザデータ, ソート方法)[, Array(対象ユーザデータ, ソート方法)[,…]])</code></pre>
+		<p>設定値は以下の種類があります。</p>
+		<table border="1">
+		  <tbody>
+			<tr>
+			  <th>設定値</th>
+			  <th>ソート方法</th>
+			</tr>
+			<tr>
+			  <td>-1</td>
+			  <td>ソート種別2によるソートは実施しない。</td>
+			</tr>
+			<tr>
+			  <td>0</td>
+			  <td>ワークを下流から順番にソート</td>
+			</tr>
+			<tr>
+			  <td>1</td>
+			  <td>ワークをコンベアの動作方向に対し左から順番にソート</td>
+			</tr>
+			<tr>
+			  <td>2</td>
+			  <td>ワークを上流から順番にソート</td>
+			</tr>
+			<tr>
+			  <td>3</td>
+			  <td>ワークをコンベアの動作方向に対し右から順番にソート</td>
+			</tr>
+			<tr>
+			  <td>4</td>
+			  <td>ワークを属性データの大きい順番にソート</td>
+			</tr>
+			<tr>
+			  <td>5</td>
+			  <td>ワークを属性データの小さい順番にソート</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<h5>実行例</h5>
+			<p>ソート種別2を設定してソートを行う場合は以下の様なプログラムになります。</p>
+			<p><img src="img/002285/002285_13.png" alt=""/></p>
+			<p>このコマンドを実行すると以下の様にソートされます。</p>
+			<p><img src="img/002285/002285_14.png" alt="" width="540"/></p>	
+	</dl>
+</div>
+
+<!-- 機能の解説 -->
+<div class="cmd-description">
+    <h2>解説</h2>
+    <p><a href="002221.html#trackBuf">トラッキングバッファ</a>内のデータの並び順を変更します。まず、第2引数のソート種別1の設定に基づいて、<a href="002221.html#trackBuf">トラッキングバッファ</a>内の全データを対象に、指定したソート種別に基づいてデータの並び替えを行います。</p>
+    <p>第3引数のソート種別2が設定されている場合、上記のソート処理後、<a href="002221.html#trackBuf">トラッキングバッファ</a>内の、指定したユーザデータを持つグループを対象に、個別にデータの並び順を変更します。</p>
+</div>
+
+<!-- 関連項目 -->
+<div class="cmd-ref">
+<h2>関連項目</h2>
+<p><a href="005671.html">TrackBufferDelete</a>、
+<a href="005491.html">TrackBufferIndexes</a>、
+<a href="005492.html">TrackBufferRead</a>、
+<a href="002286.html">TrackCurBufferSort</a>、 
+<a href="002836.html">TrackPrepareData</a>、
+<a href="005375.html">TrackSetSensor</a>、
+<a href="005376.html">TrackSetVision</a>、
+<a href="005353.html">TrackTargetPos</a>、
+<a href="001122.html">コンベアトラッキング用コマンド</a>、 <a href="002898.html">円形トラッキング用コマンド</a></p>
+</div>
+
+<!-- 注意事項 -->
+<div class="cmd-remark">
+<h2>注意事項</h2>
+<ul>
+ <li>コンベアおよび円形トラッキング専用のコマンドです。 </li>
+ <li><a href="002221.html#trackBuf">トラッキングバッファ</a>内のデータの数が多い場合、データの並び替えに時間がかかる場合があります。</li>
+ <li>電源を切ると、ソート種別1はデフォルトの設定値に戻り、ソート種別2はクリアされます。</li>
+</ul>
+</div>
+
+ <!-- 用例 -->
+<div class="cmd-sample">
+	<h2>用例</h2>
+	<!-- $sample-start_ChangeTool_Sample.pcs$ -->
+    <ul>
+      <li>バッファ内の全データを対象にしてソート種別を設定。ソートしたデータの先頭から順次取り出していく。</li>    
+
+<pre><code>If I[50] = 1 Then
+  ' コンベアの動作方向に対して左から並べる
+  TrackBufferSort 1, 3
+ElseIf I[50] = 2 Then
+  ' 属性データでソート
+  TrackBufferSort 1, 9
+Else
+  ' デフォルトの設定に戻す (コンベアベクトル方向に沿ってソート)
+  TrackBufferSort 1, 0
+End If
+
+' ソートしたデータの先頭から順次取り出していく
+P[10] = TrackTargetPos(1, -1)</code></pre>
+</ul>
+
+<ul>
+  <li>ユーザデータごとにソート種別を設定する。</li>
+
+<pre><code>' バッファ全体は今の設定のまま変更しない
+' ユーザデータ5のグループ内だけを属性値でソート
+' ユーザデータ1のグループ内だけをコンベアの動作方向に対して左から並べる
+TrackBufferSort 1, -1, Array( Array( 5, 4 ), Array( 1, 1 ) )</code></pre>
+</ul>
+
+<ul>
+  <li>ユーザデータごとのソートを行わない。</li>
+
+<pre><code>' ユーザデータ5のグループ内だけのソートを行わない
+' ユーザデータ1のグループ内だけのソートを行わない
+TrackBufferSort 1, -1, Array( Array( 5, -1 ), Array( 1, -1 ) )</code></pre>
+</ul>
+
+<ul>
+  <li>特定のユーザデータのグループに個別にソート種別を設定。ソートしたデータの先頭から順次取り出していく。</li>
+
+<pre><code>' バッファ全体はコンベアベクトル方向に沿ってソート
+' ユーザデータ5のグループ内だけを属性データでソート
+' ユーザデータ1のグループ内だけをコンベアの動作方向に対して左から並べる
+TrackBufferSort 1, 0, Array(Array(5, 4), Array(1, 1))
+
+' ユーザデータ5のグループに関して、ソートしたデータの先頭から順次取り出していく
+P[10] = TrackTargetPos(1, -1, 5)
+
+'....
+
+' ユーザデータ1のグループに関して、ソートしたデータの先頭から順次取り出していく
+P[10] = TrackTargetPos(1, -1, 1)
+
+'....
+
+' コンベアベクトル方向に沿ってソートされたデータの先頭から順に取り出していく
+P[10] = TrackTargetPos(1, -1)</code></pre>
+</ul>
+                 
+<!-- $sample-end$ -->
+</div>
+</div>
+<!-- / class="category" id="category_command" --><p class="disp_id">ID : 2285</p>
+<p class="pre_next"><a href="005492.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005349.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

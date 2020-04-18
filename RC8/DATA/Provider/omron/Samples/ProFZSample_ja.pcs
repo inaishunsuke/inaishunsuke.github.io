@@ -1,0 +1,37 @@
+'!TITLE "ProFZSample.pcs"
+
+Sub Main 
+	On Error GoTo ErrorProc
+	
+	Dim ctrl As Object
+	Dim vntResult As Variant
+	Dim Idx As Long
+	
+	ctrl = Cao.AddController( "FZ", "CaoProv.OMRON.FZ", "", "conn=eth:10.6.226.201" )
+	
+	' シーン番号切替
+	ctrl.Scene 1
+	
+	' 検査実行
+	vntResult = ctrl.Measure
+	
+	' 結果表示
+	If ( VarType( vntResult ) And 8192 ) Then
+		For Idx = 0 To UBound( vntResult )
+			PrintDbg "Result(" & Idx & "):" & vntResult( Idx )
+		Next
+	Else
+		PrintDbg "Result:" & vntResult
+	End If
+	
+EndProc:
+	Cao.Controllers.Clear
+	ctrl = Nothing
+	Exit Sub
+	
+ErrorProc:
+	PrintDbg Hex( Err.OriginalNumber )
+	GoTo EndProc
+End Sub
+
+

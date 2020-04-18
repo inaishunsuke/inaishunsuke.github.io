@@ -1,0 +1,200 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CALL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CALL<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">プログラムを呼び出し、実行します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CALL &lt;プログラム名&gt; [(&lt;引数&gt;[,&lt;引数&gt;…])]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">CALLステートメントは、&lt;プログラム名&gt;で指定したプログラムを呼び出し、制御を移します。</div>
+            <div class="p">CALLされたプログラム内のEND文は、サブルーチン内のRETURN文と同じ意味を持ち、その呼び出し元へ制御を戻します。</div>
+            <div class="p">&lt;引数&gt;は、&lt;プログラム名&gt;で指定したプログラムへ渡す引数を指定します。</div>
+            <div class="p">&lt;引数&gt;は、定数または式を用いる「値による呼び出し」と、変数を渡す「参照による呼び出し」の、いずれかで渡すことができます。詳しくは、「8.16　値による呼び出しと参照による呼び出し」を参照してください。</div>
+            <div id="para">
+              <div class="paratitle1">1. 値による呼び出し</div>
+              <div class="p">定数と数式と文字式は値で渡します。変数もカッコ（  ）で囲めば式とみなされ、値で渡すことができます。</div>
+              <div class="p">番号付き変数のうち整数型、単精度実数型、倍精度実数型、文字列型変数はカッコ（  ）で囲めば、値で渡すことができます。</div>
+              <div class="p">
+              </div>
+              <div class="p">例：プログラム  PROGRAM SUB1(AA#)を呼び出す方法</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">変数を値で渡す場合    CALL SUB1((D1))</div>
+                </li>
+                <li class="item">
+                  <div class="p">定数を渡す場合        CALL SUB1(10#)</div>
+                </li>
+                <li class="item">
+                  <div class="p">数式を渡す場合        CALL SUB1(D1 + D2)</div>
+                </li>
+              </ul>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">数式を渡す場合、式の結果の型に注意します。呼び出される側のプログラムの引数の型と同じ型にならなければいけません。</div>
+                </div>
+              </div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">2. 参照による呼び出し</div>
+              <div class="p"> 参照による呼び出しでは、変数を引数として渡すことができます。</div>
+              <div class="p"> &lt;引数&gt;として配列全体を指定したいときは、配列名にカッコ（  ）を付けます。</div>
+              <div class="p"> グローバル変数、ローカル配列の1要素は、参照で渡すことはできません。</div>
+              <div class="p">グローバル変数、ローカル配列の1要素を参照で渡したい場合は、いったんローカル変数に値を代入し、そのローカル変数を介して参照呼び出しを行なってください。</div>
+              <div class="p">参照による呼び出しで渡した変数は、呼び出された側のプログラムの中で、その内容を変更されると、元のプログラムに戻った場合でも、その変更は有効となります。</div>
+              <div class="p">
+              </div>
+              <div class="p">例1：プログラム PROGRAM SUB1(AA#)を呼び出す場合</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">ローカル変数を渡す場合1    CALL SUB1(DD#)</div>
+                </li>
+                <li class="item">
+                  <div class="p">ローカル変数を渡す場合2    CALL SUB1(DA)</div>
+                </li>
+              </ul>
+              <div class="p">（DEFDBLでDAが宣言済みのとき）</div>
+              <div id="note">
+                <img src="common/note.jpg">
+                <div id="notegroup">
+                  <div id="noteitem">
+                    <div class="p">ローカル変数はあらかじめ、値を代入しておく必要があります。</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p">
+              </div>
+              <div class="p">例2：プログラム PROGRAM SUB2(BB%(10))を呼び出す場合</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">配列全体を渡す場合    CALL SUB2(AB%())</div>
+                </li>
+              </ul>
+              <div class="p">（DIMでAB%(10)が宣言済みのとき）</div>
+              <div id="note">
+                <img src="common/note.jpg">
+                <div id="notegroup">
+                  <div id="noteitem">
+                    <ul type="disc" class="list1">
+                      <li class="item">
+                        <div class="p">変数に値が代入されていない場合は、実行時エラーとなります。</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">プログラム名が、PRO&lt;数字&gt;の場合は、引数を渡すことはできません。</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">呼び出す側と呼び出される側の引数の数を合わせてください。</div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc10900201.html" target="_top">PROGRAM</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFDBL ld1, ld2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SUB1((ld1))</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'変数を値で渡す場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SUB1(10#)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'定数を渡す場合。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SUB1(ld1 + ld2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'数式を渡す場合。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

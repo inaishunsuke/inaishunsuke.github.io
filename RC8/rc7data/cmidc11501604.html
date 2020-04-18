@@ -1,0 +1,296 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SPRINTF$</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SPRINTF$<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">式を指定したフォーマットに変換し、文字列として返します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SPRINTF$（&lt;フォーマット&gt;,&lt;式&gt;）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;フォーマット&gt;には、そのまま出力される文字列と、&lt;式&gt;の内容を変換して（文字列の一部として）出力するための変換指定文字列が含まれます。</div>
+            <div class="p">変換指定文字列の先頭は%で、以下に文字（列）が続きます。</div>
+            <div class="p">変換指定文字列の意味を修飾する0個以上のフラグ（順不同）。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">文字列を書き出すフィールドの最小幅（オプション）。変換された値の文字数がフィールドの最小幅より小さい場合は、フィールドの最小幅を満たすように、左側（下記の左揃えフラグを指定した場合は右側）が空白（デフォルト）で埋められます。フィールドの幅の値は、アスタリスク（*）（後述）または整数値です。</div>
+              </li>
+              <li class="item">
+                <div class="p">精度（オプション）。精度によって指定されるのは、d、i、o、xおよびX変換指定記号による変換で表示される最小桁数、e、Eおよびf変換指定記号による変換で表示される小数点以下の桁数、gおよびG変換指定記号による変換で表示される最大有効桁数、そしてs変換指定記号による変換で文字列から書き込まれる最大文字数です。精度の値は、ピリオド（．）と、それに続くアスタリスク（*）（後述）または整数値（オプション）です。ピリオドのみを指定すると、精度は0に設定されます。精度を他の変換指定記号と一緒に指定した場合の動作は未定義です。</div>
+              </li>
+              <li class="item">
+                <div class="p">変換指定記号</div>
+                <div class="p">前述のように、フィールド幅と精度にはアスタリスク（*）を指定できます。この場合には、整数型の引数によって幅または精度の値が指定されます。フィールド幅または精度、あるいはその両方の値を指定する引数は、変換される引数（存在する場合のみ）の前に（フィールド幅を精度より前に）指定しなければなりません。フィールドの幅に負の値を指定すると、-変換指定記号の後に正のフィールド幅を指定したのと同じになります。精度に負の値を指定すると、精度を省略したのと同じになります。</div>
+                <div class="p">フラグの意味は次のとおりです。</div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">-</div>
+                    </td>
+                    <td valign="top" align="center">
+                      <div class="p">：</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">変換結果をフィールド内で左揃えにします（このフラグを指定しなかった場合は右揃えになります）。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">+</div>
+                    </td>
+                    <td valign="top" align="center">
+                      <div class="p">：</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">符号付きの変換では、常に数字の先頭に+または-の符号が付きます（このフラグを指定しなかった場合は、負の値の場合にのみ-の符号が付きます）。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="ptxtnowrap">
+                        <div class="p">スペース文字</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="center">
+                      <div class="p">：</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">符号付き変換で先頭文字が符号でない場合、もしくは符号付き変換によって何も文字を生じなかった場合には、結果の先頭にスペース文字が付きます。スペース文字と+フラグを同時に指定すると、スペース文字は無視されます。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">＃</div>
+                    </td>
+                    <td valign="top" align="center">
+                      <div class="p">：</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">変換は「置換形式」によって行なわれます。o変換指定記号による変換では、結果の先頭桁が0になるように精度が変更されます。x（またはX）変換指定記号による変換では、0以外の結果の先頭には「0x」（または0X）が付けられます。e、E、f、gまたはG変換指定記号による変換では、必ず結果に（小数位の数字がなくても）小数点文字が付けられます。（通常、これらの変換では、小数位の数字がある場合にのみ小数点文字が付けられます。）gおよびG変換指定記号による変換では、末尾の0が削除されません。他の変換での動作は未定義です。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">0</div>
+                    </td>
+                    <td valign="top" align="center">
+                      <div class="p">：</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">d、i、o、x、X、e、E、f、gおよびG変換指定記号による変換では、先頭（符号または底数の後）に、0を埋め込むことで最小フィールド幅を確保します。スペース文字による埋め込みは行なわれません。0フラグと-フラグを同時に指定した場合、0フラグは無視されます。d、i、o、x、およびXの変換指定記号によって、精度の変換を指示してある場合は、0フラグは無視されます。その他の変換指定記号とともに用いられた場合の動作については規定しません。</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+            </ul>
+            <div class="p">変換指定記号の意味は次のとおりです。</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">d、i</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">整数型引数の値を「［-］dddd」の形式で符号付き10進数の文字列に変換します。指定されている精度により、表示される最小桁数が決定します。変換後の値が最小桁数に満たない場合には、先頭が0で埋められます。デフォルトの精度は1です。精度0で0の値を変換すると、文字は出力しません。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">o、x、X</div>
+                  </div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">整数型の引数を、「dddd」の形式で符号なしの8進数（o）、または16進数（xまたはX）の文字列に変換します。x変換指定記号では小文字（abcdef）、X変換指定記号では大文字（ABCDEF）が使用されます。指定されている精度により、表示される最小桁数が決定します。変換後の値が最小桁数に満たない場合には、先頭が0で埋められます。デフォルトの精度は1です。精度0で0の値を変換すると、文字は出力しません。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">f</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">実数型の引数を「［-］ddd.ddd」の形式で10進数表示の文字列に変換します。指定されている精度により、小数点以下の桁数が決定されます。精度が指定されていなければ、小数点以下の桁数は6桁になります。精度が0で＃フラグが指定されていないときは、小数点以下の文字は表示されません。小数点以下の文字が表示される場合には、最低でもその前の1桁が表示されます。値は、適切な桁数に丸められます。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">e、E</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">実数型の引数を「［-］d.ddde+/-dd」の形式の文字列に変換します。小数点文字の前には1桁（引数が0でなければ0以外）が表示されます。小数点以下の桁数は、精度（precision）によって決定されます。精度が指定されていなければ、小数点以下は6桁になります。精度が0で＃フラグが指定されていないときは、小数点以下の文字は出力されません。値は、適切な桁数に丸められます。E変換指定記号を使用すると、指数がeではなくEを用いて表示されます。指数は常に2桁以上となります。値が0であれば、指数部も0になります。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">g、G</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">実数型の引数をfまたはe(Gの場合はE)の形式に変換します。精度により、有効桁数が決まります。精度が0である場合、有効桁数は1になります。使用される形式は、変換される値によって決まります。e（またはE）の形式の変換は変換結果の指数部が-4より小さいか、もしくは精度と等しいか精度より大きい場合のみ用います。小数点以下の末尾にある0は削除されます。小数点文字は小数点以下の数字がある場合にのみ表示されます。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">c</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">整数型の引数を1バイトのASCII文字に変換し、変換後の文字を出力します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">S</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">システム予約</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">%</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">%の文字を出力します。引数は変換されません。変換の完全な指定は%%です。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">変換指定が正しくない場合の動作については規定していません。</div>
+            <div class="p">変換結果がフィールド幅より大きい場合には、変換結果が切り詰められることはあっても、変換結果に合わせてフィールドが拡張されることはありません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11501605.html" target="_top">HEX$</a>、<a href="cmidc11501612.html" target="_top">STR$</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S1 = SPRINTF$("% d",123)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S1に" 123"が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S2 = SPRINTF$("%-6.3f", 1.23)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S2に"1.230 "が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S3 = SPRINTF$("%e",123.456#)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S3に"1.234560e+002"が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S4 = SPRINTF$("%g",12345678#)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S4に"1.23457e+007"が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">S5 = SPRINTF$("%#x",128)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'S5に"0x80"が代入されます。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

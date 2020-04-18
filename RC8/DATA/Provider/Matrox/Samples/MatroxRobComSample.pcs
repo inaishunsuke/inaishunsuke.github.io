@@ -1,0 +1,45 @@
+'!TITLE "MatroxRobComSample"
+
+#include <Variant.h>
+
+Sub Main 
+	Dim caoCtrl as Object
+
+	' socket bind (Port=PortNumber)
+	caoCtrl = cao.AddController("RobCom", "CaoProv.Matrox.RobCom", "", "Port=2001, timeout=6000")
+	
+	Do
+		' Wait for IrisGT
+		if caoCtrl.IsConnected Then
+			Exit Do
+		End if
+		delay 100
+	Loop
+
+SendAndRecieve:	
+	Do
+		On Error Goto ErrorProc
+		delay 100
+		' Send Position and Request
+		caoCtrl.SendPos 1, VarChangeType(CurPos, VT_R8 + VT_ARRAY)
+
+		delay 100
+
+		' Get Position
+		P11 = caoCtrl.ReceivePos
+	Loop
+
+	
+	' Disconnect Client
+	' caoCtrl.DisconnectClient
+
+	' Clear recieved packet
+	' caoCtrl.Clear
+
+	Exit Sub
+ErrorProc:
+	PrintDbg HEX(Err.OriginalNumber)
+	Goto SendAndRecieve
+End Sub
+
+

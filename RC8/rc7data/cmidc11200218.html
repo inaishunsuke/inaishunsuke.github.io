@@ -1,0 +1,319 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ARRIVE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ARRIVE<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.1.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">動作命令の全移動距離に対する動作割合を設定する事によって、ロボットが設定した動作割合に到達するまでプログラムを待機させます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ARRIVE  ＜動作割合＞</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">通常の動作命令では動作完了あるいはパス開始まで次ステップの命令を実行することができませんが、IOBLOCK指定やNEXTオプション指定の動作命令では動作途中で次ステップの命令を実行する事が可能です。この場合、ARRIVE命令によってロボットが設定した動作割合に到達するまで次ステップの命令を待機させる事ができます。</div>
+            <div class="p">＜動作割合＞は動作命令の全移動距離に対する割合を示し、１～99（単位は％）の範囲で、数値、あるいは整数型（Ｉ型）、実数型（Ｆ型）変数にて指定します。</div>
+            <div class="p">この機能はロボットに対してのみ有効です。よってDRIVE、DRIVEAで付加軸のみを動作させる場合、ARRIVE機能は働きません。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ARRIVE命令はアームセマフォを取得した（TAKEARMした）タスクにおいて、直前の</div>
+                <div class="p">動作命令に対する動作割合を設定します。</div>
+              </li>
+              <li class="item">
+                <div class="p">アームセマフォを取得した後、動作命令を実行する前にARRIVE命令を実行した場合はエラー648Cになります。</div>
+              </li>
+              <li class="item">
+                <div class="p">アームセマフォを取得せずにARRIVE命令を実行した場合はエラー21F7になります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ARRIVE命令実行中に瞬時停止した場合、再起動時に瞬時停止した位置から10mm以上ずれている場合はエラー6486になります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ARRIVE命令実行中に瞬時停止した場合、再起動時に動作命令が実行されず＜動作割合＞に満たない場合はエラー6489になります。</div>
+              </li>
+              <li class="item">
+                <div class="p">＜動作割合＞はロボット移動距離に対する割合を示します。しかし、＜動作割合＞が一定であっても速度・加速度等の動作条件によってARRIVEが終了するロボット位置が変動する場合があります。また＜動作割合＞を多少変動させても、ARRIVEが終了するロボット位置が変わらない場合もあります。ARRIVE命令にてロボットと周辺機器との同期をとる場合は、タイミングをご確認ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">電流制限機能と併用する場合は、電流制限によってロボット位置が＜動作割合＞を通過できなくなる可能性があります。この時、プログラムはARRIVE命令が完了するのを無限に待ち続けていますので、プログラム停止を実行して復帰させてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">INTERRUPTと併用する場合、INTERRUPT ON後の動作命令は割り込みスキップ信号によって実行されなくなりますが、ARRIVE命令は実行されますので、割り込みスキップ信号のタイミングによっては、意図した動作命令とは異なる動作命令に対してARRIVE命令が実行されることがあります。また割り込みスキップ信号のタイミングにより、ロボット位置が＜動作割合＞を通過できなくなる可能性があります。この時、プログラムはARRIVE命令が完了するのを無限に待ち続けていますので、プログラム停止を実行して復帰させてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">ティーチチェックではNEXTオプション、IOBLOCK命令は無効となりますので、ARRVIE命令は意味を持ちません。</div>
+              </li>
+              <li class="item">
+                <div class="p">ARRVIE命令の対象となる動作命令は、＜動作オプション＞を使用できません。</div>
+                <div class="p">＜動作オプション＞を使用した場合、ARRVIE命令は無効になります。</div>
+                <div class="p">ARRVIE命令の対象となる動作命令の内部速度・外部加減速度を使用する場合は次の例のようにしてください。</div>
+                <div class="p">＜例＞</div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">PROGRAM PRO1</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">TAKEARM</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">SPEED 10</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">'内部SP 10</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">MOVE P,P1,NEXT</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">ARRIVE 50</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">SET IO [240]</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">'動作割合が50％になったら、I/OをON</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">SPEED 100</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">'内部スピードを元の値に戻す</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source05">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, P1, NEXT </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ARRIVE 50</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'動作割合が50%になったら</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SET IO [240]</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'IO [240]をONします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ARRIVE I1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'動作割合がI1%になったら</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">RESET IO [240]</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'IO [240]をOFFします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸の例）：</div>
+              <div class="p">4軸ロボットで次のようなアームグループが設定されている場合。</div>
+              <div class="figure">
+                <img src="image/cmidc11200218_01.jpg">
+              </div>
+              <div class="figure">
+                <img src="image/cmidc11200218_02.jpg">
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

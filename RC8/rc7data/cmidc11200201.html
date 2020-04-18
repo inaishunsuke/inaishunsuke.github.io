@@ -1,0 +1,397 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>APPROACH</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">APPROACH<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ツール座標系指定の絶対動作を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">APPROACH &lt;補間方法&gt;, &lt;基準位置&gt;,[@&lt;パス開始変位&gt; ]&lt;アプローチ長&gt;[,&lt;動作オプション&gt;][,NEXT]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;基準位置&gt;はポジション型、ジョイント型、同次変換型が使用できます。</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <div class="p">&lt;基準位置&gt;からツール座標系の-Z軸方向へ&lt;アプローチ長&gt;分離れた位置へ移動します。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <div class="p">&lt;基準位置&gt;からベース座標系の+Z軸方向へ&lt;アプローチ長&gt;分離れた位置へ移動します。</div>
+            </div>
+            <div class="p">&lt;補間方法&gt;にはP(PTPと表記も可）、Lどちらかの選択ができます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">補間方法</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">P（またはPTPと表記）</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">PTP制御で移動します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">L</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">CP制御で移動します。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;パス開始変位&gt;の値は目標位置を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。パス開始タイミングを変えるための目安となる数値であり、アーム先端がその中に入ったときに次の制御へ移るわけではありません。</div>
+            <div class="p">省略するとデフォルト値@0として処理します。</div>
+            <div class="p">@0とすると、エンド動作で動きます。</div>
+            <div class="p">@Pとすると、パス動作で動きます。</div>
+            <div class="p">@Eとすると、エンコーダ値によって目標位置への到達を確認し、次の動作に移ります。</div>
+            <div class="p">&lt;動作オプション&gt;にはSPEED、ACCEL、DECELがあります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">動作オプション</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">SPEED（またはSと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">移動速度を指定します。意味はSPEED文と同じです。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">加速度を指定します。意味はACCEL文と同じです。ただし、減速度の指定はできません。減速度の指定はDECEL文を使ってください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">減速度を指定します。意味はDECEL文と同じです。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;NEXTオプション&gt;を付けると、ロボットの動作完了を待たずに次の非動作命令に続きます。ただし、以下の命令は、ロボットの動作完了（パス開始）まで実行待ちになります。</div>
+            <div class="p">ロボット動作命令（CHANGETOOL、CHANGEWORK、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL）、最適可搬質量設定ライブラリ（aspACLD、aspChange）、アーム動作ライブラリ（mvSetPulseWidthなど）</div>
+            <div class="p">また、動作オプションと併用した場合、NEXTオプションは無効になります。&lt;NEXTオプション&gt;を付けた場合、ステップ停止を実行すると、次の動作命令実行待ちの場合は、その動作を終了後に停止します。したがって、停止までの移動が長くなりますので注意してください。</div>
+            <div class="p">また、ティーチチェックモードのときは、NEXTオプションは無効になります。</div>
+            <div id="hint">
+              <img src="common/hint.jpg">
+              <div id="hintgroup">
+                <div id="hintitem">
+                  <div class="p">APPROACHステートメントは、MOVEステートメントによって書き換えることができます。</div>
+                  <div class="p">APPROACH &lt;補間方法&gt;,[&lt;パス開始変位&gt; ]&lt;基準位置&gt;,&lt;アプローチ長&gt; [,&lt;動作オプション&gt;][,NEXT]</div>
+                  <div class="p">上のAPPROACHステートメントを、MOVEステートメントで書くと、下のようになります。</div>
+                  <div id="attpara">
+                    <div class="paratitleatt">6軸</div>
+                    <div class="p">MOVE &lt;補間方法&gt;,[&lt;パス開始変位&gt; ]&lt;基準位置&gt;+(0, 0, -&lt;アプローチ長&gt;)H[,&lt;動作オプション&gt;][,NEXT]</div>
+                    <table border="0" class="framenone" width="88%" align="left">
+                      <tr>
+                        <td valign="top" align="left">
+                          <div class="p">例：APPROACH  P, P3, 100</div>
+                        </td>
+                        <td valign="top" align="left">
+                          <div class="p">'MOVE P, P3+(0, 0, -100)Hと同じ</div>
+                        </td>
+                      </tr>
+                    </table>
+                    <br clear="left">
+                    <div class="p">例：APPROACH  P, P3, 100　　'MOVE P, P3+(0, 0, -100)Hと同じ</div>
+                  </div>
+                  <div id="attpara">
+                    <div class="paratitleatt">4軸</div>
+                    <div class="p">MOVE &lt;補間方法&gt;,[&lt;パス開始変位&gt; ]&lt;基準位置&gt;+(0, 0, &lt;アプローチ長&gt;),[,&lt;動作オプション&gt;][,NEXT]</div>
+                    <table border="0" class="framenone" width="88%" align="left">
+                      <tr>
+                        <td valign="top" align="left">
+                          <div class="p">例：APPROACH  P, P3, 100</div>
+                        </td>
+                        <td valign="top" align="left">
+                          <div class="p">'MOVE P, P3+(0, 0, 100)と同じ</div>
+                        </td>
+                      </tr>
+                    </table>
+                    <br clear="left">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200202.html" target="_top">DEPART</a>、<a href="cmidc11200501.html" target="_top">SPEED</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">基準位置から求めたアプローチ位置がロボットの動作範囲外となることがあります。その場合、エラー6070番台 (J*ソフトリミットオーバ、可動範囲外、特異点です)が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">アプローチ位置の形態は、基準位置の形態になります。したがって、アプローチ位置が動作範囲外となり、「エラー667*　ソフトリミットオーバ、可動範囲外2」が発生する場合があります。この場合は、FIGAPRL、FIGAPRP（「<a href="cmidc11200302.html" target="_top">FIGAPRL</a>」、「<a href="cmidc11200303.html" target="_top">FIGAPRP</a>」参照）を使用して、アプローチ位置の形態を計算するか、備考に示すようにMOVE命令に置き換えて、さらにLETF（10.3項 参照）にて形態を変更してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作において、現在とっている形態（操作ガイド「4.1.3　腕・ひじ・手首の形態について」参照）と基準位置の形態が異なる場合、エラー607F（ロボット形態不一致）が発生します。ただし、ロボット形態が変化する動作が可能な場合は、エラーは発生しません。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作において、特異点（操作ガイド「4.1.3　腕・ひじ・手首の形態について [ 2 ] 形態の境界」参照）近傍を通るとき、エラー6080番台（指令速度制限オーバ）を発生し、停止することがあります。この場合、スピードを落とすか、最適可搬質量設定モード（p. 4-8 「4.6 最適可搬質量設定機能」参照）を2または3にして使用してください。それでもエラーが発生する場合は、特異点近傍の軌道を回避してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">CP動作において、アプローチ位置の形態と基準位置の形態が一致せず、ワーニング601C（形態を変更してください）が発生する場合があります。動作終了時の形態へ基準位置の形態を変更いただくようお願いします（ただし、ワーニングが発生しても動作には影響しません）。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFSNG lf1, lf2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFPOS lp1, lp2, lp3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH P, (740, 0, 480, 180, 0, 180, 5), 70</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(740, 0, 480, 180, 0, 180)でロボット形態5の位置から-Zm方向に</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'70mm離れた位置へ(PTP制御)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH L, lp1, lf1, SPEED = 100</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp1の位置から-Zm方向にlf1離れた位置へ(CP制御, 内部速度 = </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'100%)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH P, lp2, @P lf2, S = 50</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp2の位置から-Zm方向にlf2離れた位置へ(PTP制御, 内部速度 = </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'50%)パス動作します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">APPROACH L, lp3, 80</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp3の位置から-Zm方向に80mm離れた位置へ(CP制御)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH P, (100, 200, 300, 45, 1), 70</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'(100, 200, 300, 45, 1)でロボット形態1の位置から+Zb方向に70mm</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'離れた位置へ(PTP制御)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH L, lp1, lf1, SPEED = 100</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp1の位置から+Zb方向にlf1離れた位置へ(CP制御, 内部速度 = </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'100%)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">APPROACH P, lp2, @P lf2, S = 50</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp2の位置から+Zb方向にlf2離れた位置へ(PTP制御, 内部速度 = </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'50%)パス動作します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">APPROACH L, lp3, 80</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'lp3の位置から+Zb方向に80mm離れた位置へ(CP制御)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

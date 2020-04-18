@@ -1,0 +1,221 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>RUN</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">RUN<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">別プログラムを並列起動します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">RUN &lt;プログラム名&gt; [(&lt;引数&gt;[,&lt;引数&gt;…])][,&lt;RUNオプション&gt;] </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">現在実行中のプログラムから、&lt;プログラム名&gt;に指定したプログラムを並列に起動します。自プログラムをRUNすることはできません。</div>
+            <div class="p">&lt;引数&gt;</div>
+            <div class="p">&lt;引数&gt;には、値渡しのみ使用できます。参照渡しを指定した場合は自動的に値渡しになりますが、ローカル配列は使用することができません。</div>
+            <div class="p">&lt;RUN オプション&gt;</div>
+            <div class="p">&lt;RUN オプション&gt;には、次の3つのオプションが指定できます。</div>
+            <div class="p">PRIORITY（もしくはP）</div>
+            <div class="p">プログラムの優先度を指定します。省略するとデフォルト値128 として処置します。</div>
+            <div class="p">数値が小さいほど優先度が高くなります。設定範囲は、102～255 の間です。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">特権タスクの優先順位は変更できません。</div>
+                </div>
+              </div>
+            </div>
+            <div class="p">CYCLE（もしくはC）</div>
+            <div class="p">スイッチング周期（プログラムを繰り返し起動する場合のサイクル毎の間隔）を指定します。単位は、msec です。設定範囲は、1～2147483647 の間です。</div>
+            <div class="p">引数を伴うプログラムは、CYCLE オプションを付けて起動できません。</div>
+            <div class="p">RESULT（v2.6以降のコントローラ）</div>
+            <div class="p">RUNコマンド実行時に、内部エラーが発生してもプログラムを停止させません。RESULT=(変数名)で指定した変数に内部エラーのエラーコードを格納します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11100301.html" target="_top">CALL</a>、<a href="cmidc11100302.html" target="_top">GOSUB</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">SUSPEND命令にて動作停止中のタスクを再度RUNさせる場合は、動作が停止してからRUNするようにしてください。動作停止完了前にRUNをかけ再動作させると、指令速度制限オーバなどのエラーになります。</div>
+              </li>
+              <li class="item">
+                <div class="p">CYCLEオプションを使用する際は、命令実行中に瞬時停止を行ない再起動すると、一時停止中もサイクル同期経過が進むので注意してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">ティーチチェックモードではRUN命令は実行されません。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">DEFINT Li1 = 1, Li2 = 2, Li3 = 3</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">RUN samp1, C = 1000</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp1を並列に（C = 1000）起動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">RUN samp2 (Li1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp2にLi1の引数を付けて並列に起動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">RUN samp3 (Li1, Li2), PRIORITY = 129</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp3にLi1，Li2の引数を付けて並列に（P = 129）</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'起動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">RUN samp4 (Li1, Li2), PRIORITY = 150</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp4にLi1，Li2の引数を付けて並列に（P = 150）</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'起動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">RUN samp5 (Li1, Li2, Li3), PRIORITY = 120</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp5にLi1，Li2，Li3の引数を付けて並列に（P = 120）</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'起動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">RUN samp6, RESULT = I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'samp6 を起動させます。</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'RUN失敗時、変数I1にエラーコードを格納し次の行に</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'移ります。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

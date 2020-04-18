@@ -1,0 +1,466 @@
+#include <PanelMain.h> raw
+'KEYENCE CV-Xシリーズ
+'バージョン  :Ver1.0.0
+'
+
+#include "KEYENCE_CVX.pcs"	
+
+
+Sub NB7_DONE()	'----- Ch番号設定 -----
+
+	Dim	iLocReq0	as Integer
+	Dim	iLocReq1	as Integer
+	Dim	iLocCh		as Integer
+	TB1.TEXT = ""
+
+	IF ((NB7.Value >= 1) AND (NB7.Value <= 3 )) OR ((NB7.Value >= 8) AND (NB7.Value <= 15 )) THEN
+		NB6.Active = 3								'設定№
+		iLocCh = NB7.Value
+		TB1.FG = 14									'Yellow
+		TB1.Text = ""								'通信ステータス表示
+		iLocReq0 = 0
+		iLocReq1 = 0
+	ELSE											'Ch範囲異常
+		iLocCh = 8
+		NB7.Value = iLocCh
+		TB1.Text =  "Chは1～3,8～15"
+	END IF
+
+End Sub
+
+
+Sub PB2_CLICKED()	'----- 設定モード移行 -----
+	Dim iLineNo as Integer
+	TB1.TEXT = ""
+
+	iLineNo = NB7.Value
+	IF Not (ConnectCVX(iLineNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "接続に失敗"
+		EXIT SUB
+	End IF
+
+	IF NOT (X_S0(iLineNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "設定ﾓｰﾄﾞ移行失敗"
+		EXIT SUB
+	END IF
+		TB1.FG = -1									'White
+		TB1.TEXT = "成功"
+
+	DisConnectCVX iLineNo
+	
+End Sub
+
+Sub PB3_CLICKED()	'----- 運転モード移行 -----
+	Dim iLineNo as Integer
+	TB1.TEXT = ""
+
+	iLineNo = NB7.Value
+	IF Not (ConnectCVX(iLineNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "接続に失敗"
+		EXIT SUB
+	End IF
+
+	IF NOT (X_R0(iLineNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "運転ﾓｰﾄﾞ移行失敗"
+		EXIT SUB
+	END IF
+		TB1.FG = -1									'White
+		TB1.TEXT = "成功"
+
+	DisConnectCVX iLineNo
+	
+End Sub
+
+
+Sub NB6_DONE()	'----- 設定№変更 -----
+	Dim	iLocSetNo	as Integer
+	TB1.TEXT = ""
+
+	IF (NB6.Value < 0) OR (NB6.Value > 999) THEN		'設定№範囲異常
+		NB6.Value = 0
+		TB1.Text =  "設定は0～999"
+	ELSE
+		iLocSetNo = NB6.Value						'設定№を整数へ
+	END IF
+
+End Sub
+
+Sub NB8_DONE()	'----- SD №変更 -----
+	Dim	iSDNo	as Integer
+	TB1.TEXT = ""
+
+	IF (NB8.Value < 1) OR (NB8.Value > 2) THEN		'SD №範囲異常
+		NB8.Value = 1
+		TB1.Text =  "設定は1～2"
+	ELSE
+		iSDNo = NB8.Value						'SD №を整数へ
+	END IF
+
+End Sub
+
+Sub NB9_DONE()	'----- トリガー№変更 -----
+	Dim	iTriggerNo as Integer
+	TB1.TEXT = ""
+
+	IF ((NB9.Value < -1) OR (NB9.Value > 4)) or (NB9.Value = 0)THEN		'トリガー№範囲異常
+		NB8.Value = 1
+		TB1.Text =  "設定は-1,1～4"
+	ELSE
+		iTriggerNo = NB9.Value						'トリガー№を整数へ
+	END IF
+
+End Sub
+
+
+Sub PB4_CLICKED()	'----- 設定№変更実行 -----
+	Dim lResult as Long
+	Dim iLineNo as Integer
+	Dim iProgNo as Integer
+	Dim iSDNo as Integer
+	TB1.TEXT = ""
+
+	iLineNo = NB7.Value
+	IF Not (ConnectCVX(iLineNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "接続に失敗"
+		EXIT SUB
+	End IF
+
+	iProgNo = NB6.Value
+	iSDNo = NB8.Value
+	IF NOT (X_PW(iLineNo, iSDNo, iProgNo)) THEN
+		TB1.FG = 14									'Yellow
+		TB1.TEXT = "設定No.変更失敗"
+		EXIT SUB
+	END IF
+		TB1.FG = -1									'White
+		TB1.TEXT = "成功"
+
+	DisConnectCVX iLineNo
+	
+End Sub
+
+Sub PB7_CLICKED()	'----- トリガ -----
+	Dim iLineNo as Integer
+	Dim iTriggerNo as Integer
+	Dim strResults as string
+	TB1.TEXT = ""
+	InitData				'---　受信データクリア
+
+	iLineNo = NB7.Value
+	iTriggerNo = NB9.Value
+	IF Not (ConnectCVX(iLineNo)) THEN
+		TB1.TEXT = "接続に失敗しました"
+		EXIT SUB
+	End IF
+
+	IF NOT (X_T(iLineNo, iTriggerNo, strResults)) THEN
+		TB1.TEXT = "トリガ失敗"
+		EXIT SUB
+	END IF
+		TB1.FG = -1									'White
+		TB1.TEXT = "成功"
+
+	IF Label2.Caption = "1" THEN		'---　受信データ表示
+		NB1.Value = D_dnCvxData(0)
+		NB2.Value = D_dnCvxData(1)
+		NB3.Value = D_dnCvxData(2)
+		NB4.Value = D_dnCvxData(3)
+		NB5.Value = D_dnCvxData(4)
+	ELSEIF Label2.Caption = "6" THEN
+		NB1.Value = D_dnCvxData(5)
+		NB2.Value = D_dnCvxData(6)
+		NB3.Value = D_dnCvxData(7)
+		NB4.Value = D_dnCvxData(8)
+		NB5.Value = D_dnCvxData(9)
+	ELSEIF Label2.Caption = "11" THEN
+		NB1.Value = D_dnCvxData(10)
+		NB2.Value = D_dnCvxData(11)
+		NB3.Value = D_dnCvxData(12)
+		NB4.Value = D_dnCvxData(13)
+		NB5.Value = D_dnCvxData(14)
+	ELSEIF Label2.Caption = "16" THEN
+		NB1.Value = D_dnCvxData(15)
+		NB2.Value = D_dnCvxData(16)
+		NB3.Value = D_dnCvxData(17)
+		NB4.Value = D_dnCvxData(18)
+		NB5.Value = D_dnCvxData(19)
+	ELSEIF Label2.Caption = "21" THEN
+		NB1.Value = D_dnCvxData(20)
+		NB2.Value = D_dnCvxData(21)
+		NB3.Value = D_dnCvxData(22)
+		NB4.Value = D_dnCvxData(23)
+		NB5.Value = D_dnCvxData(24)
+	ELSEIF Label2.Caption = "26" THEN
+		NB1.Value = D_dnCvxData(25)
+		NB2.Value = D_dnCvxData(26)
+		NB3.Value = D_dnCvxData(27)
+		NB4.Value = D_dnCvxData(28)
+		NB5.Value = D_dnCvxData(29)
+	END IF
+	
+	DisConnectCVX iLineNo
+End Sub
+
+Sub PB8_CLICKED()	'----- データクリア -----
+	InitData
+	TB1.TEXT = ""
+	IF Label2.Caption = "1" THEN
+		NB1.Value = D_dnCvxData(0)
+		NB2.Value = D_dnCvxData(1)
+		NB3.Value = D_dnCvxData(2)
+		NB4.Value = D_dnCvxData(3)
+		NB5.Value = D_dnCvxData(4)
+	ELSEIF Label2.Caption = "6" THEN
+		NB1.Value = D_dnCvxData(5)
+		NB2.Value = D_dnCvxData(6)
+		NB3.Value = D_dnCvxData(7)
+		NB4.Value = D_dnCvxData(8)
+		NB5.Value = D_dnCvxData(9)
+	ELSEIF Label2.Caption = "11" THEN
+		NB1.Value = D_dnCvxData(10)
+		NB2.Value = D_dnCvxData(11)
+		NB3.Value = D_dnCvxData(12)
+		NB4.Value = D_dnCvxData(13)
+		NB5.Value = D_dnCvxData(14)
+	ELSEIF Label2.Caption = "16" THEN
+		NB1.Value = D_dnCvxData(15)
+		NB2.Value = D_dnCvxData(16)
+		NB3.Value = D_dnCvxData(17)
+		NB4.Value = D_dnCvxData(18)
+		NB5.Value = D_dnCvxData(19)
+	ELSEIF Label2.Caption = "21" THEN
+		NB1.Value = D_dnCvxData(20)
+		NB2.Value = D_dnCvxData(21)
+		NB3.Value = D_dnCvxData(22)
+		NB4.Value = D_dnCvxData(23)
+		NB5.Value = D_dnCvxData(24)
+	ELSEIF Label2.Caption = "26" THEN
+		NB1.Value = D_dnCvxData(25)
+		NB2.Value = D_dnCvxData(26)
+		NB3.Value = D_dnCvxData(27)
+		NB4.Value = D_dnCvxData(28)
+		NB5.Value = D_dnCvxData(29)
+	END IF
+End Sub
+
+
+Sub PB6_CLICKED()		'---　受信データページ切替　↓
+
+	Dim	iLocDataPage	as Integer
+	TB1.TEXT = ""
+
+	IF Label2.Caption = "1" THEN
+		iLocDataPage = 2
+		Label2.Caption = "6"
+		Label3.Caption = "7"
+		Label4.Caption = "8"
+		Label5.Caption = "9"
+		Label6.Caption = "10"
+		NB1.Value = D_dnCvxData(5)
+		NB2.Value = D_dnCvxData(6)
+		NB3.Value = D_dnCvxData(7)
+		NB4.Value = D_dnCvxData(8)
+		NB5.Value = D_dnCvxData(9)
+	ELSEIF Label2.Caption = "6" THEN
+		iLocDataPage = 3
+		Label2.Caption = "11"
+		Label3.Caption = "12"
+		Label4.Caption = "13"
+		Label5.Caption = "14"
+		Label6.Caption = "15"
+		NB1.Value = D_dnCvxData(10)
+		NB2.Value = D_dnCvxData(11)
+		NB3.Value = D_dnCvxData(12)
+		NB4.Value = D_dnCvxData(13)
+		NB5.Value = D_dnCvxData(14)
+	ELSEIF Label2.Caption = "11" THEN
+		iLocDataPage = 4
+		Label2.Caption = "16"
+		Label3.Caption = "17"
+		Label4.Caption = "18"
+		Label5.Caption = "19"
+		Label6.Caption = "20"
+		NB1.Value = D_dnCvxData(15)
+		NB2.Value = D_dnCvxData(16)
+		NB3.Value = D_dnCvxData(17)
+		NB4.Value = D_dnCvxData(18)
+		NB5.Value = D_dnCvxData(19)
+	ELSEIF Label2.Caption = "16" THEN
+		iLocDataPage = 5
+		Label2.Caption = "21"
+		Label3.Caption = "22"
+		Label4.Caption = "23"
+		Label5.Caption = "24"
+		Label6.Caption = "25"
+		NB1.Value = D_dnCvxData(20)
+		NB2.Value = D_dnCvxData(21)
+		NB3.Value = D_dnCvxData(22)
+		NB4.Value = D_dnCvxData(23)
+		NB5.Value = D_dnCvxData(24)
+	ELSEIF Label2.Caption = "21" THEN
+		iLocDataPage = 6
+		Label2.Caption = "26"
+		Label3.Caption = "27"
+		Label4.Caption = "28"
+		Label5.Caption = "29"
+		Label6.Caption = "30"
+		NB1.Value = D_dnCvxData(25)
+		NB2.Value = D_dnCvxData(26)
+		NB3.Value = D_dnCvxData(27)
+		NB4.Value = D_dnCvxData(28)
+		NB5.Value = D_dnCvxData(29)
+	END IF
+End Sub
+
+Sub PB5_CLICKED()		'---　受信データページ切替　↑
+
+	Dim	iLocDataPage	as Integer
+	TB1.TEXT = ""
+
+	IF Label2.Caption = "6" THEN
+		iLocDataPage = 1
+		Label2.Caption = "1"
+		Label3.Caption = "2"
+		Label4.Caption = "3"
+		Label5.Caption = "4"
+		Label6.Caption = "5"
+		NB1.Value = D_dnCvxData(0)
+		NB2.Value = D_dnCvxData(1)
+		NB3.Value = D_dnCvxData(2)
+		NB4.Value = D_dnCvxData(3)
+		NB5.Value = D_dnCvxData(4)
+	ELSEIF Label2.Caption = "11" THEN
+		iLocDataPage = 2
+		Label2.Caption = "6"
+		Label3.Caption = "7"
+		Label4.Caption = "8"
+		Label5.Caption = "9"
+		Label6.Caption = "10"
+		NB1.Value = D_dnCvxData(5)
+		NB2.Value = D_dnCvxData(6)
+		NB3.Value = D_dnCvxData(7)
+		NB4.Value = D_dnCvxData(8)
+		NB5.Value = D_dnCvxData(9)
+	ELSEIF Label2.Caption = "16" THEN
+		iLocDataPage = 3
+		Label2.Caption = "11"
+		Label3.Caption = "12"
+		Label4.Caption = "13"
+		Label5.Caption = "14"
+		Label6.Caption = "15"
+		NB1.Value = D_dnCvxData(10)
+		NB2.Value = D_dnCvxData(11)
+		NB3.Value = D_dnCvxData(12)
+		NB4.Value = D_dnCvxData(13)
+		NB5.Value = D_dnCvxData(14)
+	ELSEIF Label2.Caption = "21" THEN
+		iLocDataPage = 4
+		Label2.Caption = "16"
+		Label3.Caption = "17"
+		Label4.Caption = "18"
+		Label5.Caption = "19"
+		Label6.Caption = "20"
+		NB1.Value = D_dnCvxData(15)
+		NB2.Value = D_dnCvxData(16)
+		NB3.Value = D_dnCvxData(17)
+		NB4.Value = D_dnCvxData(18)
+		NB5.Value = D_dnCvxData(19)
+	ELSEIF Label2.Caption ="26" THEN
+		iLocDataPage = 5
+		Label2.Caption = "21"
+		Label3.Caption = "22"
+		Label4.Caption = "23"
+		Label5.Caption = "24"
+		Label6.Caption = "25"
+		NB1.Value = D_dnCvxData(20)
+		NB2.Value = D_dnCvxData(21)
+		NB3.Value = D_dnCvxData(22)
+		NB4.Value = D_dnCvxData(23)
+		NB5.Value = D_dnCvxData(24)
+	END IF
+
+End Sub
+
+
+Sub FK6_CLICKED()	'----- 操作盤初期化 -----
+
+	NB7.VAlue = 8
+	NB6.VAlue = 0
+	NB8.VAlue = 1
+	NB9.VAlue = 1
+	TB1.FG = -1							'White
+	TB1.Text = ""						'通信ステータス消去
+	InitData
+	Label2.Caption = "1"
+	Label3.Caption = "2"
+	Label4.Caption = "3"
+	Label5.Caption = "4"
+	Label6.Caption = "5"
+	NB1.Value = D_dnCvxData(0)
+	NB2.Value = D_dnCvxData(1)
+	NB3.Value = D_dnCvxData(2)
+	NB4.Value = D_dnCvxData(3)
+	NB5.Value = D_dnCvxData(4)
+
+End Sub
+
+#ifdef TP_DESIGNER
+'<<--TPDESIGNER_RESERVED-->>
+CAPTION=""
+BG=3
+FG=0
+TIMEOUT=200
+TIMEOUTMODE=0
+RELEASEMODE=0
+PNLCCVER=232
+COLORTYPE=0
+FONTTYPE=0
+BORDERSTYLE=0
+CONTROLSORT=0
+add_widget 1,"PB9999",0,50,640,322,-1,0,0,1,1,"",2,0,0;
+add_widget 9,"Group1",360,70,270,280,10,0,0,1,0,"受信データ",1,0,2,0;
+add_widget 1,"PB999",0,0,640,60,0,8,0,1,1,"",2,0,0;
+add_widget 2,"Label1",10,10,520,40,14,0,0,1,0,"キーエンス　CV-X100/150/170",3,0,"","",1,1;
+add_widget 1,"PB998",460,90,150,250,0,8,0,1,1,"",2,0,0;
+add_widget 2,"Label2",410,100,46,30,-1,0,0,1,0,"1",2,1,"","",1,1;
+add_widget 5,"NB1",470,98,130,34,-1,9,0,1,4,"NB1",2,1,      0;
+add_widget 5,"NB2",470,148,130,34,-1,9,0,1,4,"NB2",2,1,      0;
+add_widget 5,"NB3",470,198,130,34,-1,9,0,1,4,"NB3",2,1,      0;
+add_widget 5,"NB4",470,248,130,34,-1,9,0,1,4,"NB4",2,1,      0;
+add_widget 5,"NB5",470,298,130,34,-1,9,0,1,4,"NB5",2,1,      0;
+add_widget 2,"Label3",410,150,46,30,-1,0,0,1,0,"2",2,1,"","",1,1;
+add_widget 2,"Label4",410,200,46,30,-1,0,0,1,0,"3",2,1,"","",1,1;
+add_widget 2,"Label5",410,250,46,30,-1,0,0,1,0,"4",2,1,"","",1,1;
+add_widget 2,"Label6",410,300,46,30,-1,0,0,1,0,"5",2,1,"","",1,1;
+add_widget 1,"PB1",10,301,330,50,0,8,0,1,1,"",2,2,0;
+add_widget 8,"TB1",130,311,200,30,-1,3,0,1,0,"TB1",2,2,"";
+add_widget 9,"Group2",10,70,330,225,10,0,0,1,0,"設定切換&トリガ",1,0,2,0;
+add_widget 1,"PB989",20,160,310,60,0,8,0,1,1,"",2,0,0;
+add_widget 2,"Label7",133,175,70,30,0,8,0,1,0,"設定No",1,0,"","",1,1;
+add_widget 1,"PB4",260,165,64,50,-1,4,0,3,1,"切換\n実行",1,0,0;
+add_widget 1,"PB985",20,228,310,60,0,8,0,1,1,"",2,0,0;
+add_widget 1,"PB7",190,232,135,51,-1,4,0,3,1,"トリガ＆\nデータ受信",1,0,0;
+add_widget 3,"PL1",370,320,20,20,10,0,0,0,2,"PL1",2,0,0;
+add_widget 5,"NB7",580,10,50,40,-1,1,0,3,1,"NB7",2,1,8;
+add_widget 2,"Label8",540,10,40,40,0,8,0,1,0,"回線\n番号",1,0,"","",1,1;
+add_widget 1,"PB5",370,130,40,50,10,8,0,3,1,"▲",3,0,0;
+add_widget 1,"PB6",370,190,40,50,10,8,0,3,1,"▼",3,0,0;
+add_widget 2,"Label9",20,311,110,30,0,8,0,1,0,"通信結果：",2,0,"","",1,1;
+add_widget 12,"FK6","P初期化",6;
+add_widget 1,"PB8",370,280,40,50,0,11,0,3,1,"ｸﾘｱ",2,0,0;
+add_widget 2,"Label11",23,175,49,30,0,8,0,1,0,"SD No",1,0,"","",1,1;
+add_widget 5,"NB8",72,170,60,40,-1,1,0,3,1,"NB6",2,1,1;
+add_widget 5,"NB6",195,170,60,40,-1,1,0,3,1,"NB6",2,1,0;
+add_widget 5,"NB9",110,239,60,40,-1,1,0,3,1,"NB6",2,1,1;
+add_widget 2,"Label12",40,243,70,30,0,8,0,1,0,"トリガNo",1,0,"","",1,1;
+add_widget 1,"PB9",20,80,310,70,0,7,0,3,1,"",2,0,0;
+add_widget 2,"Label10",92,84,160,20,0,7,0,1,0,"【モード設定】",1,0,"","",1,1;
+add_widget 1,"PB2",40,104,110,40,0,10,0,3,1,"設定モード",1,0,0;
+add_widget 1,"PB3",196,104,110,40,0,10,0,3,1,"運転モード",1,0,0;
+'<<--TPDESIGNER_RESERVED-->>
+#endif

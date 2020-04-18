@@ -1,0 +1,145 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>T2P</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">T2P<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">同次変換型からポジション型に変換します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">T2P(&lt;同次変換型&gt;[ ,&lt;T2Pオプション&gt;])</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;同次変換型&gt;に指定したデータをポジション型に変換します。得られる値は、そのとき設定されているツール、ワーク座標系を反映したものとなります。</div>
+            <div class="p">&lt;T2Pオプション&gt;は省略可能なResult格納変数です（Ver.3.0以降）。Ｉ型変数を指定します。&lt;T2Pオプション&gt;を指定するとT2Pコマンド実行時に内部でエラーが発生してもプログラムを停止させず、内部エラーのエラーコードを指定した変数に格納します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11500801.html" target="_top">J2P</a>、<a href="cmidc11500802.html" target="_top">J2T</a>、<a href="cmidc11500803.html" target="_top">P2J</a>、<a href="cmidc11500804.html" target="_top">P2T</a>、<a href="cmidc11500805.html" target="_top">T2J</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFPOS lp1, lp2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM lt1 As Trans</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lp1 = T2P(lt1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'lt1をポジション型に変換したデータをlp1に代入し</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">lp2 = T2P(350, 0, 450, 0, 1, 0, 0, 0, -1))</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'同次変換型データ(350, 0, 450, 0, 1, 0, 0, 0, -1) </div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'をポジション型に変換したデータをlp2に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">lp1 = T2P(lt1,li1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'T2Pコマンド失敗時、変数li1にエラーコードを格納し</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'次の行ステップに移ります。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

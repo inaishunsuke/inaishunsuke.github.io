@@ -1,0 +1,34 @@
+'!TITLE "FZ_Calibration"
+
+' 注意
+' 1. Omron FZの結果出力Ethernet通信のポートを回線番号9と同じ値にしてください。
+' 2. 回線番号のIPAddressをOmron FZのIPAddressにしてください。
+' 3. このPacscriptを実行してから、操作盤を開いてください。
+
+' 機器のIPAddress
+#define IPAddress "192.168.0.2"
+
+Sub Main 
+	Dim ctrl as object
+	Dim vntResult as Variant
+
+	' FZに接続
+	ctrl = Cao.AddController( "FZ", "CaoProv.OMRON.FZ", "", "conn=eth:" & IPAddress)
+
+	Do
+		On Error Resume Next
+		' トリガ & 結果取得
+		vntResult = ctrl.MEASURE
+		
+		' 操作盤に渡すように結果を変数に
+		vars.ItemValue(3) = vntResult(0)
+		vars.ItemValue(4) = vntResult(1)
+		PrintDbg vntResult(0) & ", " & vntResult(1) & ", " & vntResult(2)
+		On Error Goto 0
+	
+		Delay 500
+	Loop
+End Sub
+
+
+

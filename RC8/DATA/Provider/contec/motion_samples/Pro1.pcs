@@ -1,0 +1,28 @@
+'!TITLE "Pro1.pcs"
+
+
+Sub Main
+	
+	Reset IO[128]
+
+	'CONTECÉÇÅ[ÉVÉáÉì ìÆçÏ
+	Run Sub1
+	
+	Dim lJnt01 As Joint
+	Dim lJnt02 As Joint
+	
+	lJnt01 = J(90, 0, 0, 90, 0, 90)
+	lJnt02 = J(0, 45, 90, 0, 45, 0)
+	
+	TakeArm
+	ExtSpeed 100
+	Speed 50
+
+	Move P, @0 lJnt02
+	
+	Set IO[128] 
+	Move P, lJnt01
+	Move P, lJnt02
+
+End Sub
+

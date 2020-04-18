@@ -1,0 +1,159 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>FIGAPRP</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">FIGAPRP<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">PTP動作可能なアプローチ位置と基準位置の形態を計算します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">FIGAPRP(＜基準位置＞, ＜アプローチ長＞)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">＜基準位置＞は、ポジション型のみ使用できます。</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <div class="p">＜基準位置＞からハンド座標系の-Z軸方向へ＜アプローチ長＞分離れた位置（アプローチ位置）から＜基準位置＞へPTP動作可能な＜基準位置＞の形態を計算します。</div>
+              <div class="p">アプローチ位置から＜基準位置＞へPTP動作可能な形態は、以下の順位で移動可能となるまで自動探査します。</div>
+              <ol type="1" class="list1">
+                <li class="item">
+                  <div class="p">＜基準位置＞の形態（＜基準位置＞の形態が不定の場合は現在の形態）</div>
+                </li>
+                <li class="item">
+                  <div class="p">手首形態（フリップ－ノンフリップ）を入れ替え、アプローチ位置から</div>
+                </li>
+              </ol>
+              <div class="p">　　 ＜基準位置＞への4軸の移動角度が±90度以内なら動作可能とする。</div>
+              <div class="p">4軸の移動角度が±90度を超えたり、移動不可能な場合は、エラー6070番台（J*ソフトリミットオーバ）を発生します。この場合は、現在位置またはアプローチ長を変えるなどの処置を行なってください。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <div class="p">＜基準位置＞からベース座標系の+Z軸方向へ＜アプローチ長＞分離れた位置（アプローチ位置）から＜基準位置＞へPTP動作可能な＜基準位置＞の形態を計算します。</div>
+              <div class="p">アプローチ位置から＜基準位置＞へPTP動作可能な形態は、以下の順位で移動可能となるまで自動探査します。</div>
+              <ol type="1" class="list1">
+                <li class="item">
+                  <div class="p">＜基準位置＞の形態（＜基準位置＞の形態が不定の場合は現在の形態）</div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200302.html" target="_top">FIGAPRL</a>、<a href="cmidc11200201.html" target="_top">APPROACH</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">FIGAPRPは、アプローチ後の移動動作がPTP動作の場合に使用してください。CP動作の場合はFIGAPRLを使用してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">FIGAPRPで使用する＜基準位置＞、アプローチ長は、APPROACH動作時に指定する＜基準位置＞、アプローチ長と同一にしてください。＜基準位置＞、アプローチ長が異なる場合は、アプローチ後のPTP動作時に6070番台のエラーが発生する場合があります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1=FIGAPRL(P1, 100.0)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">LETF  P1=I1</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">APPROACH  P, P1, 100.0</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">MOVE  L, P1</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">I1 = FIGAPRP (P1 + (100, 200, 0, 0, 0, 10), 100, 0)</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">I1 = FIGAPRP (P1 + (100, 200, 0, 0), 100, 0)</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetCompControl</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetCompControl<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.4 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限機能を有効にします。(６軸専用命令)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetCompControl</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">力制限機能を有効にします。SetFrcLimit,SetCompRate,SetFrcCoord等で設定された力制限条件を有効にします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700131.html" target="_top">SetFrcLimit</a>、<a href="cmidc20700133.html" target="_top">SetCompRate</a>、<a href="cmidc20700130.html" target="_top">SetFrcCoord</a>、<a href="cmidc20700129.html" target="_top">ResetCompControl</a>、<a href="cmidc20700128.html" target="_top">SetCompFControl</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">重力補償無効時、電流制限有効時に本ライブラリを実行した場合、エラー「60f5 力制限実行できません」が発生します。電流制限を無効、重力補償を有効にした後、再度、実行してください。電流制限無効化は、ResetCurLmt、重力補償有効化は、SetGravityを参照ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">モータ電源OFF状態で実行しても、力制限は有効になりません。また、力制限中にモータ電源OFFした場合は、力制限は無効になります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボット停止状態で実行してください。パス動作中に本ライブラリを実行した場合は、エンド動作となります。また、ロボット動作中に本ライブラリを実行し、エラー「600b ロボット動作中です」が発生する場合、Delay命令等でロボット停止を待ってから実行してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限中にロボットが外力等で動作する場合、エラー「611* 偏差過大」が発生する場合があります。エラー発生する場合は、偏差許容値を変更してください。偏差許容値変更は、SetEralwを参照ください。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボットが接触状態などロボットに力が加わった状態で本ライブラリを実行しないでください。力が加わった状態で力制限機能を有効にする場合は、SetCompFControlを使用してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">SetCompControl実行後、ロボットの姿勢が大きく変化した場合は、重力補償の補正値に誤差が生じ、ロボットが重力方向に動作する場合があります。力制限中に姿勢が大きく変化する場合は、途中でResetCompControlにて力制限を無効にした後、再度SetCompControlにて力制限を有効にしてください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetFrcCoord(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限座標系を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">CALL SetFrcLimit(100,0,100,100,100,100)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限割合を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetCompControl</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限機能を有効にする。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetEralw(1,90)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'偏差許容値を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

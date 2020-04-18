@@ -1,0 +1,265 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>dioConstantDistanceIoOut</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">dioConstantDistanceIoOut<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.3.0以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">軸が一定の角度（Z軸、直動軸などは距離）、動作する度にI/Oの出力状態を反転します</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">dioConstantDistanceIoOut(&lt;検出周期&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">あらかじめ各軸の角度(距離)とI/O出力ポート番号を設定しておき、&lt;検出周期&gt;を1以上にしてこのライブラリを実行すると、設定した角度(距離)分、動作する度に設定したI/O出力ポートの出力状態を反転します。</div>
+            <div class="p">&lt;検出周期&gt;を0にしてこのライブラリを実行すると、I/Oの出力状態を反転しなくなります。</div>
+            <div class="p">角度(距離)とI/O出力ポート番号の設定は、各軸毎に設定できます。</div>
+            <div class="p">ティーチングペンダントまたはWINCAPSⅢで行います。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">操作経路：ティーチングペンダント</div>
+                <div class="p">[F4 I/O]－[F6 補助機能]－[F1 ハード設定]</div>
+              </li>
+              <li class="item">
+                <div class="p">操作経路：WINCAPSⅢ</div>
+                <div class="p">「プロジェクト」メニューから「パラメータ」を選択し、「I/O」タブをクリックします。</div>
+              </li>
+            </ul>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">項目</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">No.<sup>注1</sup></div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">パラメータ名称</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">説明</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="left" rowspan="5">
+                  <div class="p">1軸から8軸のI/O出力ポート番号</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">85</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 出力IO番号（J1）</div>
+                </td>
+                <td valign="middle" align="left" rowspan="5">
+                  <div class="p">出力I/Oのポート番号を入力してください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">86</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 出力IO番号（J2）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">91</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 出力IO番号（J7）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">92</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 出力IO番号（J8）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="middle" align="left" rowspan="5">
+                  <div class="p">1軸から8軸の角度（距離）</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">93</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 検出角度（J1 deg*10^5）</div>
+                </td>
+                <td valign="middle" align="left" rowspan="5">
+                  <div class="p">指定の角度に100000を掛算した値を入力してください。0にすると、その軸の出力I/Oポートは反転しません。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">94</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 検出角度（J2 deg*10^5）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+                <td valign="top" align="center">
+                  <div class="p">：</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">99</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 検出角度（J7 deg*10^5）</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="center">
+                  <div class="p">100</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">位置出力 検出角度（J8 deg*10^5）</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">注1：WINCAPSⅢでは1足した番号になります。</div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;検出周期&gt;に設定した値は下記計算式により実際の周期に換算し、その周期で各軸の角度(距離)を検出します。</div>
+            <div class="p">また、&lt;検出周期&gt;の設定範囲は0～32です。</div>
+            <div class="ptxt-ind5">
+              <div class="p">周期 = 250μsec × &lt;検出周期&gt;</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">&lt;検出周期&gt;を1以上にしてこのライブラリを実行すると、設定したI/O出力ポートをOFFにしてから検出を開始します。</div>
+            <div class="p">この機能はオプションです。機能ライセンスを購入してください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DRIVEA @E (4,-180)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'4軸を初期位置に戻します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL dioConstantDistanceIoOut(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'検出開始(250usec周期)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DRIVEA @E (4,180)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'4軸を360度動作させます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL dioConstantDistanceIoOut(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'検出停止</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

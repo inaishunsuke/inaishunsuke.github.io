@@ -1,0 +1,32 @@
+'!TITLE "ProAIOSample_ja.pcs"
+
+Sub Main
+	On Error Goto ErrorProc
+
+	Dim ctrl as Object				' CaoControllerオブジェクト用
+    Dim sDeviceName as String		' デバイス名取得用
+	Dim varAO0 As Object			' AIOボードにアクセスする変数オブジェクト用
+	Dim sngAO0 as Single = 10.0		' アナログ出力用(指定電圧値=10.0V)
+
+	' 接続処理
+	ctrl = cao.AddController("AIO", "CaoProv.CONTEC.AIO","","DeviceName=AIO000")
+
+	' デバイス名取得
+	sDeviceName = ctrl.AddVariable("@DeviceName").Value	
+
+	' 変数オブジェクト生成
+	varAO0 = ctrl.AddVariable("AO0")
+
+	' 指定電圧値を出力
+	varAO0.value = sngAO0
+
+EndProc:
+	Cao.Controllers.Clear
+	ctrl = Nothing
+	Exit Sub
+
+ErrorProc:
+	PrintDbg Hex(Err.OriginalNumber)
+	Goto EndProc
+End Sub
+

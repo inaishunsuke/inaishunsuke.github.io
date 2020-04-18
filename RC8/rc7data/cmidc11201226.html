@@ -1,0 +1,129 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ST_SetCompEralw</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ST_SetCompEralw<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.1.9 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限時のツール端の位置、姿勢偏差許容値を設定します。(６軸専用命令)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ST_SetCompEralw &lt;X方向偏差許容値&gt;,&lt;Y方向偏差許容値&gt;,&lt;Z方向偏差許容値&gt;,&lt;X回り偏差許容値&gt;,&lt;Y回り偏差許容値&gt;,&lt;Z回り偏差許容値&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">力制限時のツール端の位置、姿勢偏差許容値を設定します。X,Y,Z方向の偏差許容値の単位は、(mm)、X,Y,Z回りの偏差許容値の単位は、(度)です。小数点１桁まで有効です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11201227.html" target="_top">ST_ResetCompEralw</a>、<a href="cmidc11201215.html" target="_top">ST_SetFrcCoord</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">コントローラ電源立ち上げ直後の偏差許容値の初期値は、X,Y,Z方向が100(mm)、X,Y,Z回りが30(度)です。X,Y,Z周りは、最大値が175(度)です。最大値を超える設定をした場合、エラー「6003 有効な数値範囲を超えた」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">ツール端の位置、姿勢偏差が設定した許容値を超えた場合、エラー「60f8 力制限時位置偏差過大異常」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">偏差設定座標系は、ST_SetFrcCoordにて設定された座標系となります。例えばST_SetFrcCoord(1)と設定した場合は、SetCompEralwの設定座標系は、ツール座標系となります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ST_SetFrcCoord 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限座標系をワーク座標にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ST_SetFrcLimit 100,0,100,100,100,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ワーク座標のY方向の力制限割合を0%にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ST_SetCompEralw 10,150,10,5,5,5</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ワーク座標X,Z方向の偏差許容値を10(mm),</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'Y方向の偏差許容値を150(mm),X,Y,Z回りの</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'偏差許容値を5(度)にします。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

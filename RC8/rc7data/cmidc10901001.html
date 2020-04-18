@@ -1,0 +1,282 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>FOLDER</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">FOLDER<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【RC7_Ver.2.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">外部プログラムからアクセス可能なローカル変数を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">FOLDER DEFINT &lt;変数名&gt;[=&lt;定数&gt;] [,&lt;変数名&gt; [=&lt;定数&gt;]…]</div>
+            <div class="p">FOLDER DEFSNG &lt;変数名&gt;[=&lt;定数&gt;] [,&lt;変数名&gt; [=&lt;定数&gt;]…]</div>
+            <div class="p">FOLDER DEFDBL &lt;変数名&gt;[=&lt;定数&gt;] [,&lt;変数名&gt; [=&lt;定数&gt;]…]</div>
+            <div class="p">FOLDER DEFSTR &lt;変数名&gt;[=&lt;定数&gt;] [,&lt;変数名&gt; [=&lt;定数&gt;]…]</div>
+            <div class="p">FOLDER DEFVEC &lt;変数名&gt;[=&lt;ベクトル定数&gt;] [,&lt;変数名&gt; [=&lt;ベクトル定数&gt;]…]</div>
+            <div class="p">FOLDER DEFPOS &lt;変数名&gt;[=&lt;ポジション定数&gt;] [,&lt;変数名&gt; [=&lt;ポジション定数&gt;]…]</div>
+            <div class="p">FOLDER DEFJNT &lt;変数名&gt;[=&lt;ジョイント定数&gt;] [,&lt;変数名&gt; [=&lt;ジョイント定数&gt;]…]</div>
+            <div class="p">FOLDER DEFTRN &lt;変数名&gt;[=&lt;同次変換型定数&gt;] [,&lt;変数名&gt; [=&lt;同次変換型定数&gt;]…]</div>
+            <div class="p">FOLDER DIM &lt;変数名&gt; &lt;後置子&gt;[(&lt;要素数&gt;[,&lt;要素数&gt;[,&lt;要素数&gt;]])][AS&lt;変数型&gt;][,&lt;変数名&gt;…]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">FOLDERステートメントでローカル変数を宣言すると、ローカル変数を外部のプログラムからEXTERNステートメントを使用して参照可能となります。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">プログラム内で同一変数名は定義不可　　　　　　　　　　　　　　　　　　　　　　　</div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+                  <tr class="theadbg">
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">リスト1</div>
+                    </th>
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">説明</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PRO1</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFINT AA</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFSNG AA</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">DEFINT AA</div>
+                      </div>
+                      <div class="p">END</div>
+                    </td>
+                    <td valign="middle" align="left">
+                      <div class="p">リスト1ではAAの宣言3行とも変数2重定義エラーになります。</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">フォルダー内で、同一フォルダー変数名は定義不可</div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+                  <tr class="theadbg">
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">リスト2</div>
+                      <div class="p">(PRO1とPRO2は同一フォルダー内)</div>
+                    </th>
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">説明</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PRO1</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFINT AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">
+                        </div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">PRO2</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFSNG AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="middle" align="left">
+                      <div class="p">リスト2は同一フォルダー内でAAフォルダー変数を別のプログラムで定義しているのでエラーになります。</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+                  <tr class="theadbg">
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">リスト3</div>
+                      <div class="p">(PRO1とPRO2は別のフォルダー)</div>
+                    </th>
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">説明</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PRO1</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFINT AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="middle" align="left" rowspan="2">
+                      <div class="p">リスト3は別々のフォルダーで同じAAフォルダー変数を定義可能（異なる変数となる）</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PRO2</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFINT AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">別プログラムでフォルダー変数名とローカル変数名が同一の時は宣言可能</div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+                  <tr class="theadbg">
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">リスト4</div>
+                      <div class="p">(PRO1とPRO2は同一フォルダー内)</div>
+                    </th>
+                    <th valign="middle" align="center" class="tablehead01">
+                      <div class="p">説明</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PRO1</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">FOLDER DEFINT AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">
+                        </div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">PRO2</div>
+                      </div>
+                      <div class="source02">
+                        <div class="p">DEFINT AA</div>
+                      </div>
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="middle" align="left">
+                      <div class="p">PRO1のAAとPRO2のAAは別変数になります。</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+            </ul>
+            <div class="p">
+            </div>
+            <div class="p">ペンダントでプログラム編集や、WINCAPSⅢから＜マップ／実行プログラム＞をコントローラに送信するとFOLDER変数はクリアされます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc10901002.html" target="_top">EXTERN</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <ol type="1" class="list1">
+              <li class="item">
+                <div class="p">同一フォルダー内に下記3つのプログラムが存在する場合</div>
+              </li>
+              <ul type="disc" class="list2">
+                <li class="item">
+                  <div class="p">PRO1を実行後にPRO3を実行すると"STOP"(プログラム終了)します。</div>
+                </li>
+                <li class="item">
+                  <div class="p">PRO2を実行後にPRO3を実行すると"HOLD "STOP""(プログラムを一時停止)します。</div>
+                </li>
+                <li class="item">
+                  <div class="p">3つのプログラムで宣言されているAA変数は3つとも同じ値になります。</div>
+                  <div class="figure">
+                    <img src="image/cmidc10901001_01.jpg">
+                  </div>
+                </li>
+              </ul>
+              <li class="item">
+                <div class="p">下記のフォルダー構造にプログラムが存在する場合</div>
+                <div class="p">注1：I100に33が代入されます。</div>
+                <div class="p">注2：I100に55が代入されます。</div>
+                <div class="figure">
+                  <img src="image/cmidc10901001_02.jpg">
+                </div>
+              </li>
+              <li class="item">
+                <div class="p">FOLDER変数で初期値を宣言した場合</div>
+                <div class="p">注：PRO1を実行しないと初期値は代入されません。</div>
+              </li>
+              <ul type="disc" class="list2">
+                <li class="item">
+                  <div class="p">PRO1を実行後にPRO3を実行するとI1には3が入り、I2にも3が入る。</div>
+                </li>
+                <li class="item">
+                  <div class="p">PRO2を実行後にPRO1を実行するとI1には3が入り、I2には0が入る。</div>
+                  <div class="figure">
+                    <img src="image/cmidc10901001_03.jpg">
+                  </div>
+                </li>
+              </ul>
+            </ol>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

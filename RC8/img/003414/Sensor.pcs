@@ -1,0 +1,53 @@
+'!TITLE "センサによるワーク検出"
+
+'[システムヘッダファイル]
+' バリアント型データの内部処理形式を表す値を定義したヘッダファイル
+' RC8にあらかじめ組込まれた(登録された)ファイルです。
+
+#Include "Variant.h"
+
+'ロボット0をマスターとしています
+'ロボット1をマスターにする場合は設定を変更して下さい
+#Pragma Optimize ("DefaultRobot", 0)
+Sub Main
+	Dim index As Integer 		' センサで検出したワークの番号
+	Dim workNum As Integer 		' 1回のセンサ検出でバッファに登録するワークの個数
+	Dim arrayUser As Variant 	' センサで検出したワークに設定するユーザデータ配列
+	Dim userData As Integer 	' センサで検出したワークに設定するユーザデータ
+	
+	' IO[128]がOnになるまで処理を繰り返す
+	Do
+		' センサのワーク検出を待つ & ワークの登録個数を取得
+		Call getWorkNumber( workNum )
+
+		If workNum > 0 Then
+			' 整数型データ配列宣言（ユーザデータ）
+			arrayUser = CreateArray( workNum, VT_I4 )
+
+			' 設定したいユーザデータ値をuserDataに入力
+			userData = -1
+
+			For index = 0 To workNum - 1
+				' ワークのユーザデータを配列に保存
+				arrayUser( index ) = userData
+			Next index
+
+			' コンベア１のバッファにワークのデータを追加
+			TrackSetSensor 1, workNum, arrayUser
+		End If
+	Loop Until IO[128] = On
+	
+End Sub
+
+' [ユーザ記述]
+' センサのワーク検出を待ち、ワークの登録個数を返すサブプロシージャ
+' [out] workNum : 1回のセンサ検出でバッファに登録するワークの個数
+Sub getWorkNumber( ByRef workNum As Integer )
+
+	' センサからのワーク検出信号待ち(立ち上がりエッジ検出)
+	Wait IO[48] = OFF
+	Wait IO[48]
+
+	' --------1回のセンサ検出で登録するワークの個数をworkNumに入力--------
+    workNum = 1
+End Sub

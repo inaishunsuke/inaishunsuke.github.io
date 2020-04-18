@@ -1,0 +1,1121 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>TAKEARM</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">TAKEARM<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">アームグループを取得します。アームグループNOを省略した場合、アームグループ０（ロボットのみ）の制御権を取得します。</div>
+            <div class="p">取得時、内部速度・加速度・減速度を100に設定します。</div>
+            <div class="p">取得するアームグループがロボット軸を含む場合は、ツール座標、ワーク座標を原点に戻します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">TAKEARM［＜アームグループNO＞］［＜KEEP＝初期化設定値＞］</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">制御権をすでに持っているタスク、あるいはそのタスクから呼ばれたサブルーチンの中でTAKEARMコマンドを実行した場合には、そのまま処理を続行します。</div>
+            <div id="para">
+              <div class="paratitle1">＜アームグループNO＞ [V1.5以降]</div>
+              <div class="p">アームグループを取得します。アームグループNOを省略した場合、アーム</div>
+              <div class="p">グループ０（ロボットのみ）の制御権を取得します。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">&lt;KEEP = 初期化設定値&gt; [V1.4以降]</div>
+              <div class="p">初期化設定値　0：ツール座標、ワーク座標を原点に戻し、内部速度、加速度、</div>
+              <div class="p">減速度を100に設定します。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">初期化設定値</div>
+              <div class="p">1：ツール座標、ワーク座標、内部速度、加速度、減速度を</div>
+              <div class="p">現在設定されている値のままにします。</div>
+            </div>
+            <div class="p">
+            </div>
+            <div class="p">&lt;KEEP = 初期化設定値＞省略時はKEEP = 0（ツール座標、ワーク座標を原点に戻し、</div>
+            <div class="p">内部速度、加速度、減速度を100）に設定します。</div>
+            <div id="para">
+              <div class="paratitle1">（１）アームグループ0（ロボットのみ）の場合の説明</div>
+              <div class="p">ロボット制御権を取得していないタスクが、下表のロボット動作命令を実行しようとした場合は、エラーとなります。これらの動作命令を実行するプログラムでは、必ずTAKEARMコマンドで、制御権を取得してください。</div>
+              <div id="parasub">
+                <div class="paratitle2">制御権を必要とするロボット動作命令</div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="80%" align="left">
+                  <tr class="theadbg">
+                    <th valign="top" align="center" class="tablehead01">
+                      <div class="p">種    類</div>
+                    </th>
+                    <th valign="top" align="center" class="tablehead01">
+                      <div class="p">コマンド</div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">宣言文</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">HOME, TOOL, WORK</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="ptxtnowrap">
+                        <div class="p">ロボット制御文</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">APPROACH, DEPART, DRAW, DRIVE, DRIVEA, GOHOME, MOVE, ROTATEH, ROTATE, SPEED, JSPEED, ACCEL, JACCEL, DECEL, JDECEL, CHANGETOOL, CHANGEWORK, LETENV,</div>
+                      <div class="p">最適可搬質量設定ライブラリ、アーム動作ライブラリ</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">次の場合には、自動的にロボット制御権を解放します。</div>
+                    </li>
+                    <ul type="circle" class="list2">
+                      <li class="item">
+                        <div class="p">ENDコマンドを実行した場合</div>
+                        <div class="p">（呼び出したプログラムの最後にあるENDコマンドは除く）</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">KILLコマンドを実行した場合</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">HALTコマンドを実行した場合</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">STOPコマンドを実行した場合</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">ティーチングペンダントまたはI/Oによって、ロボットコントローラが初期化された場合</div>
+                      </li>
+                    </ul>
+                    <li class="item">
+                      <div class="p">TAKEARMコマンドを実行すると、次の処理が自動的に実行されます。</div>
+                    </li>
+                    <ul type="circle" class="list2">
+                      <li class="item">
+                        <div class="p">TOOL定義をTOOL0に初期化、ワーク座標をロボットのベース座標に設定</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">内部速度、内部加速度、内部減速度を100に設定</div>
+                      </li>
+                    </ul>
+                    <li class="item">
+                      <div class="p">プログラム一時停止中は解放しません。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">（２）付加軸関連の説明</div>
+              <div class="p">アームグループを取得していないタスクが、下表の動作命令を実行しようとした場合、エラーとなります。これらの動作命令を実行する場合は、必ずTAKEARMコマンドで制御権を取得してください。</div>
+              <div id="parasub">
+                <div class="paratitle2">アームグループを必要とするコマンド</div>
+                <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="80%" align="left">
+                  <tr class="theadbg">
+                    <th valign="top" align="center" class="tablehead01">
+                      <div class="p">コマンド</div>
+                    </th>
+                    <th valign="top" align="center" class="tablehead01">
+                      <div class="ptxtnowrap">
+                        <div class="p">必要なアームグループ</div>
+                      </div>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">HOME、TOOL、WORK、APPROACH、DEPART、DRAW、GOHOME、MOVE、ROTATEH、ROTATE、CHANGETOOL、CHANGEWORK、DRIVE、DRIVEA、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL、INTERRUPT、LETENV、最適可搬質量設定ライブラリ、アーム動作ライブラリ</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">ロボット軸を含むアームグループが必要</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">DRIVE、DRIVEA、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL、INTERRUPT、LETENV、POSCLR</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">アームグループが必要（ロボット軸を含まなくてもよい）</div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">DRIVE、DRIVEAは、動作させる軸を含むアームグループが必要です。</div>
+                      <div class="p">例　DRIVE(7、10)</div>
+                      <div class="p">7軸を動かすには、7軸を含むアームグループの取得が必要。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">MOVE命令のEX(EXA)オプションを使う場合は、ロボット軸とEX(EXA)で動かす付加軸を含むアームグループの取得が必要です。</div>
+                      <div class="p">例　MOVE P,P0 EX((7,10))</div>
+                      <div class="p">この場合、ロボット軸と7軸を含むアームグループの取得が必要です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">速度設定のコマンドは、現在取得しているアームグループの軸のみ変更します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">LETENV命令は、変更するパラメータが影響する軸を含むアームグループの取得が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11400402.html" target="_top">GIVEARM</a>、<a href="cmidc11400403.html" target="_top">TAKEVIS</a>、<a href="cmidc11400404.html" target="_top">GIVEVIS</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">一つのプログラムで2つのグループを取得することはできません。</div>
+                <div class="p">ただし同じアームグループの場合は再取得することができます。</div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">例:</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 0</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">MOVE P, P0</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 0</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">'グループ0取得後でも、グループ0は再取得可能。</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 1</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">'グループ0取得後に、グループ1を取得しているので</div>
+                      </div>
+                      <div class="source_ptxt">
+                        <div class="p">'エラー</div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">TAKEARMのKEEPオプションを1にしてグループを取得した場合は、速度は初期化されず、以前のアームグループの速度で動作します。</div>
+                <div class="p">例:次のようなアームグループが設定されており、下記の3つのプログラムがある場合。</div>
+                <div class="figure">
+                  <img src="image/cmidc11400401_01.jpg">
+                </div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PROGRAM PRO1</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PROGRAM PRO2</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">PROGRAM PRO3</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 1</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 2</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">TAKEARM 1 keep=1</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">SPEED 10</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">SPEED 20</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">DRIVE(7,10)</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">DRIVE(7,10)</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">DRIVE(7,10)</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="source_ptxt">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">END</div>
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="source01">
+                        <div class="p">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+                <div class="p">まずPRO1を動作させます。7軸は速度10で動きます。</div>
+                <div class="p">次にPRO2を動作させます。7軸は速度20で動きます。</div>
+                <div class="p">最後にPRO3を動作させた場合、KEEP初期化設定値が１であるので、7軸は以前のアームグループ１の速度10で動きます。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボット動作を行うプログラムの先頭でTAKEARMを</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'実行します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">GIVEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'終了時にGIVEARMでロボット制御権を解放します。直</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'後のENDで自動的に解放するので、必ずしも実行する</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'必要はありません。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'×：TAKEARMを実行せずにMOVE命令を実行すると</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'エラーになります。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例3：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P4</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">CALL SUB1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM SUB1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P5</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'PRO3でTAKEARM実行済みなので、エラーになりません。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例4：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO4</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">SPEED 50</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">CHANGEWORK 3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">CHANGETOOL 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P5</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">CALL PRO5</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO5</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'PRO4のサブルーチンとして呼ばれているので、PRO4</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'と重複してTAKEARMしてもエラーになりません。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P6</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ただし、ツール座標、ワーク座標は0、内部速度は100</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'になります。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例5：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO6</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">RUN PRO7</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P7</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO7</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">TAKEARM</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'×：すでにロボット制御権を持つPRO6とは別のタス</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'クとして起動されたPRO7で、ロボット実行権を取得</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'しようとすると、エラーになります。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source02">
+                      <div class="p">MOVE P, P7</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例6：付加軸有りの例</div>
+              <div class="p">次のようなアームグループが設定されている場合のプログラム例。（4軸ロボットの例）</div>
+              <div class="figure">
+                <img src="image/cmidc11400401_01.jpg">
+              </div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ１を取得。（7軸を含むアームグループ）</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVEA(7,100)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'7軸を100度の位置へ動かします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ2を取得。（ロボット軸、7軸を含むアーム</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'グループ）</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P,P0 EX((7,10))</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ロボット軸と付加軸を同時に動作させます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVEA(7,100)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'7軸を100度の位置へ動かします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

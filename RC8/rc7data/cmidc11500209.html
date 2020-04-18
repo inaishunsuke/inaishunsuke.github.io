@@ -1,0 +1,176 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>RND</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">RND<span class="comment1">
+		　（関数）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">0以上1以下の乱数を発生します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">RND (&lt;数式&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;数式&gt;の値により、下表に示すように処理します。</div>
+            <div class="p">&lt;数式&gt;は整数値を取ります。実数値を入れた場合、切り捨てが行なわれ整数に変換されます。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="ptxtnowrap">
+                    <div class="p">数式の値</div>
+                  </div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">処　　　　理</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">数式 &lt; 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">&lt;数式&gt;を乱数のシード値とします。シード値が同じであれば、RND関数の戻り値は常に同一値です。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">数式 = 0</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">直前に発生した乱数を発生します。ロボットコントローラの電源投入後、一度も乱数を発生していない場合は、0を返します。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">数式 &gt; 0</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">乱数系列の次の乱数を発生します。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div id="hint">
+              <img src="common/hint.jpg">
+              <div id="hintgroup">
+                <div id="hintitem">
+                  <div class="p">Rnd 関数は 0 以上、1 未満の範囲の値を返します。引数の値によって、Rnd 関数が返す乱数が決まります。初期シード値が変わらない限り、一連の Rnd 関数が返す乱数系列は同じになります。これは、連続する各 Rnd 関数が乱数系列の中の直前の乱数をシード値として、次の乱数をそれぞれ生成するためです。</div>
+                </div>
+              </div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <div class="p">乱数のシード値が同一の場合、その後得られる乱数系列は同一の系列となります。毎回違った系列を得たい場合には、シード値としてTIMER関数の戻り値などを使ってください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM array(10) As Single</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">array(0) = RND(-TIMER)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'乱数のシード値をTIMER関数で与えます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 1 TO 9</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">array(I1) = RND(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'乱数を得ます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1 </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>指定座標への移動（Moveコマンド）</title>
+<meta name="description" content="" />
+<meta name="keywords" content="指定座標への移動（Moveコマンド）" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="005230" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="19" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="005193.html">立上げハンドブック</a></li>
+<li><a href="005223.html">ティーチングペンダントによるプログラムの作成と検証</a></li>
+<li><a href="005224.html">基礎知識と主なコマンド</a></li>
+<li><span>指定座標への移動（Moveコマンド）</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="005229.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005231.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 5230</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>指定座標への移動（Moveコマンド）</h1>
+		<h2>機能</h2>
+		<p>ロボットを現在位置から指定座標へ移動します。</p>
+		<h2>書式</h2>
+		<pre><code>Move <var>動作補間</var>, <var>目標位置</var>[, <var>動作オプション</var>]</code></pre>
+		<p>動作補間、目標位置は入力必須です。動作オプションは必要に応じて入力してください。</p>
+		<h2>動作補間</h2>
+<p>ロボットアームの先端が移動するとき、その経路は一通りではありません。各軸の動きが組み合わさって、いろいろな経路を作ることができます。直線や円弧になるように制御することもできます。ここでは、目的地点までのアームの動き方を選択します。 P、L、C、Sの4種類の制御動作の中から一つ指定します。</p>
+<ul>
+  <li>P ：PTP（Point to  Point）制御動作<br />
+    現在位置から次ポイントへ動作する場合、途中の経路は、ロボットまかせです。<br />
+    動作時間が最短となるように制御します。</li>
+  <li>L ：CP(Continuous  Path)制御動作<br />
+    直線補間 (直線 = Linear)<br />
+    現在位置と次ポイントを、ハンドの姿勢や速度を一定に保ちながら直線に動作します。</li>
+  <li>C ：CP(Continuous  Path)制御動作<br />
+    円弧補間　(円弧 = Circle)<br />
+    3つのポイントを結ぶ円弧上をロボット先端が動作します。</li>
+  <li>S ：CP(Continuous  Path)制御動作<br />
+    自由曲線補間<br />
+    途中の経路点を指定しておくと、その点同士を滑らかにつないで動作する方法です。</li>
+</ul>
+<h2>目標位置</h2>
+		<p>目標位置には、移動目標となる動作位置の変数名称を入力します。入力必須です。</p>
+		<p>変数のポジション型(P型)、ジョイント型(J型)、T型（同次変換型）が使用できます。また、変数の構成はロボットの軸数によって異なります。</p>
+		<p>各座標値の数値入力もできますが、実際には　変数P○○か変数J○○をよく使用します。</p>
+		<table border="1">
+		  <tr>
+		    <th>変数名</th>
+		    <th colspan="7">変数の構成</th>
+		    </tr>
+		  <tr>
+		    <td>P型</td>
+		    <td>X</td>
+		    <td>Y</td>
+		    <td>Z</td>
+		    <td>RX</td>
+		    <td>RY</td>
+		    <td>RZ</td>
+		    <td>FIG</td>
+		    </tr>
+		  <tr>
+		    <td>J型</td>
+		    <td>J1</td>
+		    <td>J2</td>
+		    <td>J3</td>
+		    <td>J4</td>
+		    <td>J5</td>
+		    <td>J6</td>
+		    <td>&nbsp;</td>
+		    </tr>
+		  </table>
+		<p>目標位置には目標位置オプションを付けることができます。</p>
+		<h3>例</h3>
+		<pre><code>'!TITLE "デンソーロボットプログラム" 
+'プログラムのタイトル( 内容を分かりやすくするための任意のコメント )
+
+Sub Main 'メインプロシージャの宣言
+    TakeArm Keep = 0 'アーム制御権取得
+    Speed 80 'アーム移動速度（内部速度）80%
+    Move P, P1 '変数P1へPTP補間で移動
+    Move L, P2 '変数P2へCP補間(直線)で移動
+    Move L, P3 '変数P3へCP補間(直線)で移動
+    GiveArm 'アーム制御権開放
+End Sub 'プログラムの停止</code></pre>
+		<h2>目標位置オプション</h2>
+		<p>目標位置オプションには「パス開始変位」と「目標位置の付加軸オプション」があります。</p>
+		<p>「パス開始変位」の値は、指定座標（ポーズ）を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。言い換えれば、動作するポイントの「止まり方」を表しています。一つの動作から次の動作へと移る場合に、以下のものがあります。</p>
+        <div class="notelv5">
+          <p>付加軸オプションについては、プログラマーズマニュアルの「<a href="000561.html">目標位置の付加軸オプション</a>」を参照してください。</p>
+        </div>
+		<h3>エンド動作（＠０、または省略時）</h3>
+		<p>プログラム　PRO1.pcs</p>
+		<table border="1">
+		  <tr>
+		    <th>プログラム</th>
+		    <th>動作図</th>
+		    </tr>
+		  <tr>
+		    <td><p>Sub Main<br />
+		      Takearm<br />
+		      Move P,@0 P2<br />
+		      Move P,@0 P3</p>
+		      <p>:</p>
+		      <p>:</p></td>
+		    <td><img src="img/005230/005230_3.png"/></td>
+		    </tr>
+		  <tr>
+		    <th colspan="2">動作波形</th>
+		    </tr>
+		  <tr>
+		    <td colspan="2"><img src="img/005230/005230_2.png"/></td>
+		    </tr>
+		  </table>
+		<p>ティーチングされた動作位置（P2）へ移動して停止する動作を、エンド動作といいます。また、この点を「End点」と呼びます。<br />
+		  動作指令値（モータの命令波形）がP2に達した時点で、P3への移動が開始します。<br />
+		  動作指令値と、エンコーダ値（ツール先端の現在位置を示す値）では、モータ指令値が先行しています。<br />
+		  動作指令値とエンコーダ値の時差の影響で、P2で停止する時間は一瞬となります。</p>
+        <h3>エンコーダ値確認動作（@E　又は　@C）</h3>
+        <p>プログラム PRO2.pcs</p>
+        <table border="1">
+          <tr>
+            <th>プログラム</th>
+            <th>動作図</th>
+            </tr>
+          <tr>
+            <td><p>Sub Main<br />
+              Takearm<br />
+              Move P,@E P2<br />
+              Move P,@0 P3</p>
+              <p>:</p>
+              <p>:</p></td>
+            <td><img src="img/005230/005230_3.png"/></td>
+            </tr>
+          <tr>
+            <th colspan="2">動作波形</th>
+            </tr>
+          <tr>
+            <td colspan="2"><img src="img/005230/005230_4.png"/></td>
+            </tr>
+        </table>
+        <p>エンコーダ値がティーチングされた目標位置(P2)に到達したと判断することを、エンコーダ値確認動作といいます。<br />
+          ロボットが確実に停止し、位置精度が高いことが長所ですが、エンド動作に比べて時間が余分にかかります。</p>
+        <h5>@Eの場合</h5>
+        <p>エンコーダ値が指定角度又はパルス以内に到達したら、次のコマンドの指令を発します。</p>
+        <h5>@Cの場合</h5>
+        <p>エンコーダ値を元に、座標変換された手先の位置と姿勢が　目標位置(P2)に到達したら、次のコマンドの指令を発します。</p>
+        <h3>パス動作(@P)</h3>
+        <p>プログラム PRO3.pcs</p>
+<table border="1">
+  <tr>
+    <th>プログラム</th>
+    <th>動作図</th>
+    </tr>
+  <tr>
+    <td><p>Sub Main<br />
+      Takearm<br />
+      Move P,@P P2<br />
+      Move P,@0 P3</p>
+      <p>:</p>
+      <p>:</p></td>
+    <td><img src="img/005230/005230_1.png" /></td>
+    </tr>
+  <tr>
+    <th colspan="2">動作波形</th>
+    </tr>
+  <tr>
+    <td colspan="2"><p><img src="img/005230/005230_5.png"/></p></td>
+    </tr>
+</table>
+<p>ティーチングされた動作位置（P2）の近くを通過する動作を、パス動作といいます。また、この点を「Pass点」と呼びます。</p>
+<h3>指定方法</h3>
+<table>
+  <tr>
+    <th>種　　類</th>
+    <th>記述方法</th>
+    <th>意　　味</th>
+  </tr>
+  <tr>
+    <td rowspan="2">エンド動作</td>
+    <td>省略</td>
+    <td>デフォルト値 @0 として処理します。</td>
+  </tr>
+  <tr>
+    <td>@0</td>
+    <td>モータ指令値が、目標位置（指定座標）に達した時点で、次の動作に移ります。一般的なエンド動作です。</td>
+  </tr>
+  <tr>
+    <td rowspan="2">エンコーダ値<br />
+      確認動作</td>
+    <td>@E</td>
+    <td>エンコーダ値が、目標位置（指定座標）に達した時点で、次の動作に移ります。ロボットが確実に停止します。</td>
+  </tr>
+  <tr>
+    <td>@C</td>
+    <td>@Eの内容に加え、ロボットが目標位置（指定座標）へ到達する時、指定した姿勢であることが条件となります。</td>
+  </tr>
+  <tr>
+    <td rowspan="2">パス動作</td>
+    <td>@P</td>
+    <td>動作目標位置近傍（開始位置はコントローラにて自動設定）を通過動作します。一般的なパス動作です。</td>
+  </tr>
+  <tr>
+    <td>@1～</td>
+    <td><p>指令値が、目標位置から指定した範囲（パス開始変位1㎜～）に達した時点で、次の動作に移ります。</p>
+      <div class="notelv4"><p>範囲値はパス開始の目安値で保証値ではありません。</p></div></td>
+  </tr>
+</table>
+<h2>動作オプション</h2>
+<p>動作オプションは実行するMove等の動作命令だけに有効で、「速度指定オプション」と「Nextオプション」があります。</p>
+<h3>速度指定オプション</h3>
+<p>速度指定オプションにはSpeed、Accel、Decel、Timeがあります。</p>
+<table>
+  <tr>
+    <th>速度指定オプション</th>
+    <th>意　味</th>
+  </tr>
+  <tr>
+    <td><a href="000535.html">Speed</a>（またはSと表記）</td>
+    <td><p>内部速度を指定します。<br />
+      Speedを変更すると、AccelとDecelも自動的に変更されます。<br />
+      Speed = nとすると、AccelとDecelの値は  n<sup>2</sup>/100となります。</p>
+      <p>速度指定オプションを同時指定する場合は、Speedオプションの一括指定で行ってください。（Ver.1.8.*以降有効）</p>
+      <pre><code>    Speed = (<var>速度</var>[, <var>加速度</var>[, <var>減速度</var>]])</code></pre>
+<pre><code>    S = (<var>速度</var>[, <var>加速度</var>[, <var>減速度</var>]])</code></pre>
+</td>
+  </tr>
+  <tr>
+    <td><a href="000535.html">Accel</a></td>
+    <td>内部加速度を指定します。<br />
+      Accelを変更すると、Decelも自動的に変更されます。<br />
+      Decelの値は指定したAccelの値と同じものが入ります。</td>
+  </tr>
+  <tr>
+    <td><a href="000535.html">Decel</a></td>
+    <td>内部減速度を指定します。</td>
+  </tr>
+  <tr>
+    <td><a href="000535.html">Time</a></td>
+    <td>動作にかかる時間を指定します。外部速度100%のときに移動にかける時間を指定します。</td>
+  </tr>
+</table>
+<h4>例</h4>
+<pre>    Move L, P1, Speed = 50 <br />    'P1の座標へCP制御(直線)、内部速度=50%で移動します</pre>
+  
+  <pre><code>    Move L, P1, Accel=10 <br />    'P1の座標へCP制御(直線)、内部加速度10%で移動します</code></pre>
+
+<div class="notelv4">
+  <p>&quot;Speed&quot;と&quot;Accel&quot;や&quot;Decel&quot;を同時に指定すると、&quot;Speed&quot;により内部加速度や内部減速度パラメータが上書きされますので一緒には使用できません。</p>
+  <p>これらの速度指定オプションを同時指定したい場合は、Speedオプションの一括指定を使用してください。</p>
+  <pre>    Move L, P1, S = ( 20, 10, 100 ) <br />    ‘P1の座標へ CP制御( 直線 )、内部速度20%、内部加速度10%、内部減速度100% で移動します</pre>
+</div>
+<h3>Nextオプション</h3>
+<p>Nextオプションとは、指定した動作命令のロボット動作完了を待つことなく、次に続く命令を実行させるためのオプションです。</p>
+<p>ただし、次に続く命令がロボット動作中に実行できない命令の場合は、実行できる状態となるまで待ちます。</p>
+<p>ロボット動作中に実行できない命令は以下のとおりです。</p>
+<ul>
+  <li><a href="000524.html">動作命令</a>（Move、Approach、Departなど）</li>
+  <li><a href="000537.html">動作関連命令</a>（Speed、Tool、TakeArmなど）</li>
+  </ul>
+<div class="notelv4">
+  <ul>
+    <li>すぐに次のコマンドを実行させたくない場合は、Nextオプション付きの動作命令の後に、<a href="000163.html">Arrive</a>コマンドを記述することにより、次コマンドの実行タイミングを指定できます。</li>
+    <li>ティーチチェックモードのときは、Nextオプションは無効です。</li>
+  </ul>
+</div>
+<h4>例</h4>
+<pre><code>    Move P, P( 400, 300, 300, 180, 0, 180, -1 ), Next
+    
+    ' 動作を開始したらI/Oポート番号240をON
+    Set IO[240]</code></pre>
+<h2>その他の入力例</h2>
+<h3>例1</h3>
+<p>連続したポイントの動作を、1行で記入することもできます。</p>
+<pre><code>    Move P, P1, P2 P3, P4, Speed = 30</code></pre>
+<p>上記は下記と同じ記述です</p>
+<pre>    Move P, P1, Speed = 30     <br />    Move P, P2, Speed = 30     <br />    Move P, P3, Speed = 30    <br />    Move P, P4, Speed = 30</pre>
+<p><img src="img/005230/005230_6.png" /></p>
+<p>&nbsp;</p>
+<div class="notelv4">
+  <p>「1ステップ」は、P4までの動作全てです。したがって、P1やP2など、途中の点で停めることはできません。<br />
+    （ステップ送り、ステップ停止時） </p>
+</div>
+<h3 id="renzoku">例2</h3>
+<p>目標位置オプションは、目標位置ごとに設定します。</p>
+<pre><code>    Move P, @P P1, @P P2, P3, P4, Speed = 30</code></pre>
+<p>上記は下記と同じ記述です。</p>
+<pre>    Move P, @P P1, Speed = 30<br />    Move P, @P P2, Speed = 30<br />    Move P, P3, Speed = 30<br />    Move P, P4, Speed = 30</pre>
+<h3>例3</h3>
+<pre><code>    Move L, P1, Speed = 100 <br />    'P1の座標へ（CP制御（直線）、内部速度=100％）移動します<br />    Move P, @30 P2, P3, S = 80<br />    'P2(@30)、P3の座標へ順に (PTP制御、内部速度=80％)移動します<br />    Move L, @20 P4, @50 P5, @100 P6<br />    'P4(@20)、P5(@50)、P6(@100)の座標へ順に（CP制御（直線））動作します<br />    Move L, @P P( 1, 2, 3, 4 )<br />    'P1からP4まで順にCP制御(直線)、パス動作で移動します<br />    Move C, P1, @P P2<br />    'P1を通りP2へ移動する円弧補間動作をします。P2にてパス動作し、次の制御に移ります</code></pre>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 5230</p>
+<p class="pre_next"><a href="005229.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005231.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

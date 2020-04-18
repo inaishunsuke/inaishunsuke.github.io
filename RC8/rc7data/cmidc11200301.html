@@ -1,0 +1,658 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>CURFIG</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">CURFIG<span class="comment1">
+		　（システム変数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ロボット形態の現在値を得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">CURFIG</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">現在のロボットの形態が整数で格納されています。整数値と形態の関係は下表のとおりです。</div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="83%" align="left">
+                <tr class="theadbg">
+                  <th valign="top" align="center" class="tablehead01">
+                    <div class="p">値</div>
+                  </th>
+                  <th valign="top" align="center" class="tablehead01">
+                    <div class="p">形    態</div>
+                  </th>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">0</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―FLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">1</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―FLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">2</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―FLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">3</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―FLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">4</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―NONFLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">5</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―NONFLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">6</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―NONFLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">7</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―SINGLE6―NONFLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">8</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―FLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">9</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―FLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">10</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―FLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">11</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―FLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">12</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―NONFLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">13</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―NONFLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">14</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―NONFLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">15</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE4―DOUBLE6―NONFLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">16</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―FLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">17</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―FLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">18</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―FLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">19</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―FLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">20</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―NONFLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">21</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―NONFLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">22</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―NONFLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">23</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―SINGLE6―NONFLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">24</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―FLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">25</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―FLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">26</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―FLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">27</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―FLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">28</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―NONFLIP―ABOVE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">29</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―NONFLIP―ABOVE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">30</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―NONFLIP―BELOW―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">31</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE4―DOUBLE6―NONFLIP―BELOW―LEFTY</div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="83%" align="left">
+                <tr class="theadbg">
+                  <th valign="top" align="center" class="tablehead01">
+                    <div class="p">値</div>
+                  </th>
+                  <th valign="top" align="center" class="tablehead01">
+                    <div class="p">形    態</div>
+                  </th>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">0</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">1</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">SINGLE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">2</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">3</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">4</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">5</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">6</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">7</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">8</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE―RIGHTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">9</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">DOUBLE―LEFTY</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">10</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">11</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">12</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">13</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">14</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">15</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">16</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">17</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">18</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">19</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">20</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">21</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">22</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">23</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">24</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">25</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">26</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">27</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">28</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">29</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">30</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="center">
+                    <div class="p">31</div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="p">
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11000401.html" target="_top">LETF</a>、ロボット形態(付録2)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DIM li1 As Integer</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">li1 = CURFIG</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'現在のロボットの形態を整数型変数li1に代入します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

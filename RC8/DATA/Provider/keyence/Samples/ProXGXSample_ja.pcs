@@ -1,0 +1,28 @@
+'!TITLE "ProXGXTest.pcs"
+
+Sub Main
+
+	On Error Goto ErrorProc
+	
+	Dim ctrl as Object
+	Dim ret As Variant
+	Dim option As String
+
+	ctrl = Nothing
+	option = "conn=Eth:192.168.0.10, TimeOut=5000"
+	ctrl = cao.AddController("XGX", "CaoProv.KEYENCE.XGX", "", option )
+
+	' ChangeMode
+	call ctrl.Execute("changeMode", 1)
+
+	' Trigger
+	call ctrl.Execute("Trigger", 1)
+
+	' RecievePacket
+	ret = ctrl.Execute("RecievePacket")
+
+	Exit Sub
+	
+ErrorProc:
+	PrintDbg Hex(Err.OriginalNumber)
+End Sub

@@ -1,0 +1,416 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DETECT ON/OFF</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DETECT ON/OFF<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.3.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ハンド入力の立上り及び立下りを検知し、その時のロボットの位置を変数に格納します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">DETECT ONの書式</div>
+                <div class="p">DETECT ON &lt;ハンド入力ポート番号&gt;, &lt; ROB &gt;, &lt;格納先先頭変数&gt;, &lt;最大格納数&gt;, &lt;検知回数格納先変数&gt;［, &lt;検知方向&gt;］</div>
+              </li>
+              <li class="item">
+                <div class="p">DETECT OFFの書式</div>
+                <div class="p">DETECT OFF &lt;検知結果格納先変数&gt;［, &lt;ハンド入力ポート番号&gt;］</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">DETECT ONを実行してからDETECT OFFを実行するまでの間、&lt;ハンド入力ポート番号&gt;で指定されたハンド入力の立上り（OFFからON）、または立下り（ONからOFF）を検知し、&lt;格納先先頭変数&gt;で指定された変数に格納します。</div>
+            <div class="p">DETECTは拡張機能です。暗証番号「1312」で機能拡張した後にご使用ください。機能拡張については、操作ガイドの「拡張機能の追加」をご参照ください。</div>
+            <div id="para">
+              <div class="paratitle1">DETECT ON</div>
+              <div class="p">&lt;ハンド入力ポート番号&gt;には検知するハンド入力のポート番号（48~55）を指定します。</div>
+              <div class="p">&lt; ROB &gt;には、" ROB "を指定してください。</div>
+              <div class="p">&lt;格納先先頭変数&gt;にはロボットの位置を格納する変数を指定します。複数回検知した場合、その度に変数番号に1を足して、その番号の変数へ格納します。</div>
+              <div class="p">P型及びJ型のグローバル変数を指定することができます。変数番号だけを記述した場合はP型グローバル変数となります。たとえば１を記述した場合、P1を指定したことになります。</div>
+              <div class="p">&lt;最大格納数&gt;には、検知した時の位置の最大格納数を指定します。</div>
+              <div class="p">&lt;検知回数格納先変数&gt;には、検知した回数を格納する変数を指定します。I型グローバル変数を指定することができます。</div>
+              <div class="p">&lt;検知方向&gt;には、立上りと立下りのどれで検知するかを指定します。</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">0 : 立上りを検知</div>
+                </li>
+                <li class="item">
+                  <div class="p">1 : 立下りを検知</div>
+                </li>
+                <li class="item">
+                  <div class="p">2 : 立上りと立下りの両方を検知</div>
+                </li>
+              </ul>
+              <div class="p">省略時は0（立上り）が指定されます。</div>
+            </div>
+            <div id="para">
+              <div class="paratitle1">DETECT OFF</div>
+              <div class="p">&lt;検知結果格納先変数&gt;には検知結果を格納する変数を指定します。I型グローバル変数を指定することができます。</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">0 : 正常終了</div>
+                </li>
+                <li class="item">
+                  <div class="p">-1 : 検知回数と格納した位置の数が一致しない</div>
+                </li>
+                <li class="item">
+                  <div class="p">-2 : 検知回数が&lt;最大格納数&gt;より多い</div>
+                </li>
+                <li class="item">
+                  <div class="p">-3 : 上記-1と-2の両方</div>
+                </li>
+              </ul>
+              <div class="p">&lt;ハンド入力ポート番号&gt;には検知を終了するハンド入力のポート番号（48~55）を指定します。省略した場合は、DETECT ON時に指定したハンド入力全てを終了します。ただし、他のプログラムのDETECT ONで指定したハンド入力の検知は終了しません。</div>
+            </div>
+            <div class="p">DETECT OFFを実行しなくても、ENDが実行された時点で、そのプログラム内のDETECT ONで指定したハンド入力の検知を全て終了します。</div>
+            <div class="p">同一プログラム内でDETECT ONを複数実行する場合、同じハンド入力ポート番号、同じ検知方向を指定すると、最後に実行されたDETECT ONの設定が有効になります。</div>
+            <div class="p">例</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 50, ROB, P10, 30, I5, 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 50, ROB, P20, 10, I1, 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'この行の設定が有効になる</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">同じハンド入力ポート番号を指定しても、検知方向が異なれば全て別々の設定となります。</div>
+            <div class="p">例</div>
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 50, ROB, P10, 10, I1, 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'立上り時の位置をP10から入れる</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 50, ROB, P20, 10, I2, 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'立下り時の位置をP20から入れる</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 50, ROB, P30, 10, I3, 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'立上り、下り時の位置をP30から入れる</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">異なるプログラムで同じハンド入力ポート番号、同じ検知方向を指定した時には、エラー「77FB I/O番号が重複しています」が発生します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">ハンド入力ポートのデジタルフィルタ時間（デジタル信号処理）は通常3msecですが、DETECTコマンドを使用すると50μsecへ切替わります。リレー接点入力など、チャタリングが発生する機器を使用すると、正しく機能しない場合がありますのでご注意ください。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM PRO1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">MOVE P, P1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 48, ROB, 0, 5, I10, 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ハンド入力48の立上がり時に位置をP0から</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'最大5個格納する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'実際に検知した回数をI10に格納する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT ON, 49, ROB, 10, 5, I11, 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ハンド入力49の立下がり時に位置を</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'P10から最大5個格納する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'実際に検知した回数をI11に格納する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">MOVE L, P2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">DETECT OFF, I0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ハンド入力48と49の検知を終了し</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'検知結果をI0に格納する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">IF I0 &lt;&gt; 0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'検知結果が"正常終了"ではなかった場合</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">STOP</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'プログラムを停止する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">ELSE</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'検知結果が"正常終了"であった場合</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">MOVE L, P3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'P3へ移動する</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">ENDIF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

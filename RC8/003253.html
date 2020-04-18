@@ -1,0 +1,1009 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>FBライブラリ一覧</title>
+<meta name="description" content="" />
+<meta name="keywords" content="FBライブラリ一覧" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="003253" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="5" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001104.html">オプション</a></li>
+<li><a href="005475.html">Command-Slave機能ガイド</a></li>
+<li><a href="003302.html">SIEMENS SIMATIC S7-1500用Command-Slave機能</a></li>
+<li><a href="003254.html">Command-Slaveリファレンスガイド_SIEMENS-S7</a></li>
+<li><span>FBライブラリ一覧</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="003254.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="002996.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 3253</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>FBライブラリ一覧</h1>
+<h2>動作系</h2>
+<table>
+	<tr>
+		<th>FB番号</th>
+		<th>FB名称</th>
+	</tr>
+	<tr>
+		<td>FB2016</td>
+		<td><a href="003148.html">MC_Arrive</a></td>
+	</tr>
+	<tr>
+		<td>FB2046</td>
+		<td><a href="003178.html">MC_CallSubRoutine</a></td>
+	</tr>
+	<tr>
+		<td>FB2040</td>
+		<td><a href="003172.html">MC_ChangeCoordinate</a></td>
+	</tr>
+	<tr>
+		<td>FB2023</td>
+		<td><a href="003155.html">MC_ForceChangeTable</a></td>
+	</tr>
+	<tr>
+		<td>FB2024</td>
+		<td><a href="003156.html">MC_ForceSensor</a></td>
+	</tr>
+	<tr>
+		<td>FB2025</td>
+		<td><a href="003157.html">MC_ForceWaitCondition</a></td>
+	</tr>
+	<tr>
+		<td>FB2008</td>
+		<td><a href="003140.html">MC_MoveApproachDirect</a></td>
+	</tr>
+	<tr>
+		<td>FB2009</td>
+		<td><a href="003141.html">MC_MoveApproachLinear</a></td>
+	</tr>
+	<tr>
+		<td>FB2000</td>
+		<td><a href="002992.html">MC_MoveAxisAbsolute</a></td>
+	</tr>
+	<tr>
+		<td>FB2001</td>
+		<td><a href="002993.html">MC_MoveAxisRelative</a></td>
+	</tr>
+	<tr>
+		<td>FB2006</td>
+		<td><a href="003138.html">MC_MoveCircularAbsolute</a></td>
+	</tr>
+	<tr>
+		<td>FB2010</td>
+		<td><a href="003142.html">MC_MoveDepartDirect</a></td>
+	</tr>
+	<tr>
+		<td>FB2011</td>
+		<td><a href="003143.html">MC_MoveDepartLinear</a></td>
+	</tr>
+	<tr>
+		<td>FB2002</td>
+		<td><a href="002994.html">MC_MoveDirectAbsolute</a></td>
+	</tr>
+	<tr>
+		<td>FB2003</td>
+		<td><a href="002995.html">MC_MoveDirectRelative</a></td>
+	</tr>
+	<tr>
+		<td>FB2013</td>
+		<td><a href="003145.html">MC_MoveJogJoint</a></td>
+	</tr>
+	<tr>
+		<td>FB2015</td>
+		<td><a href="003147.html">MC_MoveJogTool</a></td>
+	</tr>
+	<tr>
+		<td>FB2014</td>
+		<td><a href="003146.html">MC_MoveJogWork</a></td>
+	</tr>
+	<tr>
+		<td>FB2004</td>
+		<td><a href="003136.html">MC_MoveLinearAbsolute</a></td>
+	</tr>
+	<tr>
+		<td>FB2005</td>
+		<td><a href="003137.html">MC_MoveLinearRelative</a></td>
+	</tr>
+	<tr>
+		<td>FB2007</td>
+		<td><a href="003139.html">MC_MoveRotateH</a></td>
+	</tr>
+	<tr>
+		<td>FB2012</td>
+		<td><a href="003144.html">MC_MoveSpline</a></td>
+	</tr>
+	<tr>
+		<td>FB2027</td>
+		<td><a href="003159.html">MC_ResetCurLmt</a></td>
+	</tr>
+	<tr>
+		<td>FB2031</td>
+		<td><a href="003163.html">MC_ResetErAlw</a></td>
+	</tr>
+	<tr>
+		<td>FB2022</td>
+		<td><a href="003154.html">MC_ResetForceCtrl</a></td>
+	</tr>
+	<tr>
+		<td>FB2033</td>
+		<td><a href="003165.html">MC_ResetGrvCtrl</a></td>
+	</tr>
+	<tr>
+		<td>FB2035</td>
+		<td><a href="003167.html">MC_ResetGrvOffset</a></td>
+	</tr>
+	<tr>
+		<td>FB2019</td>
+		<td><a href="003151.html">MC_ResetHighPathAccuracy</a></td>
+	</tr>
+	<tr>
+		<td>FB2029</td>
+		<td><a href="003161.html">MC_ResetZforce</a></td>
+	</tr>
+	<tr>
+		<td>FB2047</td>
+		<td><a href="003247.html">MC_SetBufferPreset</a></td>
+	</tr>
+	<tr>
+		<td>FB2041</td>
+		<td><a href="003173.html">MC_SetCpMode</a></td>
+	</tr>
+	<tr>
+		<td>FB2026</td>
+		<td><a href="003158.html">MC_SetCurLmt</a></td>
+	</tr>
+	<tr>
+		<td>FB2044</td>
+		<td><a href="003176.html">MC_SetDynamic</a></td>
+	</tr>
+	<tr>
+		<td>FB2030</td>
+		<td><a href="003162.html">MC_SetErAlw</a></td>
+	</tr>
+	<tr>
+		<td>FB2021</td>
+		<td><a href="003153.html">MC_SetForceCtrl</a></td>
+	</tr>
+	<tr>
+		<td>FB2032</td>
+		<td><a href="003164.html">MC_SetGrvCtrl</a></td>
+	</tr>
+	<tr>
+		<td>FB2034</td>
+		<td><a href="003166.html">MC_SetGrvOffset</a></td>
+	</tr>
+	<tr>
+		<td>FB2018</td>
+		<td><a href="003150.html">MC_SetHighPathAccuracy</a></td>
+	</tr>
+	<tr>
+		<td>FB2038</td>
+		<td><a href="003170.html">MC_SetSingularAvoid</a></td>
+	</tr>
+	<tr>
+		<td>FB2017</td>
+		<td><a href="003149.html">MC_SetSpeedMode</a></td>
+	</tr>
+	<tr>
+		<td>FB2028</td>
+		<td><a href="003160.html">MC_SetZforce</a></td>
+	</tr>
+	<tr>
+		<td>FB2037</td>
+		<td><a href="003169.html">MC_SrvLock</a></td>
+	</tr>
+	<tr>
+		<td>FB2036</td>
+		<td><a href="003168.html">MC_SrvUnLock</a></td>
+	</tr>
+	<tr>
+		<td>FB2020</td>
+		<td><a href="003152.html">MC_WriteForceParam</a></td>
+	</tr>
+	<tr>
+		<td>FB2039</td>
+		<td><a href="003171.html">MC_WriteLoadConditions</a></td>
+	</tr>
+	<tr>
+		<td>FB2045</td>
+		<td><a href="003177.html">MC_WriteSoftwareLimits</a></td>
+	</tr>
+	<tr>
+		<td>FB2042</td>
+		<td><a href="003174.html">MC_WriteToolData</a></td>
+	</tr>
+	<tr>
+		<td>FB2043</td>
+		<td><a href="003175.html">MC_WriteWorkData</a></td>
+	</tr>
+</table>
+<h2>非動作系</h2>
+<table>
+	<tr>
+		<th>FB番号</th>
+		<th>FB名称</th>
+	</tr>
+	<tr>
+		<td>FB2124</td>
+		<td><a href="003203.html">MC_AddPathPoint</a></td>
+	</tr>
+	<tr>
+		<td>FB2147</td>
+		<td><a href="003225.html">MC_ClrCumulatOperatTime</a></td>
+	</tr>
+	<tr>
+		<td>FB2148</td>
+		<td><a href="003226.html">MC_ClrCumulatRunningTime</a></td>
+	</tr>
+	<tr>
+		<td>FB2125</td>
+		<td><a href="003204.html">MC_ClrPathPoint</a></td>
+	</tr>
+	<tr>
+		<td>FB2167</td>
+		<td><a href="003245.html">MC_EncReset</a></td>
+	</tr>
+	<tr>
+		<td>FB2121</td>
+		<td><a href="003200.html">MC_LoadPathPoint</a></td>
+	</tr>
+	<tr>
+		<td>FB2122</td>
+		<td><a href="003201.html">MC_PalletTargetPosition</a></td>
+	</tr>
+	<tr>
+		<td>FB2123</td>
+		<td><a href="003202.html">MC_ReadActualCPMode</a></td>
+	</tr>
+	<tr>
+		<td>FB2104</td>
+		<td><a href="003183.html">MC_ReadAreaPos</a></td>
+	</tr>
+	<tr>
+		<td>FB2103</td>
+		<td><a href="003182.html">MC_ReadAreaSize</a></td>
+	</tr>
+	<tr>
+		<td>FB2150</td>
+		<td><a href="003228.html">MC_ReadAxisDistance</a></td>
+	</tr>
+	<tr>
+		<td>FB2105</td>
+		<td><a href="003184.html">MC_ReadCurTrn</a></td>
+	</tr>
+	<tr>
+		<td>FB2136</td>
+		<td><a href="003214.html">MC_ReadDIBit</a></td>
+	</tr>
+	<tr>
+		<td>FB2138</td>
+		<td><a href="003216.html">MC_ReadDIByte</a></td>
+	</tr>
+	<tr>
+		<td>FB2139</td>
+		<td><a href="003217.html">MC_ReadDOBit</a></td>
+	</tr>
+	<tr>
+		<td>FB2140</td>
+		<td><a href="003218.html">MC_ReadDOByte</a></td>
+	</tr>
+	<tr>
+		<td>FB2165</td>
+		<td><a href="003243.html">MC_ReadEncBatteryDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2130</td>
+		<td><a href="003209.html">MC_ReadErrorID</a></td>
+	</tr>
+	<tr>
+		<td>FB2159</td>
+		<td><a href="003237.html">MC_ReadExcutableToken</a></td>
+	</tr>
+	<tr>
+		<td>FB2110</td>
+		<td><a href="003189.html">MC_ReadFltVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2131</td>
+		<td><a href="003210.html">MC_ReadForceData</a></td>
+	</tr>
+	<tr>
+		<td>FB2108</td>
+		<td><a href="003187.html">MC_ReadIntVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2116</td>
+		<td><a href="003195.html">MC_ReadJntVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2145</td>
+		<td><a href="003223.html">MC_ReadLanguage</a></td>
+	</tr>
+	<tr>
+		<td>FB2128</td>
+		<td><a href="003207.html">MC_ReadLoadConditions</a></td>
+	</tr>
+	<tr>
+		<td>FB2149</td>
+		<td><a href="003227.html">MC_ReadMotorONCount</a></td>
+	</tr>
+	<tr>
+		<td>FB2119</td>
+		<td><a href="003198.html">MC_ReadPathPoint</a></td>
+	</tr>
+	<tr>
+		<td>FB2120</td>
+		<td><a href="003199.html">MC_ReadPathPointCount</a></td>
+	</tr>
+	<tr>
+		<td>FB2114</td>
+		<td><a href="003193.html">MC_ReadPosVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2163</td>
+		<td><a href="003241.html">MC_ReadRCBatteryDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2161</td>
+		<td><a href="003239.html">MC_ReadRCDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2157</td>
+		<td><a href="003235.html">MC_ReadRCEtherAuthority</a></td>
+	</tr>
+	<tr>
+		<td>FB2155</td>
+		<td><a href="003233.html">MC_ReadRCEtherConfig</a></td>
+	</tr>
+	<tr>
+		<td>FB2153</td>
+		<td><a href="003231.html">MC_ReadRCSerialNo</a></td>
+	</tr>
+	<tr>
+		<td>FB2152</td>
+		<td><a href="003230.html">MC_ReadRCVersion</a></td>
+	</tr>
+	<tr>
+		<td>FB2141</td>
+		<td><a href="003219.html">MC_ReadRobotParameter</a></td>
+	</tr>
+	<tr>
+		<td>FB2151</td>
+		<td><a href="003229.html">MC_ReadRobotType</a></td>
+	</tr>
+	<tr>
+		<td>FB2129</td>
+		<td><a href="003208.html">MC_ReadSoftwareLimits</a></td>
+	</tr>
+	<tr>
+		<td>FB2142</td>
+		<td><a href="003220.html">MC_ReadSrvData</a></td>
+	</tr>
+	<tr>
+		<td>FB2143</td>
+		<td><a href="003221.html">MC_ReadSrvJntData</a></td>
+	</tr>
+	<tr>
+		<td>FB2106</td>
+		<td><a href="003185.html">MC_ReadSysState</a></td>
+	</tr>
+	<tr>
+		<td>FB2126</td>
+		<td><a href="003205.html">MC_ReadToolData</a></td>
+	</tr>
+	<tr>
+		<td>FB2146</td>
+		<td><a href="003224.html">MC_ReadTripMeter</a></td>
+	</tr>
+	<tr>
+		<td>FB2118</td>
+		<td><a href="003197.html">MC_ReadTrnVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2112</td>
+		<td><a href="003191.html">MC_ReadVecVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2127</td>
+		<td><a href="003206.html">MC_ReadWorkData</a></td>
+	</tr>
+	<tr>
+		<td>FB2134</td>
+		<td><a href="002991.html">MC_Reset</a></td>
+	</tr>
+	<tr>
+		<td>FB2102</td>
+		<td><a href="003181.html">MC_ResetArea</a></td>
+	</tr>
+	<tr>
+		<td>FB2166</td>
+		<td><a href="003244.html">MC_RobotCalSet</a></td>
+	</tr>
+	<tr>
+		<td>FB2101</td>
+		<td><a href="003180.html">MC_SetArea</a></td>
+	</tr>
+	<tr>
+		<td>FB2100</td>
+		<td><a href="003179.html">MC_WriteAreaData</a></td>
+	</tr>
+	<tr>
+		<td>FB2132</td>
+		<td><a href="003211.html">MC_WriteAreaDataOp1</a></td>
+	</tr>
+	<tr>
+		<td>FB2133</td>
+		<td><a href="003212.html">MC_WriteAreaDataOp2</a></td>
+	</tr>
+	<tr>
+		<td>FB2135</td>
+		<td><a href="003213.html">MC_WriteDOBit</a></td>
+	</tr>
+	<tr>
+		<td>FB2137</td>
+		<td><a href="003215.html">MC_WriteDOByte</a></td>
+	</tr>
+	<tr>
+		<td>FB2164</td>
+		<td><a href="003242.html">MC_WriteEncBatteryDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2158</td>
+		<td><a href="003236.html">MC_WriteExcutableToken</a></td>
+	</tr>
+	<tr>
+		<td>FB2109</td>
+		<td><a href="003188.html">MC_WriteFltVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2107</td>
+		<td><a href="003186.html">MC_WriteIntVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2115</td>
+		<td><a href="003194.html">MC_WriteJntVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2144</td>
+		<td><a href="003222.html">MC_WriteLanguage</a></td>
+	</tr>
+	<tr>
+		<td>FB2168</td>
+		<td><a href="003246.html">MC_WritePLCErr</a></td>
+	</tr>
+	<tr>
+		<td>FB2113</td>
+		<td><a href="003192.html">MC_WritePosVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2162</td>
+		<td><a href="003240.html">MC_WriteRCBatteryDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2160</td>
+		<td><a href="003238.html">MC_WriteRCDT</a></td>
+	</tr>
+	<tr>
+		<td>FB2156</td>
+		<td><a href="003234.html">MC_WriteRCEtherAuthority</a></td>
+	</tr>
+	<tr>
+		<td>FB2154</td>
+		<td><a href="003232.html">MC_WriteRCEtherConfig</a></td>
+	</tr>
+	<tr>
+		<td>FB2117</td>
+		<td><a href="003196.html">MC_WriteTrnVar</a></td>
+	</tr>
+	<tr>
+		<td>FB2111</td>
+		<td><a href="003190.html">MC_WriteVecVar</a></td>
+	</tr>
+</table>
+<h2>停止系</h2>
+<table>
+	<tr>
+		<th>FB番号</th>
+		<th>FB名称</th>
+	</tr>
+	<tr>
+		<td>FB2203</td>
+		<td><a href="003004.html">MC_GroupContinue</a></td>
+	</tr>
+	<tr>
+		<td>FB2202</td>
+		<td><a href="003001.html">MC_GroupHalt</a></td>
+	</tr>
+	<tr>
+		<td>FB2200</td>
+		<td><a href="003003.html">MC_GroupInterrupt</a></td>
+	</tr>
+	<tr>
+		<td>FB2201</td>
+		<td><a href="003002.html">MC_GroupStop</a></td>
+	</tr>
+</table>
+<h2>特殊</h2>
+<table>
+	<tr>
+		<th>FB番号</th>
+		<th>FB名称</th>
+	</tr>
+	<tr>
+		<td>FB2303</td>
+		<td><a href="003248.html">MC_AreaDetectionOut</a></td>
+	</tr>
+	<tr>
+		<td>FB2304</td>
+		<td><a href="002989.html">MC_Initialize</a></td>
+	</tr>
+	<tr>
+		<td>FB2300</td>
+		<td><a href="002990.html">MC_Power</a></td>
+	</tr>
+	<tr>
+		<td>FB2305</td>
+		<td><a href="003249.html">MC_ReadActualPosition</a></td>
+	</tr>
+	<tr>
+		<td>FB2301</td>
+		<td><a href="002987.html">MC_ReadAxesGroup</a></td>
+	</tr>
+	<tr>
+		<td>FB2306</td>
+		<td><a href="003250.html">MC_TeachPosition</a></td>
+	</tr>
+	<tr>
+		<td>FB2302</td>
+		<td><a href="002988.html">MC_WriteAxesGroup</a></td>
+	</tr>
+</table>
+<h2>FUN</h2>
+<table>
+	<tr>
+		<th>FC番号</th>
+		<th>FC名称</th>
+	</tr>
+	<tr>
+		<td>FC2200</td>
+		<td><a href="003251.html">MC_DefineJointVar</a></td>
+	</tr>
+	<tr>
+		<td>FC2201</td>
+		<td><a href="003252.html">MC_DefinePositionVar</a></td>
+	</tr>
+</table>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 3253</p>
+<p class="pre_next"><a href="003254.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="002996.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

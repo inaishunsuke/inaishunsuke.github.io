@@ -1,0 +1,108 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetGrvOffset</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetGrvOffset<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.2 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">各関節の重力トルクより重力補償値を補正します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetGrvOffset</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">ロボットの各関節は、重力により、下向きの静荷重（重力トルク）を受けます。重力補償ライブラリ(SetGravity)により重力バランスを設定できますが、先端負荷質量設定値と実際の負荷質量とのずれ等により、重力バランスにずれが生じる場合があります。本機能は、ロボットが停止した状態で重力トルクを推定し、重力補償値を補正します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700112.html" target="_top">SetCurLmt</a>、<a href="cmidc20700108.html" target="_top">SetGravity</a>、<a href="cmidc20700111.html" target="_top">ResetGrvOffset</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">モータ電源がONでロボットが停止した状態で実行してください。モータ電源OFF状態で実行した場合、エラー「6006モータ電源がオフです」が発生します。ロボットが動作中に実行した場合、エラー「600Bロボット動作中です」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">重力補償補正を実行した姿勢から大きく変化した場合は、補正にずれが生じます。その場合は再度補正を実施して下さい。</div>
+              </li>
+              <li class="item">
+                <div class="p">使用条件の電流制限リセット設定値が１、３、５、７以外の場合は、モータ電源投入時に補正値が0にリセットされます。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetGrvOffset</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

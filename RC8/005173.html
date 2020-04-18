@@ -1,0 +1,716 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>パラメータ一覧</title>
+<meta name="description" content="" />
+<meta name="keywords" content="パラメータ一覧" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="005173" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="21" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001102.html">プログラミング</a></li>
+<li><a href="001516.html">機能ガイド</a></li>
+<li><a href="001603.html">ロボット制御機能</a></li>
+<li><a href="005169.html">力制御機能</a></li>
+<li><a href="005170.html">コンプライアンス機能</a></li>
+<li><span>パラメータ一覧</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="005172.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005175.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 5173</p>
+<div id="detail">
+<div class="category" id="category_standard">
+
+<h1>パラメータ一覧</h1>
+<p>パラメータ設定詳細を以下に示します。</p>
+<ul>
+<li>
+力制御番号（コンプライアンス機能のパラメータテーブル番号）毎に、パラメータを設定します。制御モードの指定も力制御番号毎に行います。
+</li>
+<li>
+必須項目のみで使用できない場合は、必要に応じて「その他のパラメータ」を設定してください。
+</li>
+<li>
+項目名欄の[ ]内に記述されているのは、<a href="005176.html">ForceParam</a>の項目名です。
+</li>
+<li>
+「力センサ」の「有」欄に&#9675;が付いているものは、「力センサ有コンプライアンス機能」で使用するパラメータです。
+</li>
+<li>
+「力センサ」の「無」欄に&#9675;が付いているものは、力センサを使用しない「コンプライアンス機能」で使用するパラメータです。
+</li>
+</ul>
+<div class="notelv4">
+<ul>
+<li>大きな制御力や小さい慣性、粘性、バネ値を指定すると、ロボットは高速に動作します。高速動作中にワークと衝突すると、力センサやロボットが過大な力を受け、故障や破壊につながります。調整時には安全のため、最初はデフォルトのバネ・粘性・慣性の割合から少しずつ値を小さくするようにしてください。また、制御割合も最初は小さな値から徐々に大きくしていき、力制御をしたくない方向は0%にしてください。
+</li>
+<li>
+定圧押付や勘合動作のときは、粘性パラメータの変更だけで調整できる初期値が入っています。粘性を大きくしていくと力制御開始時にエラーになる場合があります。その場合は、慣性パラメータの値を大きくして調整してください。</li>
+<li>
+調整時は、「目標制御力」と「電流制限値」を最初に設定してください。調整方法については、「<a href="005285.html">調整方法</a>」を参照してください。</li>
+</ul>
+</div>
+<h2>必須項目</h2>
+<p>操作経路：基本画面 - [F2 アーム] - [F2 力制御] - [F6 設定]<br />
+力制御番号（コンプライアンス機能のパラメータテーブル番号）1～10を指定し、[OK]ボタンを押します。</p>
+<table border="0">
+  <tr>
+    <th rowspan="2" scope="col">項目名</th>
+    <th rowspan="2" scope="col">単位</th>
+    <th rowspan="2" scope="col">範囲</th>
+    <th colspan="2" scope="col">力センサ</th>
+    <th rowspan="2" scope="col">詳細</th>
+  </tr>
+  <tr>
+    <th>有</th>
+    <th>無</th>
+    </tr>
+  <tr>
+    <td>制御モード</td>
+    <td>-</td>
+    <td>0、1</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>制御モードを以下より選択します。 <br />
+    0：コンプライアンス機能<br />
+	1：力センサ有コンプライアンス機能<br />
+	</li>
+    </ul>
+ </td>
+  </tr>
+  <tr>
+    <td>力制限座標系選択<br />
+    [座標系]</td>
+    <td>-</td>
+    <td>0、1、2</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>座標を以下より選択します。 <br />
+    
+    0：ベース座標系<br />
+	
+    1：ツール座標系<br />
+	
+    2：ワーク座標系<br />
+	
+    </td>
+  </tr>
+  <tr>
+    <td>目標制御力<br />
+    [力]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>N、Nm</td>
+    <td>0～</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>ロボットを制御するための力で、設定した力以上は出力しません。<br />
+    この値を小さくすると、小さな外力に倣って動作するようになります。<br />
+    注：力センサを使用しない「コンプライアンス機能」を制御モードで選択した場合は、姿勢や動きによって制御力が変化しますので、実際の作業に合った力に設定してください。</td>
+  </tr>
+</table>
+
+<h2>その他のパラメータ（必要に応じて）</h2>
+<p>操作経路：基本画面 - [F2 アーム] - [F2 力制御] - [F12 詳細設定]<br />
+力制御番号（コンプライアンス機能のパラメータテーブル番号）1～10を指定し、[OK]ボタンを押します。<br />
+上記の「制御モード」の設定に合わせ、使用するパラメータのみ表示されます。</p>
+<table border="0">
+  <tr>
+    <th rowspan="2" scope="col">項目名</th>
+    <th rowspan="2" scope="col">単位</th>
+    <th rowspan="2" scope="col">範囲</th>
+    <th colspan="2" scope="col">力センサ</th>
+    <th rowspan="2" scope="col">詳細</th>
+  
+  </tr>
+  <tr>
+    <th>有</th>
+    <th>無</th>
+    </tr>
+  <tr>
+    <td>仮想慣性<br />
+    [Mass=慣性]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>%</td>
+    <td>0～100</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>加速度に応じて増加する抵抗力の割合を設定します。<br />
+    この値を小さく設定すると、速く移動させることが可能になります。</td>
+  </tr>
+  <tr>
+    <td>仮想粘性<br />
+    [Damp=粘性]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>%</td>
+    <td>0～100</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>速度に応じて増加する抵抗力の割合を設定します。<br />
+    この値を小さく設定すると、速く移動させることが可能になります。</td>
+  </tr>
+  <tr>
+    <td>仮想バネ<br />
+    [Spring=柔らかさ]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>%</td>
+    <td>0～100</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>位置に応じて増加する戻り力の強さの割合を設定します。<br />
+    この値を小さく設定すると、弱い力でも大きく移動させることができます。</td>
+  </tr>
+   <tr>
+    <td>力オフセット設定<br />
+    [OffSet=オフセット値]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>N、Nm</td>
+    <td>0～</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>あらかじめ倣わせたい方向に誘導するための力を設定します。<br />
+    注：動作によっては、必ずしも狙った方向に誘導されるとは限りません。</td>
+  </tr>
+   <tr>
+    <td>偏差許容値<br />
+    [PosEralw=位置偏差値]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>mm、deg</td>
+    <td>0～</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>手先位置のサーボ偏差許容値を設定します。<br />
+    力センサ有コンプライアンス機能の場合は、力制御開始からの手先位置の移動量を監視しています。</td>
+  </tr>
+   <tr>
+    <td>軸偏差許容値<br />
+    [Eralw=各軸偏差許容]<br />
+    (J1～J8)</td>
+    <td>mm、deg</td>
+    <td>0～</td>
+    <td>&#9675;</td>
+    <td>&#9675;</td>
+    <td>各軸のサーボ偏差許容値を設定します。<br />
+    力センサ有コンプライアンス機能の場合は、力制御開始からの各軸の移動量を監視しています。<br />
+    ただし、付加軸は設定しても無効です。</td>
+  </tr>
+   <tr>
+    <td>軸電流制限値<br />
+    [CurLmt=電流制限値]<br />
+    (J1～J8)</td>
+    <td>%</td>
+    <td>0～100</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>各軸モータのトルク値（電流値）を設定します。<br /> 
+100[%]が定格で、この値を小さくするとトルク値(電流値)が下がり、抵抗力が弱くなります。<br />
+ただし、付加軸は設定しても無効です。</td>
+  </tr>
+   <tr>
+    <td>制御割合<br />
+    [Rate=制御割合]<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>%</td>
+    <td>0～100</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>力センサ有コンプライアンス機能でどれくらいの割合で制御するか決めます。</td>
+  </tr>
+  <tr>
+    <td>最大並進速度<br />
+    [SpMax=最大並進速度]</td>
+    <td>mm/s</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>接触前までの最大速度を決定します。</td>
+  </tr>
+  <tr>
+    <td>最大回転速度<br />
+    [RSpMax=最大回転速度]</td>
+    <td>deg/s</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>接触前までの最大回転速度を決定します。</td>
+  </tr>
+</table>
+<h3>メンテナでのみ設定可能なパラメータ</h3>
+<p>メンテナの場合は、上表の項目に追加して、下表の項目の設定もできます。</p>
+<table border="0">
+  <tr>
+    <th rowspan="2" scope="col">項目名</th>
+    <th rowspan="2" scope="col">単位</th>
+    <th rowspan="2" scope="col">範囲</th>
+    <th colspan="2" scope="col">力センサ</th>
+    <th rowspan="2" scope="col">詳細</th>
+  </tr>
+  <tr>
+    <th>有</th>
+    <th>無</th>
+    </tr>
+  <tr>
+    <td>仮想慣性<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>N、kgcm&circ;2</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>上記の「仮想慣性」のベースとなる値を設定します。ここの値が上記で100%を指定したときの値になります。</td>
+  </tr>
+  <tr>
+    <td>仮想粘性<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>Ns/m、Ncms/rad</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>上記の「仮想粘性」のベースとなる値を設定します。ここの値が上記で100%を指定したときの値になります。</td>
+  </tr>
+  <tr>
+    <td>仮想バネ<br />
+    (X、Y、Z、RX、RY、RZ)</td>
+    <td>N/m、Ncm/rad</td>
+    <td>&nbsp;</td>
+    <td>&#9675;</td>
+    <td>&nbsp;</td>
+    <td>上記の「仮想バネ」のベースとなる値を設定します。ここの値が上記で100%を指定したときの値になります。</td>
+  </tr>
+</table>
+
+
+
+<p>&nbsp;</p>
+<div id="pagetop2">
+</div>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 5173</p>
+<p class="pre_next"><a href="005172.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="005175.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

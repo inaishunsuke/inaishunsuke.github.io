@@ -1,0 +1,357 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>IOBLOCK ON/OFF</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">IOBLOCK ON/OFF<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【SLIM準拠】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">動作命令を実行中に、I/O命令や演算命令などの非動作命令を並列に実行します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">IOBLOCK {ON|OFF}</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">IOBLOCK ONとIOBLOCK OFFは対に用いられ、それに囲まれた範囲内では、ロボットが動作命令を実行中に、その動作命令に引き続く複数のI/O命令や演算命令などの非動作命令が並列に実行されます。</div>
+            <div class="p">ロボット動作命令が現れると、一度並列実行は打ち切られ、現在実行中の動作命令が完了（パス動作時はパス開始）するのを待って、次の動作命令を実行します。次の動作命令のあとに、非動作命令が続く場合、これらも動作命令と並列に実行されます。IOBLOCK内の動作命令実行中に、IOBLOCK OFFが実行されると、動作命令の実行を待って、次ステップへ進みます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">以下の場合、並列処理を行ないません。</div>
+                <div class="p">いずれの場合も動作命令が完了（パス動作指定時はパス動作開始）するまで、次ステップの実行は待たされます。</div>
+              </li>
+              <ul type="circle" class="list2">
+                <li class="item">
+                  <div class="p">動作命令に動作オプションを付加した場合。</div>
+                </li>
+                <li class="item">
+                  <div class="p">CHANGEWORK，CHANGETOOL，SPEED，JSPEED，ACCEL，JACCELを実行する場合。</div>
+                </li>
+                <li class="item">
+                  <div class="p">従来言語ライブラリ「aspChange」、「aspACLD」、アーム動作ライブラリ「mvSetPulseWidth」、「mvSetTimeOut」、「mvReverseFlip」、「mvResetPulseWidth」、「mvResetTimeOut」を実行する場合。</div>
+                </li>
+              </ul>
+              <li class="item">
+                <div class="p">ロボット動作中にステップ停止・瞬時停止などをかけ、その後再開した場合には、非動作コマンドとの並列動作を行なわない場合もあります。</div>
+              </li>
+              <li class="item">
+                <div class="p">IOBLOCK内で動作命令が2回続くとき、最初の動作実行中にステップ停止させた場合、次の動作が終了してからステップ停止します。最初の動作実行中に、瞬時停止を行ない次にステップ起動させた場合も、次の動作が終了してからステップ停止します。</div>
+                <table border="0" class="framenone" width="88%" align="left">
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">例:</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">IOBLOCK ON</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">MOVE P，J0</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">←</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">J0へ動作中にステップ停止させても、次の動作MOVE P，J1は動作されます。</div>
+                      <div class="p">その後、ステップ停止します。</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">MOVE P，J1</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">SET IO[1]</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top" align="left">
+                      <div class="p">IOBLOCK OFF</div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                    <td valign="top" align="left">
+                      <div class="p">
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+                <br clear="left">
+              </li>
+              <li class="item">
+                <div class="p">IOBLOCKの有効範囲は、定義したプログラムでのみ有効であり、サブプログラムでは有効でありません。</div>
+                <div class="p">以下のようなプログラムがある場合、SUB1ではPRO1で定義したIOBLOCKは有効ではありません。IOBLOCKの有効範囲はプログラムごとに独立です。</div>
+                <div class="p">例：</div>
+                <div class="p">PROGRAM PRO1</div>
+                <div class="p">TAKEARM</div>
+                <div class="p">DEFPOS lp1，lp2</div>
+                <div class="p">IOBLOCK ON</div>
+                <div class="p">CALL SUB1</div>
+                <div class="p">MOVE P，lp1，lp2</div>
+                <div class="p">SET IO[1]</div>
+                <div class="p">SET IO[2]</div>
+                <div class="p">IOBLOCK OFF</div>
+                <div class="p">　　：</div>
+                <div class="p">　　：</div>
+              </li>
+              <li class="item">
+                <div class="p">ティーチチェックモードではIOBLOCKは無効になります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ロボット制御権を取得します</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IOBLOCK ON</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'次の動作命令と並列にI/O命令が実行されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">MOVE P (902.7, 0, 415.3, 180, 50, 180, 1)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'（902.7，0，415.3，180，50，180，1）の座標へ（PTP</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'制御）移動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[240]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'BIT型ポート240をONにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[241], 40</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'BIT型ポート241を40ms間ONにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[SOL1]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'I/O変数SOL1で示されるポートをONにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[104 TO 110]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'BIT型ポート104～110をONにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF IO[242] THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">RESET IO[240]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'BIT型ポート240をOFFにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">RESET IO[SOL1]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'I/O変数SOL1で示されるポートをOFFにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">RESET IO[104 TO 110]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'BIT型ポート104～110をOFFにします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ENDIF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IOBLOCK OFF </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

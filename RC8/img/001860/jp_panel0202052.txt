@@ -1,0 +1,5 @@
+[例]：挿入される動作記述ブロックの枠組み(PB1 がクリックされた場合)
+      Sub PB1_CLICKED()
+          Set IO[128]       'IO 128番をON
+          Run PRO100        'PRO100 を起動
+      End Sub

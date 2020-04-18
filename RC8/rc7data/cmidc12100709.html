@@ -1,0 +1,260 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISMASK</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISMASK<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">画像間演算をします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISMASK &lt;ウィンドウ番号&gt;，&lt;X座標&gt;，&lt;Y座標&gt;，&lt;画面1&gt;，&lt;画面2&gt;，&lt;モード&gt;［，&lt;2値下限&gt;［，&lt;2値上限&gt;］］</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ウィンドウ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ウィンドウの番号を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;X座標&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> X座標を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;Y座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">Y座標を指定します。（0～479）</div>
+            </div>
+            <div class="p">&lt;画面1&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">演算する格納メモリ番号を指定します。（0～3）</div>
+            </div>
+            <div class="p">&lt;画面2&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">演算する格納メモリ番号を指定します。処理結果の格納先になります。（0～3）</div>
+            </div>
+            <div class="p">&lt;モード&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">画像間演算の種類を指定します。（0～10）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：2値AND</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：2値OR</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">2：2値XOR</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">3：AND（輝度値を2進数化し各ビットごとにAND）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">4：OR（輝度値を2進数化し各ビットごとにOR）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">5：XOR（輝度値を2進数化し各ビットごとにXOR）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">6：加算（輝度値が255以上の場合255に固定）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">7：減算（輝度値が0以下の場合0に固定）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">8：最大値（輝度値の大きい方を選択）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">9：最小値（輝度値の小さい方を選択）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">10：絶対値（輝度値の差の絶対値）</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100709_01.jpg">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">処理画面と格納画面が同じ番号の場合エラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理範囲をウィンドウで指定します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定したウィンドウの位置が画面をはみ出す場合、実行結果はエラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定できるウィンドウの形状は矩形の角度0&deg;のみです。その他のウィンドウの場合、エラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">2値化の演算では、画面1も2値化処理されます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100706.html" target="_top">VISBINA</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 0,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,512,480,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCOPY 0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ0番を1番にコピーします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISBRIGHT 255</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画輝度を255に設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISRECT 100,100,100,100,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'画面に塗りつぶした矩形を描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPLNOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ1番をモニタに表示します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISMASK 1,0,0,0,1,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2画面間の差の絶対値を演算します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウを描画します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

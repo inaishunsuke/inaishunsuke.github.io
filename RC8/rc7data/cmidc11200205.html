@@ -1,0 +1,264 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DRIVEA</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DRIVEA<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">各軸の絶対動作を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">DRIVEA［＜＠パス開始変位＞］（＜軸番号＞，＜軸座標＞）［，（＜軸番号＞，＜軸座標＞）…］ ［，＜動作オプション＞］［，NEXT］</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">＜軸番号＞で指定した軸を、＜軸座標＞で指定した角度(DEG)へ移動させます。</div>
+            <div class="p">このコマンドを実行するためには、動作させる軸を含むアームグループの取得が必要です。同じ軸を複数指定した場合は、後に指定したものが有効になります。</div>
+            <div class="p">&lt;パス開始変位&gt;の値は目標位置を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。パス開始タイミングを変えるための目安となる数値であり、アーム先端がその中に入ったときに次の制御へ移るわけではありません。</div>
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">省略するとデフォルト値@0として処理します。</div>
+              </li>
+              <li class="item">
+                <div class="p">@0とすると、エンド動作で動きます。</div>
+              </li>
+              <li class="item">
+                <div class="p">@Pとすると、パス動作で動きます。</div>
+              </li>
+              <li class="item">
+                <div class="p">@Eとすると、エンコーダ値によって目標位置への到達を確認し、次の動作に移ります。</div>
+              </li>
+            </ul>
+            <div class="p">&lt;動作オプション&gt;にはSPEED、ACCEL、DECELがあります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">動作オプション</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">SPEED（またはSと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">移動速度を指定します。意味はSPEED文と同じです。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">加速度を指定します。意味はACCEL文と同じです。ただし、減速度の指定はできません。減速度の指定はDECEL文を使ってください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">減速度を指定します。意味はDECEL文と同じです。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;NEXTオプション&gt;を付けると、ロボットの動作完了を待たずに次の非動作命令に続きます。ただし、以下の命令は、ロボットの動作完了（パス開始）まで実行待ちになります。</div>
+            <div class="p">ロボット動作命令（CHANGETOOL、CHANGEWORK、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL）、最適可搬質量設定ライブラリ（aspACLD、aspChange）、アーム動作ライブラリ（mvSetPulseWidthなど）</div>
+            <div class="p">また、動作オプションと併用した場合、NEXTオプションは無効になります。&lt;NEXTオプション&gt;を付けた場合、ステップ停止を実行すると、次の動作命令実行待ちの場合は、その動作を終了後に停止します。したがって、停止までの移動が長くなりますので注意してください。</div>
+            <div class="p">また、ティーチチェックモードでは、NEXTオプションは無効になります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200204.html" target="_top">DRIVE</a>、<a href="cmidc11200207.html" target="_top">MOVE</a>のEXまたはEXAオプション</div>
+            <div class="p">(付加軸を動かすコマンドは<a href="cmidc11200207.html" target="_top">MOVE</a>のEXまたはEXAオプション、<a href="cmidc11200204.html" target="_top">DRIVE</a>、DRIVEAのみです。）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <div class="p">付加軸を指定し、＜＠パス開始変位＞オプションに数値を入力した場合、数値に関わらず、パス動作で動作します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFINT li1, li2, li3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFSNG lf1, lf2, lf3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVEA (li1, 30) </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'li1を30度(deg)移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVEA (li1, lf1) </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'現在位置からli1の値の軸をlf1の値に移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">DRIVEA @P (li1, 0.78RAD), (li2, lf2), (li3, lf3)</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'現在位置からli1を0.78(rad)、li2をlf2が示す値分、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'li3をlf3の値に移動します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸の例）：</div>
+              <div class="figure">
+                <img src="image/cmidc11200205_01.jpg">
+              </div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ１は7軸8軸を含んでいる。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVE (7,30),(8,50)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'7軸8軸を動作させる。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+              <div class="p">7軸8軸を動作させるためには上の例ではアームグループ１またはアームグループ2を取得している必要があります。</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

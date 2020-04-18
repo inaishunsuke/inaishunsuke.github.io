@@ -1,0 +1,284 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISLEVEL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISLEVEL<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ヒストグラム結果に基づき2値化レベルを求めます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISLEVEL（&lt;モード&gt;[，&lt;基準面積&gt;[，&lt;処理対象&gt;] ] ）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;モード&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">2値化レベルを求める方法を指定します。（0～2）</div>
+            </div>
+            <div class="ptxt-ind15">
+              <div class="p">0：モード法</div>
+            </div>
+            <div class="ptxt-ind15">
+              <div class="p">1：判別分析法</div>
+            </div>
+            <div class="ptxt-ind15">
+              <div class="p">2：Pタイル法</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">内容についてはP5-4「5.1.1.5 ?2値化」をご覧ください。</div>
+            </div>
+            <div class="p">&lt;基準面積&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> Pタイル法による2値化レベルを求める際の面積値を指定します。（1～245760）省略時は、1を指定します。</div>
+            </div>
+            <div class="p">&lt;処理対象&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> Pタイル法による2値化レベルを求める際の対象（白、黒）を指定します。（0または1）省略時は、0を指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：黒（輝度値0から積算）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：白（輝度値255から積算）</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">モード法、判別分析法では&lt;基準面積&gt;&lt;処理対象&gt;は使用しません。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本機能を使用する場合は、VISHISTをあらかじめ実行する必要があります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定データに誤り、または処理結果が異常である場合、戻り値は -1になります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100703.html" target="_top">VISHIST</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,100,100,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISWORKPLN 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'処理の対象画面を格納メモリ0番に設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISHIST 1,100,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'座標(100,100)を原点にウィンドウ1番でヒストグラ</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'ムを実行します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDDISP 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I2 = VISLEVEL(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'モード法により2値化レベルを求めます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">IF I2 = -1 THEN VISPRINT "エラー" ELSE VISPRINT "2値化レベル=";I2</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I2 = VISLEVEL(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'判別分析法により2値化レベルを求めます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,11</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">IF I2 = -1 THEN VISPRINT "エラー" ELSE VISPRINT "2値化レベル=";I2</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I2 = VISLEVEL(2,100,0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'Pタイル法により2値化レベルを求めます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,12</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">IF I2 = -1 THEN VISPRINT "エラー" ELSE VISPRINT "2値化レベル=";I2</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

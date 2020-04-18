@@ -1,0 +1,143 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>INIT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">INIT<span class="comment2">
+		　【Ver.1.7 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">特権タスクパラメータの状態により、モータON、CAL、スピード設定を行います。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">INIT　[，&lt;INITオプション&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">特権タスク使用／未使用が[未使用]になっている場合は何もしません。</div>
+              </li>
+              <li class="item">
+                <div class="p">特権タスク使用／未使用が[使用]になっている場合は以下の処理を実行します。</div>
+              </li>
+              <ul type="circle" class="list2">INIT命令実行モードが［（モータON+CAL）：非実行］の場合<li class="item"><div class="p">INIT起動スピードが10であれば、コントローラの外部スピードを10にします。</div></li><li class="item"><div class="p">INIT起動スピードが100であれば、コントローラの外部スピードを100にします。</div></li></ul>
+              <ul type="circle" class="list2">INIT命令実行モードが［（モータON+CAL）：実行］の場合<li class="item"><div class="p">INIT起動スピードが10であれば、外部スピードを10、モータONおよびCALを実行します。</div></li><li class="item"><div class="p">INIT起動スピードが100であれば、外部スピードを100、モータON</div></li></ul>
+              <li class="item">
+                <div class="p">&lt;INITオプション&gt;で「RESULT」を記述すると、INITコマンド実行時に内部エラーが発生しても、特権タスクを停止させません。RESULT=（変数名）で発生したエラーのエラーコードを指定した変数に格納します。（ｖ2.6以降のコントローラに限る。）</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">無限ループでINIT命令のみを行うようなプログラムとロボット動作プログラムを同時に走らせないようにしてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">INIT実行中は動作中プログラムの表示が待機中になることがありますので、注意してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">複数の特権タスクから同時にINIT命令を実行しないでください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'!TITLE "初期化"</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">PROGRAM TSR1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">INIT, RESULT = I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'モータON、CAL、スピード設定を行います。</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'INIT失敗時、変数I1にエラーコードを格納し、次の</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'行に移ります。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

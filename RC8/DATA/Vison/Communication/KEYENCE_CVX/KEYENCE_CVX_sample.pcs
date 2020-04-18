@@ -1,0 +1,38 @@
+'!TITLE "KEYENCE_CVX_sample"
+'
+'キーエンスCV-Xシリーズを利用する通信コマンドのサンプルプログラム
+'
+
+#Include "KEYENCE_CVX.pcs"		'通信用関数をインクルードします
+
+Sub Main
+	Dim strResults as string
+	Dim iLineNo as Integer
+	Dim iProgNo as Integer
+	Dim iTriggerNo as Integer
+	Dim iSDNo as Integer
+
+	iLineNo = 8			'回線番号　8　で接続
+	iSDNo = 1			'SDNo. 1
+	iProgNo = 0		'設定No.0
+	iTriggerNo = 1		'トリガーNo. 1
+
+	IF Not (ConnectCVX(iLineNo)) Then		'----　接続ON
+		PrintDbg "Connect NG"
+		EXIT SUB
+	End IF
+	IF Not (X_PW(iLineNo, iSDNo, iProgNo)) Then 	'---　設定No.変更
+		PrintDbg "Change NG"
+		EXIT SUB
+	END IF
+	IF Not(X_T(iLineNo, iTriggerNo, strResults)) Then	'トリガ実行します
+		PrintDBG "トリガ NG"
+		EXIT SUB
+	else
+		P[0] = ( D_dnCvxData(0), D_dnCvxData(1), D_dnCvxData(2) )
+						'受信データをポジションデータへ
+	End If
+
+	DisConnectCVX iLineNo			'----　接続OFF　
+
+END Sub

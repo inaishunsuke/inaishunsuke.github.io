@@ -1,0 +1,290 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SHDEFMODEL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SHDEFMODEL<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">サーチモデルの登録をします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SHDEFMODEL &lt;モデル番号&gt;，&lt;X座標&gt;，&lt;Y座標&gt;，&lt;幅&gt;，&lt;高さ&gt;，&lt;オフセットX&gt;，</div>
+            <div class="p">&lt;オフセットY&gt;[,&lt;オフセット角度&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;モデル番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">登録するモデルの番号を指定します。（0～99）</div>
+            </div>
+            <div class="p">&lt;X座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">登録モデルの原点X座標を指定します。（16～485）</div>
+            </div>
+            <div class="p">&lt;Y座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">登録モデルの原点Y座標を指定します。（16～463）</div>
+            </div>
+            <div class="p">&lt;幅&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">登録モデルの幅を指定します。（10～256）</div>
+            </div>
+            <div class="p">&lt;高さ&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">登録モデルの高さを指定します。（10～255）</div>
+            </div>
+            <div class="p">&lt;オフセットX&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">原点からのオフセットXを指定します。（-511～+511）</div>
+            </div>
+            <div class="p">&lt;オフセットY&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">原点からのオフセットYを指定します。（-511～+511）</div>
+            </div>
+            <div class="p">&lt;オフセット角度&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">角度原点からのオフセット角度を指定します。（-360～360）［V1.4以降］</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12101001_01.jpg">
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12101001_02.jpg">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">登録モデルは画面端から内側16画素以上離れていなければ登録できません。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">基準座標はモデルサーチ時に検出する点をどこにするかを指定するものです。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">登録モデルはある程度の輝度分布と特徴が必要です。あまり輝度分布が平坦すぎるもの、逆に細かい変化が多すぎる場合登録できません。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">すでに登録されている番号を指定した場合上書きします。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">登録の可否は命令実行後、VISSTATUSにより知ることができます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令を実行時に処理画面3番をワークエリアとして使用するため処理画面3番のデータは保証されません。また、処理画面3番（VISWORKPLN 3）は処理できません。</div>
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISSTATUS (n)</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">n</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">項目</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行結果</div>
+                            <div class="p"> 0  = 正常</div>
+                            <div class="p">-1  = 指定範囲エラー</div>
+                            <div class="p">-2  = スペースフル</div>
+                            <div class="p">-3  = 均一モデル</div>
+                            <div class="p">-4  = 複雑</div>
+                            <div class="p">1,2 = サーチ時間大</div>
+                            <div class="p">3,4 = 角度特定不可［V1.4以降］</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">未使用 0</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行時間</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令実行時に電源をOFFしないでください。次の電源ON時に正常に終了しなかったと判断し、視覚に関する情報を初期化します。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12101002.html" target="_top">SHREFMODEL</a>、<a href="cmidc12101005.html" target="_top">SHDISPMODEL</a>、<a href="cmidc12101004.html" target="_top">SHCLRMODEL</a>、<a href="cmidc12101006.html" target="_top">SHMODEL</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画画面0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISRECT 100,100,100,100</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SHDEFMODEL 1,100,100,100,100,50,50</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'モデルを登録します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1 = VISSTATUS(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">IF I1 = 0 THEN VISPRINT "登録完了" ELSE VISPRINT "登録できません。"</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

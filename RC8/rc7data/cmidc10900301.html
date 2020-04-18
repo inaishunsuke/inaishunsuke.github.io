@@ -1,0 +1,258 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>AREA</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">AREA<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">干渉チェックを行なうエリアを宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">AREA &lt;エリア番号&gt;,&lt;ポジション&gt;,&lt;ベクトル&gt;,&lt;I/O番号&gt;,&lt;干渉位置格納ポジション型変数番号&gt;[,&lt;エラー検出設定&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">干渉チェックエリアを宣言します。</div>
+            <div class="p">&lt;エリア番号&gt;で宣言できるエリア番号は、0～31までの32ヶ所です。</div>
+            <div class="p">&lt;ポジション&gt;は、干渉チェックエリアの中心位置と角度を指定するポジションです。</div>
+            <div class="p">&lt;ベクトル&gt;は、干渉チェックエリアの範囲を指定するベクトルです。</div>
+            <div class="p">エリアの一辺の長さは、&lt;ベクトル&gt;の各成分の2倍の長さとなります。</div>
+            <div class="p">&lt;I/O番号&gt;には、干渉チェックエリアで干渉が起こったときにSETするI/O番号を与えます。I/Oの状態は、RESETAREAを実行するか、そのI/OをRESETするまで保持されます。</div>
+            <div class="p">[Ver.1.8以降]では、10104、IO[104]とIO変数表記が可能になりました。また、-1を設定することによりIO出力を行わない設定が可能になりました。</div>
+            <div class="p">&lt;干渉位置格納ポジション型変数番号&gt;には、干渉した位置を格納するポジション型変数の番号を与えます。</div>
+            <div class="p">[Ver.1.8以降]では、P55、P[55]とP型変数表記が可能になりました。また、-1を設定するとP型変数への位置の取り込みを行わない設定が可能になりました。</div>
+            <div class="p">&lt;エラー検出設定&gt;には、位置干渉検出のエラー条件を設定します。干渉時のエラー設定は以下のとおりです。</div>
+            <div class="ptxt-ind5">
+              <div class="p">0: エリア領域内部に干渉時、エラー出力無し</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">1: エリア領域内部に干渉時、エラー出力</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">2: エリア領域内部に干渉時、エラー出力（手動に切換えて操作可）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">3: エリア領域外部に干渉時、エラー出力無し</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">4: エリア領域外部に干渉時、エラー出力</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">5: エリア領域外部に干渉時、エラー出力（手動に切換えて操作可）</div>
+            </div>
+            <div class="p">干渉のチェックは、ツール座標系の原点と干渉チェックエリアに指定した直方体を比較します。干渉チェックエリアの内側にツール座標原点を検出すると、干渉と判定されます。</div>
+            <div class="p">干渉位置格納ポジション型変数番号には、干渉が検出されたとき(I/OがSETされたとき)の、ユーザ座標系におけるツール座標原点位置が格納されます。一般には直方体の面上の点になりますが、SETAREA実行時にツール座標原点が直方体内部にある場合は、その位置となります。</div>
+            <div class="p">WINCAPSⅢ、ティーチングペンダントでも設定が可能です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200801.html" target="_top">SETAREA</a>、<a href="cmidc11200802.html" target="_top">RESETAREA</a>、<a href="cmidc11501501.html" target="_top">AREAPOS</a>、<a href="cmidc11501502.html" target="_top">AREASIZE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">エリアの中心位置は、常にWORK0が基準になっています。</div>
+              </li>
+              <li class="item">
+                <div class="p">ユーザ座標系を変更しても、干渉チェックエリアの位置は変わりません。</div>
+              </li>
+            </ul>
+            <div class="figure">
+              <img src="image/cmidc10900301_01.jpg">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">共通</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">AREA 2, P50, V10, 104, 55</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番にP50, V10で規定されるエリアを定義します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを有効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">RESETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを無効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">AREA 2, P50+(100, 100, 0, 10, 0, 0 ), V10, 104, 55</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番にP50+(100, 100, 0, 10, 0, 0 ), V50で規定さ</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'れるエリアを定義します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを有効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">RESETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを無効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left" colspan="2">
+                    <div class="source01">
+                      <div class="p">AREA 2, P50+(100, 100, 0, 10 ), V10, 104, 55</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番にP50+(100, 100, 0, 10 ), V50で規定されるエ</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'リアを定義します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">SETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを有効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">RESETAREA 2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'2番のエリアチェックを無効にします。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

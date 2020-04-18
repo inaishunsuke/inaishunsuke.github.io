@@ -1,0 +1,1025 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>アルファベット順</title>
+<meta name="description" content="" />
+<meta name="keywords" content="アルファベット順" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="004559" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="79" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001102.html">プログラミング</a></li>
+<li><a href="001301.html">プログラマーズマニュアル</a></li>
+<li><a href="001303.html">コマンドリファレンス</a></li>
+<li><span>アルファベット順</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="000723.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 4559</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>アルファベット順</h1>
+<table>
+<tr>
+<td><a href="#004559_1_a">A</a></td>
+<td><a href="#004559_2_b">B</a></td>
+<td><a href="#004559_3_c">C</a></td>
+<td><a href="#004559_4_d">D</a></td>
+<td><a href="#004559_5_e">E</a></td>
+<td><a href="#004559_6_f">F</a></td>
+<td><a href="#004559_7_g">G</a></td>
+<td><a href="#004559_8_h">H</a></td>
+<td><a href="#004559_9_i">I</a></td>
+<td><a href="#004559_10_j">J</a></td>
+<td><a href="#004559_11_k">K</a></td>
+<td><a href="#004559_12_l">L</a></td>
+<td><a href="#004559_13_m">M</a></td>
+<td><a href="#004559_14_n">N</a></td>
+<td><a href="#004559_15_o">O</a></td>
+</tr>
+<tr>
+<td><a href="#004559_16_p">P</a></td>
+<td><a href="#004559_17_r">R</a></td>
+<td><a href="#004559_18_s">S</a></td>
+<td><a href="#004559_19_t">T</a></td>
+<td><a href="#004559_20_u">U</a></td>
+<td><a href="#004559_21_v">V</a></td>
+<td><a href="#004559_22_w">W</a></td>
+<td><a href="#004559_23_x">X</a></td>
+<td><a href="#004559_24_z">Z</a></td>
+</tr>
+</table>
+<table>
+<tr>
+<td><a href="#004559_0_sgn">記号</a></td>
+</tr>
+</table>
+<h2 id="004559_1_a">A</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000224.html">Abs</a></td><td>絶対値を返します。</td></tr>
+<tr><td><a href="000160.html">Accel</a></td><td>内部加速度、内部減速度を変更します。</td></tr>
+<tr><td><a href="000225.html">Acos</a></td><td>逆余弦(アークコサイン)を返します。</td></tr>
+<tr><td><a href="005768.html">AddHandler</a></td><td>指定したプロバイダオブジェクトから、イベントを受取るメソッドの登録を行います。以降、プロバイダでイベントが発行されると、登録メソッドが呼ばれます。</td></tr>
+<tr><td><a href="004944.html">AddPathPoint</a></td><td>経路データに経路点を追加します。</td></tr>
+<tr><td><a href="000630.html">And 演算子</a></td><td>2つの式の論理積を求めます。</td></tr>
+<tr><td><a href="005127.html">AngularTrigger</a></td><td>ロボットが指定した角度（距離）動作するたびに、I/OのON、OFFを切替えます。</td></tr>
+<tr><td><a href="000161.html">Approach</a></td><td>基準位置から指定距離離れたアプローチ位置へ移動します。</td></tr>
+<tr><td><a href="000162.html">ArchMove</a></td><td>アーチモーションします。</td></tr>
+<tr><td><a href="000309.html">Area</a></td><td><span class="term">検知エリア</span>の設定値を変更します。</td></tr>
+<tr><td><a href="000271.html">AreaPos</a></td><td><span class="term">検知エリア</span>の中心を<a href="000456.html" class="xref">ポジション型</a>データで返します。</td></tr>
+<tr><td><a href="000272.html">AreaSize</a></td><td><span class="term">検知エリア</span>の大きさ(各辺の長さ)をベクトル型で返します。</td></tr>
+<tr><td><a href="005070.html">Array</a></td><td><a href="005067.html">Variant型</a>の配列を作成します。</td></tr>
+<tr><td><a href="000163.html">Arrive</a></td><td>現在動作中の動作命令が、指定した動作完了割合に達するまで、タスクを待機します。</td></tr>
+<tr><td><a href="000275.html">Asc</a></td><td>指定された文字列内の最初の文字の文字コードを<a href="000451.html" class="xref">整数型</a>データで返します。</td></tr>
+<tr><td><a href="000226.html">Asin</a></td><td>逆正弦(アークサイン)を返します。</td></tr>
+<tr><td><a href="000227.html">Atn</a></td><td>逆正接(アークタンジェント)を返します。</td></tr>
+<tr><td><a href="000228.html">Atn2</a></td><td>yをxで除算した逆正接(アークタンジェント)を返します。</td></tr>
+<tr><td><a href="000246.html">AVec</a></td><td><span class="term">アプローチベクトル</span>を返します。</td></tr>
+</table>
+<h2 id="004559_2_b">B</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="005936.html">Base</a></td><td>ワールド座標原点から見たロボットベース位置を設定します。</td></tr>
+<tr><td><a href="000276.html">Bin</a></td><td><a href="000451.html" class="xref">整数型</a>データを2進数の<a href="000454.html" class="xref">文字列型</a>データへ変換します。</td></tr>
+<tr><td><a href="000369.html">Buzzer</a></td><td>ブザーが鳴ります。</td></tr>
+<tr><td><a href="000328.html">ByRef</a></td><td>プロシージャに渡す引数を<span class="term">参照渡し</span>にします。</td></tr>
+<tr><td><a href="000327.html">ByVal</a></td><td>プロシージャに渡す引数を<span class="term">値渡し</span>にします。</td></tr>
+</table>
+<h2 id="004559_3_c">C</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000125.html">Call</a></td><td>プロシージャを呼び出し、実行します。</td></tr>
+<tr><td><a href="005279.html">CallByName</a></td><td><a href="000447.html" class="ahref-xref_id_000447">プロシージャ</a>を呼び出し、実行します。Callコマンドと異なり、プロシージャ名に式を使用することができます。</td></tr>
+<tr><td><a href="002245.html">Cao.AddController</a></td><td>プロバイダを生成します。</td></tr>
+<tr><td><a href="002248.html">Cao.Controllers</a></td><td>管理下にあるコントロールオブジェクト（コレクション）を参照します。</td></tr>
+<tr><td><a href="002246.html">Cao.Index</a></td><td>プロバイダ番号を参照します。</td></tr>
+<tr><td><a href="002247.html">Cao.Name</a></td><td>プロバイダ名の取得をします。</td></tr>
+<tr><td><a href="000164.html">ChangeTool</a></td><td>現在のツール座標系を変更します。</td></tr>
+<tr><td><a href="000165.html">ChangeWork</a></td><td>現在のワーク座標系を変更します。</td></tr>
+<tr><td><a href="003052.html">CheckVirtualFence</a></td><td>VirtualFence有効時に、目標位置におけるロボットと設備の衝突状態をチェックします。</td></tr>
+<tr><td><a href="000277.html">Chr</a></td><td>指定された文字コードに対する文字を返します。</td></tr>
+<tr><td><a href="005902.html">ClearAreaDetected</a></td><td>現在のエリア検知状態をクリアします。</td></tr>
+<tr><td><a href="005940.html">ClearServoLog</a></td><td><a href="001664.html">サーボログ</a>を初期化します。</td></tr>
+<tr><td><a href="000105.html">ClrErr</a></td><td>エラーを解除します。</td></tr>
+<tr><td><a href="004945.html">ClrPathPoint</a></td><td>指定した経路の全ての経路点をクリアします。</td></tr>
+<tr><td><a href="005101.html">CollisionDetection</a></td><td>自動モード、ティーチチェックモードでの衝突検出の開始／停止をします。</td></tr>
+<tr><td><a href="000374.html">Comm.Clear</a></td><td>データ通信の受信バッファをクリアします。</td></tr>
+<tr><td><a href="000371.html">Comm.Close</a></td><td>データ通信時に指定した回線をクローズします。</td></tr>
+<tr><td><a href="000375.html">Comm.Count</a></td><td>データ通信機能の受信バッファから読み取れるデータのバイト数を返します。</td></tr>
+<tr><td><a href="000373.html">Comm.Input</a></td><td><a href="000608.html" class="xref">データ通信</a>機能でデータを受信します。</td></tr>
+<tr><td><a href="000370.html">Comm.Open</a></td><td>データ通信時に回線をオープンします。</td></tr>
+<tr><td><a href="000372.html">Comm.Output</a></td><td><a href="000608.html" class="xref">データ通信</a>機能でデータを送信します。</td></tr>
+<tr><td><a href="000376.html">Comm.State</a></td><td>データ通信機能のポートの状態を返します。</td></tr>
+<tr><td><a href="000582.html">ContinueAll</a></td><td><span class="term">コンティニュスタート</span>します。</td></tr>
+<tr><td><a href="002283.html">ConvertPosBase</a></td><td>ポジション型データを別のベース定義の座標へ変換して返します。</td></tr>
+<tr><td><a href="002226.html">ConvertPosTool</a></td><td>ポジション型データを別のツール座標系へ座標変換して返します。</td></tr>
+<tr><td><a href="002227.html">ConvertPosWork</a></td><td>ポジション型データを別のワーク座標系へ座標変換して返します。</td></tr>
+<tr><td><a href="000229.html">Cos</a></td><td>余弦(コサイン)を返します。</td></tr>
+<tr><td><a href="000426.html">CPMode</a></td><td>CP補間モード設定を変更します。</td></tr>
+<tr><td><a href="000583.html">CreateArray</a></td><td><a href="005067.html">バリアント型</a>の一次元配列を任意の<a href="005067.html">内部処理形式</a>で作ります。</td></tr>
+<tr><td><a href="005521.html">CreateMultiArray</a></td><td><a href="005067.html">バリアント型</a>の配列を任意の<a href="005067.html">内部処理形式</a>で作ります。三次元までの配列を作成できます。</td></tr>
+<tr><td><a href="005158.html">CreateMutex</a></td><td>Mutexオブジェクトの作成を要求をし、MutexオブジェクトのIDを取得します。</td></tr>
+<tr><td><a href="000294.html">Cross</a></td><td><a href="000455.html" class="xref">ベクトル型</a>データの外積演算結果を返します。</td></tr>
+<tr><td><a href="005074.html">CrtMotionAllow</a></td><td>Move @Cで、停止判定に使用する、手先の「停止位置精度、姿勢精度」を変更します。</td></tr>
+<tr><td><a href="000167.html">CurAcc</a></td><td>内部加速度の設定値を返します。</td></tr>
+<tr><td><a href="005846.html">CurCPMode</a></td><td>CP補間モードの設定値を返します。</td></tr>
+<tr><td><a href="000168.html">CurDec</a></td><td>内部減速度の設定値を返します。</td></tr>
+<tr><td><a href="000107.html">CurErr</a></td><td>現在起きているコントローラエラーのエラーコードを返します。</td></tr>
+<tr><td><a href="000170.html">CurExJ</a></td><td>指定した軸の現在角度を返します。</td></tr>
+<tr><td><a href="000171.html">CurExtAcc</a></td><td>外部加速度の現在設定値を返します。</td></tr>
+<tr><td><a href="000172.html">CurExtDec</a></td><td>外部減速度の現在設定値を返します。</td></tr>
+<tr><td><a href="000173.html">CurExtSpd</a></td><td>外部速度の現在設定値を返します。</td></tr>
+<tr><td><a href="000174.html">CurFig</a></td><td>現在のロボットの形態(Fig)の値を返します。</td></tr>
+<tr><td><a href="005844.html">CurForceSensorPayLoad</a></td><td>力センサ負荷質量の設定値を返します。</td></tr>
+<tr><td><a href="000177.html">CurJnt</a></td><td>全軸の現在角度を<a href="000457.html" class="xref">ジョイント型</a>データで返します。</td></tr>
+<tr><td><a href="000219.html">CurLmt</a></td><td><a href="001624.html" class="xref">電流制限機能</a>の設定と有効/無効を操作します。</td></tr>
+<tr><td><a href="000378.html">CurOptMode</a></td><td>現在の運転モードを返します。</td></tr>
+<tr><td><a href="004947.html">CurPathPoint</a></td><td>最近通過した経路点番号を返します。</td></tr>
+<tr><td><a href="005843.html">CurPayload</a></td><td>内部負荷条件の設定値を返します。</td></tr>
+<tr><td><a href="000179.html">CurPos</a></td><td>ロボットの現在位置を<a href="000456.html" class="xref">ポジション型</a>データで返します。</td></tr>
+<tr><td><a href="000180.html">CurSpd</a></td><td>内部速度の設定値を返します。</td></tr>
+<tr><td><a href="005845.html">CurSpeedMode</a></td><td>最適速度制御機能の設定値を返します。</td></tr>
+<tr><td><a href="000181.html">CurTool</a></td><td>現在のツール座標系番号を返します。</td></tr>
+<tr><td><a href="000182.html">CurTrn</a></td><td>ロボットの現在位置を<a href="000458.html" class="xref">同次変換型</a>データで返します。</td></tr>
+<tr><td><a href="000183.html">CurWork</a></td><td>現在のワーク座標系番号を返します。</td></tr>
+</table>
+<h2 id="004559_4_d">D</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000379.html">Date</a></td><td>現在の日付を返します。</td></tr>
+<tr><td><a href="000380.html">DeadManState</a></td><td>デッドマンスイッチの状態を返します。</td></tr>
+<tr><td><a href="000184.html">Decel</a></td><td>内部減速度を指定します。</td></tr>
+<tr><td><a href="000312.html">DefIO</a></td><td>I/O型のローカル変数を宣言します。</td></tr>
+<tr><td><a href="000230.html">DegRad</a></td><td>角度単位が度[Degree]の値をラジアンに変換します。</td></tr>
+<tr><td><a href="000185.html">Delay</a></td><td>指定した時間の間、自タスクを待機します。</td></tr>
+<tr><td><a href="005159.html">DeleteMutex</a></td><td>Mutexオブジェクトの削除を要求します。</td></tr>
+<tr><td><a href="000186.html">Depart</a></td><td>現在位置からツール座標-Z方向に移動します。</td></tr>
+<tr><td><a href="000188.html">DestJnt</a></td><td>現在の<a href="000524.html" class="xref">動作ステートメント</a>の<span class="term">目標位置</span>を<a href="000457.html" class="xref">ジョイント型</a>データで返します。</td></tr>
+<tr><td><a href="000189.html">DestPos</a></td><td>現在の<a href="000524.html" class="xref">動作ステートメント</a>の<span class="term">目標位置</span>を<a href="000456.html" class="xref">ポジション型</a>データで返します。</td></tr>
+<tr><td><a href="000190.html">DestTrn</a></td><td>現在の<a href="000524.html" class="xref">動作ステートメント</a>の<span class="term">目標位置</span>を<a href="000458.html" class="xref">同次変換型</a>データで返します。</td></tr>
+<tr><td><a href="000192.html">DetectOff</a></td><td>Detect機能を無効にし、データを格納します。</td></tr>
+<tr><td><a href="000191.html">DetectOn</a></td><td>Detect機能を有効にします。</td></tr>
+<tr><td><a href="000289.html">Dev</a></td><td><a href="000456.html" class="xref">ポジション型</a>データの偏差演算結果を返します。</td></tr>
+<tr><td><a href="000290.html">DevH</a></td><td><a href="000456.html" class="xref">ポジション型</a>データの基準位置座標系での偏差演算結果を返します。</td></tr>
+<tr><td><a href="000319.html">Dim</a></td><td>ローカル変数を宣言します。</td></tr>
+<tr><td><a href="000260.html">Dist</a></td><td>2点間の距離を返します。</td></tr>
+<tr><td><a href="000126.html">Do...Loop</a></td><td>指定した条件が真(True)である間、または条件が真(True)になるまで、一連のステートメントを繰返し実行します。</td></tr>
+<tr><td><a href="000293.html">Dot</a></td><td><a href="000455.html" class="xref">ベクトル型</a>データの内積演算結果を返します。</td></tr>
+<tr><td><a href="000332.html">Double</a></td><td><a href="000453.html" class="ahref-xref_id_000453">倍精度実数型</a>データを表します。</td></tr>
+<tr><td><a href="005779.html">Dps</a></td><td>指定した軸番号の回転速度(deg/s)を、PTP動作時の最大内部速度に対する割合(%)に変換します。</td></tr>
+<tr><td><a href="000193.html">Draw</a></td><td>現在位置からの相対位置に移動します。</td></tr>
+<tr><td><a href="000194.html">Drive</a></td><td>各軸を相対位置に移動します。</td></tr>
+<tr><td><a href="000195.html">DriveA</a></td><td>各軸を絶対位置に移動します。</td></tr>
+</table>
+<h2 id="004559_5_e">E</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000405.html">EncMotionAllow</a></td><td>Move @Eで、停止判定に使用する、ロボット軸の各軸の「停止時許容角度」を変更します。</td></tr>
+<tr><td><a href="000407.html">EncMotionAllowJnt</a></td><td>Move @Eで、停止判定に使用する、ロボット軸でない軸の「停止時許容角度」を変更します。</td></tr>
+<tr><td><a href="000220.html">ErAlw</a></td><td>偏差許容値の設定と有効/無効を操作します。</td></tr>
+<tr><td><a href="000111.html">Err.Description</a></td><td>エラーメッセージが格納されているプロパティです。</td></tr>
+<tr><td><a href="005816.html">Err.Level</a></td><td>タスクエラーのエラーレベルが格納されているプロパティです。</td></tr>
+<tr><td><a href="000438.html">Err.Number</a></td><td>タスクエラーのエラーコードが格納されているプロパティです。</td></tr>
+<tr><td><a href="005129.html">Err.OriginalNumber</a></td><td>オリジナルエラーコードが格納されているプロパティです。</td></tr>
+<tr><td><a href="000440.html">Err.Raise</a></td><td>プログラム実行時に指定したエラーを発生させます。</td></tr>
+<tr><td><a href="000108.html">ErrLvl</a></td><td>指定したエラーのエラーレベルを返します。</td></tr>
+<tr><td><a href="000106.html">ErrMsg</a></td><td>エラーメッセージを返します。</td></tr>
+<tr><td><a href="002268.html">ExclusiveArea</a></td><td>排他エリアを作成、変更します。</td></tr>
+<tr><td><a href="002271.html">ExclusiveControlStatus</a></td><td>排他制御状態を取得します。</td></tr>
+<tr><td><a href="000127.html">Exit</a></td><td>指定した処理ブロックから離脱します。</td></tr>
+<tr><td><a href="000231.html">Exp</a></td><td>指数関数 (e を底とする数式のべき乗) を計算する数値演算関数です。</td></tr>
+<tr><td><a href="002176.html">ExtAccel</a></td><td>外部加速度、外部減速度を変更します。</td></tr>
+<tr><td><a href="002177.html">ExtDecel</a></td><td>外部減速度を指定します。</td></tr>
+<tr><td><a href="000196.html">ExtSpeed</a></td><td>外部速度を変更します。</td></tr>
+</table>
+<h2 id="004559_6_f">F</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000261.html">Fig</a></td><td>形態成分(Fig要素)を返します。</td></tr>
+<tr><td><a href="000782.html">Fix</a></td><td>指定した数値の整数部分を返します。</td></tr>
+<tr><td><a href="000129.html">For...Next</a></td><td>指定した回数だけ一連のステートメントを繰り返します。</td></tr>
+<tr><td><a href="005591.html">ForceChangeTable</a></td><td>力制御中に使用している力制御番号を変更します。</td></tr>
+<tr><td><a href="005177.html">ForceCtrl</a></td><td>力制御機能（コンプライアンス機能）の有効／無効を設定します。</td></tr>
+<tr><td><a href="005176.html">ForceParam</a></td><td>力制御機能のパラメータを設定します。</td></tr>
+<tr><td><a href="005528.html">ForceSensor</a></td><td>力センサに対して機能番号に応じた処理を行います。</td></tr>
+<tr><td><a href="005842.html">ForceSensorPayLoad</a></td><td>力センサ負荷質量を設定します。</td></tr>
+<tr><td><a href="005529.html">ForceValue</a></td><td>力制御の各種データを取得します。</td></tr>
+<tr><td><a href="005530.html">ForceWaitCondition</a></td><td>力制御の状態が指定した条件になるまで、待機します。</td></tr>
+<tr><td><a href="000756.html">Format</a></td><td>指定した表示書式の<a class="xref" href="000454.html">文字列型</a>データを返します。</td></tr>
+<tr><td><a href="000325.html">Function...End Function</a></td><td>Functionプロシージャを宣言します。</td></tr>
+</table>
+<h2 id="004559_7_g">G</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="003043.html">GetAllSrvData</a></td><td><a href="000199.html">GetSrvData</a>、<a href="000177.html">CurJnt</a>で取得できるデータをタイムスタンプ付で一括取得します。</td></tr>
+<tr><td><a href="005901.html">GetAreaDetected</a></td><td>現在のエリア<span class="term">検知</span>状態を取得します。</td></tr>
+<tr><td><a href="005103.html">GetCollisionStatus</a></td><td>衝突検出の状態を返します。</td></tr>
+<tr><td><a href="005938.html">GetHandIO</a></td><td>スレーブロボットのハンドIOの状態を取得します。</td></tr>
+<tr><td><a href="004555.html">GetLanguage</a></td><td>現在の言語設定値を返します。</td></tr>
+<tr><td><a href="004946.html">GetPathPoint</a></td><td>指定した経路点の位置データを返します。</td></tr>
+<tr><td><a href="005066.html">GetPathPointCount</a></td><td>指定した経路の経路点の個数を返します。</td></tr>
+<tr><td><a href="000601.html">GetPriority</a></td><td>自タスクのプライオリティレベルを返します。</td></tr>
+<tr><td><a href="005168.html">GetPublicValue</a></td><td>Public属性のローカル変数を読み込みます。</td></tr>
+<tr><td><a href="000199.html">GetSrvData</a></td><td>全軸のサーボ内部データを返します。</td></tr>
+<tr><td><a href="004556.html">GetSrvJntData</a></td><td>指定軸のサーボ内部データを返します。</td></tr>
+<tr><td><a href="000144.html">GiveArm</a></td><td>現在取得しているアームグループの制御権を明示的に解放します。</td></tr>
+<tr><td><a href="005161.html">GiveMutex</a></td><td>Mutexオブジェクトを&quot;Unlocked&quot;状態にします。</td></tr>
+<tr><td><a href="000131.html">GoTo</a></td><td>ラベルにジャンプします。</td></tr>
+<tr><td><a href="000221.html">GrvCtrl</a></td><td>重力補償制御機能の有効/無効を操作します。</td></tr>
+<tr><td><a href="000222.html">GrvOffset</a></td><td>重力オフセット設定機能の有効/無効を操作します。</td></tr>
+</table>
+<h2 id="004559_8_h">H</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000200.html">Halt</a></td><td>自タスクを停止します。</td></tr>
+<tr><td><a href="000654.html">Hand[n].BusyState / SelectHand[m,n].BusyState</a></td><td>動作状態を表します。&quot;SelectHand[m,n].BusyState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000584.html">Hand[n].Chuck / SelectHand[m,n].Chuck</a></td><td>チャック動作をします。&quot;SelectHand[m,n].Chuck&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000586.html">Hand[n].CurPos / SelectHand[m,n].CurPos</a></td><td>現在位置を返します。&quot;SelectHand[m,n].CurPos&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000648.html">Hand[n].EmgState / SelectHand[m,n].EmgState</a></td><td>非常停止入力状態を表します。&quot;SelectHand[m,n].EmgState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000653.html">Hand[n].Error / SelectHand[m,n].Error</a></td><td>エラー状態を返します。&quot;SelectHand[m,n].Error&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000587.html">Hand[n].GetPoint / SelectHand[m,n].GetPoint</a></td><td>ポイントデータの要素を返します。&quot;SelectHand[m,n].GetPoint&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000651.html">Hand[n].HoldState / SelectHand[m,n].HoldState</a></td><td>ハンドの把持状態を返します。&quot;SelectHand[m,n].HoldState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000652.html">Hand[n].InposState / SelectHand[m,n].InposState</a></td><td>目標位置に入っているかどうかを表します。&quot;SelectHand[m,n].InposState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000588.html">Hand[n].Motor / SelectHand[m,n].Motor</a></td><td>モータ電源を入/切します。&quot;SelectHand[m,n].Motor&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000655.html">Hand[n].MotorState / SelectHand[m,n].MotorState</a></td><td>モータ電源状態を返します。&quot;SelectHand[m,n].MotorState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000591.html">Hand[n].MoveA / SelectHand[m,n].MoveA</a></td><td>絶対位置に移動します。&quot;SelectHand[m,n].MoveA&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000593.html">Hand[n].MoveAH / SelectHand[m,n].MoveAH</a></td><td>加減速付き絶対位置把持動作をします。&quot;SelectHand[m,n].MoveAH&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000595.html">Hand[n].MoveH / SelectHand[m,n].MoveH</a></td><td>定速移動で把持動作します。&quot;SelectHand[m,n].MoveH&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000590.html">Hand[n].MoveP / SelectHand[m,n].MoveP</a></td><td>ポイント動作します。&quot;SelectHand[m,n].MoveP&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000592.html">Hand[n].MoveR / SelectHand[m,n].MoveR</a></td><td>相対位置移動します。&quot;SelectHand[m,n].MoveR&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000594.html">Hand[n].MoveRH / SelectHand[m,n].MoveRH</a></td><td>加減速相対位置移動で把持動作します。&quot;SelectHand[m,n].MoveRH&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000596.html">Hand[n].MoveZH / SelectHand[m,n].MoveZH</a></td><td>ゾーン付き定速移動の把持動作をします。&quot;SelectHand[m,n].MoveZH&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000589.html">Hand[n].Org / SelectHand[m,n].Org</a></td><td>原点復帰します。&quot;SelectHand[m,n].Org&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000650.html">Hand[n].OrgState / SelectHand[m,n].OrgState</a></td><td>原点復帰状態を表します。&quot;SelectHand[m,n].OrgState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000597.html">Hand[n].Stop / SelectHand[m,n].Stop</a></td><td>動作停止します。&quot;SelectHand[m,n].Stop&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000585.html">Hand[n].UnChuck / SelectHand[m,n].UnChuck</a></td><td>アンチャック動作します。&quot;SelectHand[m,n].UnChuck&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000649.html">Hand[n].ZonState / SelectHand[m,n].ZonState</a></td><td>電動ハンドが設定された範囲内に位置しているかどうかの状態を表します。&quot;SelectHand[m,n].ZonState&quot;は、電動ハンドと協調機能を併用する場合に使用します。</td></tr>
+<tr><td><a href="000279.html">Hex</a></td><td>数値を16進数で表した<a href="000454.html" class="xref">文字列型</a>データで返します。</td></tr>
+<tr><td><a href="004557.html">HighPathAccuracy</a></td><td>高軌跡制御機能の有効/無効を切り替えます。</td></tr>
+<tr><td><a href="000201.html">Hold</a></td><td>自タスクの実行を一時停止します。</td></tr>
+</table>
+<h2 id="004559_9_i">I</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="003387.html">IAI*.GetCurrentPositionData</a></td><td>ポジションデータを取り込みます。</td></tr>
+<tr><td><a href="003386.html">IAI*.Home</a></td><td>原点復帰します。</td></tr>
+<tr><td><a href="003389.html">IAI*.JogMinus</a></td><td>原点方向へジョグ/インチング動作します。</td></tr>
+<tr><td><a href="003388.html">IAI*.JogPlus</a></td><td>反原点方向へジョグ/インチング動作します。</td></tr>
+<tr><td><a href="003392.html">IAI*.MovePTP</a></td><td>数値で指定した移動先へ移動します。</td></tr>
+<tr><td><a href="003385.html">IAI*.Pause</a></td><td>一時停止の実行と解除を行います。</td></tr>
+<tr><td><a href="003376.html">IAI*.ReadAlarmInfo</a></td><td>最後に発生したアラーム情報を取得します。</td></tr>
+<tr><td><a href="003379.html">IAI*.ReadCurrentAlarmCode</a></td><td>現在発生アラームコードを取得します。</td></tr>
+<tr><td><a href="003378.html">IAI*.ReadCurrentPosition</a></td><td>現在位置を取得します。</td></tr>
+<tr><td><a href="003380.html">IAI*.ReadDSS1</a></td><td>デバイスステータスレジスタ1の値を取得します。</td></tr>
+<tr><td><a href="003381.html">IAI*.ReadDSS2</a></td><td>デバイスステータスレジスタ2の値を取得します。</td></tr>
+<tr><td><a href="003382.html">IAI*.ReadDSSE</a></td><td>拡張デバイスステータスレジスタの値を取得をします。</td></tr>
+<tr><td><a href="003377.html">IAI*.ReadPositionData</a></td><td>ポジションデータを取得します。</td></tr>
+<tr><td><a href="003384.html">IAI*.ResetAlarm</a></td><td>アラームをリセットします。</td></tr>
+<tr><td><a href="003391.html">IAI*.Stop</a></td><td>減速停止します。</td></tr>
+<tr><td><a href="003409.html">IAI*.SwitchJogInching</a></td><td>ジョグ/インチング動作を切り替えます。</td></tr>
+<tr><td><a href="003390.html">IAI*.SwitchPIOModbus</a></td><td>Modbus指令の有効/無効を切り替えます。</td></tr>
+<tr><td><a href="003383.html">IAI*.SwitchServo</a></td><td>サーボをON/OFFします。</td></tr>
+<tr><td><a href="003397.html">IAI*.WritePositionData</a></td><td>ポジションデータを書き込みます。</td></tr>
+<tr><td><a href="000132.html">If...End If</a></td><td>If～End If間のステートメントを条件判断をして実行します。</td></tr>
+<tr><td><a href="000137.html">If...Then...Else</a></td><td>論理式の条件判断を行います。</td></tr>
+<tr><td><a href="000285.html">InStr</a></td><td>文字列内の特定の文字列の位置を返します。</td></tr>
+<tr><td><a href="000757.html">InStrRev</a></td><td>ある文字列 (<var>string1</var>) の中から指定された文字列 (<var>string2</var>) を最後の文字位置から検索を開始し、最初に見つかった文字位置 (先頭からその位置までの文字数) を返します。</td></tr>
+<tr><td><a href="000232.html">Int</a></td><td>指定された値を超えない最大の整数値を返します。</td></tr>
+<tr><td><a href="000329.html">Integer</a></td><td><a href="000451.html" class="ahref-xref_id_000451">整数型</a>データを表します。</td></tr>
+<tr><td><a href="000202.html">Interrupt</a></td><td>I/Oの割り込みスキップ信号がOnのとき、Interruptのブロック内の動作命令をスキップします。またロボット動作中の場合は動作を中断し、スキップします。</td></tr>
+<tr><td><a href="003256.html">IsNothing</a></td><td>指定したオブジェクトが生成済みかを判断します。</td></tr>
+</table>
+<h2 id="004559_10_j">J</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000250.html">J2P</a></td><td><a href="000457.html" class="xref">ジョイント型</a>データを<a href="000456.html" class="xref">ポジション型</a>データに変換して返します。</td></tr>
+<tr><td><a href="000251.html">J2T</a></td><td><a href="000457.html" class="ahref-xref_id_000457">ジョイント型</a>データを<a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>データに変換して返します。</td></tr>
+<tr><td><a href="005097.html">Join</a></td><td>配列の全要素を結合した文字列を返します。</td></tr>
+<tr><td><a href="000262.html">Joint</a></td><td><a href="000457.html" class="xref">ジョイント型</a>データの指定した成分を返します。</td></tr>
+<tr><td><a href="000336.html">Joint</a></td><td><a href="000457.html" class="ahref-xref_id_000457">ジョイント型</a>データを表します。</td></tr>
+</table>
+<h2 id="004559_11_k">K</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000145.html">Kill</a></td><td>指定したタスクを強制終了します。</td></tr>
+<tr><td><a href="000146.html">KillAll</a></td><td><a href="000492.html" class="xref">特権タスク</a>と<a href="000603.html" class="xref">操作盤タスク</a>以外の全てのタスクを強制終了します。</td></tr>
+<tr><td><a href="005282.html">KillByName</a></td><td>指定したタスクを強制終了します。<a class="ahref-xref_id_000145" href="000145.html">Kill</a>コマンドと異なり、タスク名に式を使用することができます。</td></tr>
+</table>
+<h2 id="004559_12_l">L</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000758.html">LCase</a></td><td>アルファベットの大文字を小文字に変換した値を返します。</td></tr>
+<tr><td><a href="000280.html">Left</a></td><td>左端から指定された文字数分の文字列を返します。</td></tr>
+<tr><td><a href="000281.html">Len</a></td><td>指定された文字列の文字数を返します。</td></tr>
+<tr><td><a href="005524.html">LenB</a></td><td>文字列または数値の型のバイト数を返します。</td></tr>
+<tr><td><a href="000338.html">Let</a></td><td>変数に値を代入します。</td></tr>
+<tr><td><a href="000339.html">LetA</a></td><td><a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>変数の<span class="term">アプローチベクトル</span>にベクトル値を代入します。</td></tr>
+<tr><td><a href="000342.html">LetF</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数または<a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>変数の形態要素(Fig)へ値を代入します。</td></tr>
+<tr><td><a href="000343.html">LetJ</a></td><td><a href="000457.html">ジョイント型</a>変数の指定の軸要素へ値を代入します。</td></tr>
+<tr><td><a href="000340.html">LetO</a></td><td><a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>変数の<span class="term">オリエントベクトル</span>にベクトル値を代入します。</td></tr>
+<tr><td><a href="000341.html">LetP</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数または<a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>変数の位置要素(X, Y, Z要素)にベクトル値を代入します。</td></tr>
+<tr><td><a href="000344.html">LetR</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数の回転要素(Rx, Ry, Rz)へ<a href="000455.html" class="ahref-xref_id_000455">ベクトル型</a>データの値を代入します。</td></tr>
+<tr><td><a href="000345.html">LetRx</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数のRx回転要素に値を代入します。</td></tr>
+<tr><td><a href="000346.html">LetRy</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数のRy回転要素に値を代入します。</td></tr>
+<tr><td><a href="000347.html">LetRz</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>変数のRz回転要素に値を代入します。</td></tr>
+<tr><td><a href="000349.html">LetX</a></td><td><a href="000455.html">ベクトル型</a>変数、<a href="000456.html">ポジション型</a>変数、<a href="000458.html">同次変換型</a>変数のX軸成分へ値を代入します。</td></tr>
+<tr><td><a href="000350.html">LetY</a></td><td><a href="000455.html">ベクトル型</a>変数、<a href="000456.html">ポジション型</a>変数、<a href="000458.html">同次変換型</a>変数のY軸成分へ値を代入します。</td></tr>
+<tr><td><a href="000351.html">LetZ</a></td><td><a href="000455.html">ベクトル型</a>変数、<a href="000456.html">ポジション型</a>変数、<a href="000458.html">同次変換型</a>変数のZ軸成分へ値を代入します。</td></tr>
+<tr><td><a href="005029.html">LoadPathPoint</a></td><td>経路データを読込みます。</td></tr>
+<tr><td><a href="000381.html">LockState</a></td><td>コントローラが<a href="001636.html" class="xref">マシンロック</a>状態であるかないかを返します。</td></tr>
+<tr><td><a href="000233.html">Log</a></td><td>自然対数を返します。</td></tr>
+<tr><td><a href="000234.html">Log10</a></td><td>常用対数を返します。</td></tr>
+<tr><td><a href="004553.html">LTrim</a></td><td>文字列の先頭のスペースを削除します。</td></tr>
+</table>
+<h2 id="004559_13_m">M</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000249.html">Magnitude</a></td><td>ベクトルの大きさを返します。</td></tr>
+<tr><td><a href="000235.html">Max</a></td><td>最大値を返します。</td></tr>
+<tr><td><a href="000282.html">Mid</a></td><td>文字列から指定した位置の指定した文字数分の文字列を返します。</td></tr>
+<tr><td><a href="000236.html">Min</a></td><td>最小値を返します。</td></tr>
+<tr><td><a href="000632.html">Mod 演算子</a></td><td>2つの数値の除算を行い、その剰余を返します。</td></tr>
+<tr><td><a href="000425.html">MotionComplete</a></td><td>動作命令が完了したかを判断します。</td></tr>
+<tr><td><a href="000157.html">MotionSkip</a></td><td>現在実行中の動作命令を中断します。</td></tr>
+<tr><td><a href="000409.html">MotionTimeout</a></td><td>動作命令のタイムアウト設定値を変更します。</td></tr>
+<tr><td><a href="000206.html">Motor</a></td><td>モータ電源の入/切を行います。</td></tr>
+<tr><td><a href="005812.html">MotorState</a></td><td>コントローラがモータON状態であるかないかを返します。</td></tr>
+<tr><td><a href="000207.html">Move</a></td><td>ロボットを指定座標へ移動します。</td></tr>
+<tr><td><a href="000441.html">Move C</a></td><td>円弧を描きながらロボットを指定座標へ移動します。</td></tr>
+<tr><td><a href="000442.html">Move S</a></td><td>自由曲線補間でロボットを移動します。</td></tr>
+<tr><td><a href="000237.html">Mps</a></td><td>指定した速度値(mm/sec)を<abbr title="Continuous Path">CP</abbr>動作時の最大内部速度に対する割合(%)に変換します。</td></tr>
+<tr><td><a href="005123.html">MsgBox</a></td><td>ダイアログボックスにメッセージを表示し、クリックされたボタンの値を返します。</td></tr>
+<tr><td><a href="005163.html">MutexID</a></td><td>MutexオブジェクトのIDを返します。</td></tr>
+<tr><td><a href="005164.html">MutexState</a></td><td>Mutexオブジェクトの状態を返します。</td></tr>
+</table>
+<h2 id="004559_14_n">N</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="005532.html">NormalVector</a></td><td>3点を含む面に垂直なベクトル（法線ベクトル）を返します。</td></tr>
+<tr><td><a href="000633.html">Not 演算子</a></td><td>式の論理否定を求めます。</td></tr>
+<tr><td><a href="000390.html">Now</a></td><td>現在の日付と時刻を返します。</td></tr>
+</table>
+<h2 id="004559_15_o">O</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000109.html">On Error</a></td><td>エラーレベル1のエラー発生時の処理ルーチンを指定します。</td></tr>
+<tr><td><a href="000634.html">Or 演算子</a></td><td>2つの式の論理和を求めます。</td></tr>
+<tr><td><a href="005670.html">OutputTCPSpeed</a></td><td>コンテック製のアナログ出力ボードを使用し、TCPの速度に比例した電圧を出力します。</td></tr>
+<tr><td><a href="000159.html">OutRange</a></td><td>位置データがロボットの可動範囲内であるかを返します。</td></tr>
+<tr><td><a href="000247.html">OVec</a></td><td><span class="term">オリエントベクトル</span>を返します。</td></tr>
+</table>
+<h2 id="004559_16_p">P</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000252.html">P2J</a></td><td><a href="000456.html" class="xref">ポジション型</a>データを<a href="000457.html" class="xref">ジョイント型</a>データに変換して返します。</td></tr>
+<tr><td><a href="000253.html">P2T</a></td><td><a href="000456.html" class="xref">ポジション型</a>データを<a href="000458.html" class="xref">同次変換型</a>データに変換して返します。</td></tr>
+<tr><td><a href="004803.html">PageChange</a></td><td>表示している操作盤を切り替えます。</td></tr>
+<tr><td><a href="005284.html">PageChangeByName</a></td><td>表示している操作盤を切り替えます。PageChangeコマンドと異なり、操作盤タスク名に式を使用することができます。</td></tr>
+<tr><td><a href="000402.html">Pallet.CalcPos</a></td><td>パレットの条件を指定し、その条件で何段目の先頭から何番目かを指定すると、その位置を取得できます。</td></tr>
+<tr><td><a href="002673.html">Pallet.CalcPosTurning</a></td><td>パレットの条件を指定し、その条件で何段目の先頭から何番目かを指定すると、その位置を取得できます。加えて、4軸ロボットで実行する場合は、最適な腕の形態での位置を取得できます。</td></tr>
+<tr><td><a href="000216.html">Payload</a></td><td>内部負荷条件の設定値を変更します。</td></tr>
+<tr><td><a href="003063.html">PickingAdjustmentConvPos</a></td><td>ピッキング補正データを利用し、ロボット位置を補正して返します。</td></tr>
+<tr><td><a href="005473.html">Posclr</a></td><td>軸の現在位置を、強制的に指定した位置にします。</td></tr>
+<tr><td><a href="000334.html">Position</a></td><td><a href="000456.html" class="ahref-xref_id_000456">ポジション型</a>データを表します。</td></tr>
+<tr><td><a href="000266.html">PosRx</a></td><td>X軸回転成分を返します。</td></tr>
+<tr><td><a href="000267.html">PosRy</a></td><td>Y軸回転成分を返します。</td></tr>
+<tr><td><a href="000268.html">PosRz</a></td><td>Z軸回転成分を返します。</td></tr>
+<tr><td><a href="000263.html">PosX</a></td><td>X成分を返します。</td></tr>
+<tr><td><a href="000264.html">PosY</a></td><td>Y成分を返します。</td></tr>
+<tr><td><a href="000265.html">PosZ</a></td><td>Z成分を返します。</td></tr>
+<tr><td><a href="000238.html">Pow</a></td><td>指定の数値を指定した値で累乗した値を返します。</td></tr>
+<tr><td><a href="000368.html">PrintDbg</a></td><td><span class="stringres"><a href="001801.html">メッセージ出力ウインドウ</a></span>に文字列を出力します。</td></tr>
+<tr><td><a href="000367.html">PrintMsg</a></td><td><a href="001801.html">メッセージ出力ウインドウ</a>に文字列を出力し、TPのステータスバーに出力されたことを知らせるアイコンが表示されます。</td></tr>
+<tr><td><a href="005166.html">Public</a></td><td>Public属性のローカル変数を宣言します。</td></tr>
+<tr><td><a href="000248.html">PVec</a></td><td>位置ベクトルを返します。</td></tr>
+</table>
+<h2 id="004559_17_r">R</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000239.html">RadDeg</a></td><td>角度の単位をラジアンから度[Degree]に変換します。</td></tr>
+<tr><td><a href="000292.html">Randomize</a></td><td>乱数ジェネレータを初期化(乱数系列を再設定)します。</td></tr>
+<tr><td><a href="005523.html">ReadByteArray</a></td><td>バイト単位の1次元配列(<a href="005067.html">バリアント型</a>)の値を、指定した変数へ、その変数のバイトの並び順に沿って1バイトずつ格納します。</td></tr>
+<tr><td><a href="005124.html">RealPath</a></td><td>相対パスを含む絶対パス文字列を、絶対パスだけの表記に変換します。</td></tr>
+<tr><td><a href="000133.html">Rem</a></td><td>コメントの記述をします。</td></tr>
+<tr><td><a href="005769.html">RemoveHandler</a></td><td>プロバイダからのイベントを受取りを解除します。</td></tr>
+<tr><td><a href="000366.html">Reset</a></td><td><a href="000459.html" class="xref">I/O型</a>変数のBitをOffにします。</td></tr>
+<tr><td><a href="000208.html">ResetArea</a></td><td>指定した検知エリアを無効にします。</td></tr>
+<tr><td><a href="002270.html">ResetExclusiveArea</a></td><td>排他エリアを無効にします。</td></tr>
+<tr><td><a href="005162.html">ResetMutex</a></td><td>Mutexオブジェクトのエラーをクリアします。</td></tr>
+<tr><td><a href="000110.html">Resume</a></td><td>エラー処理ルーチンを終了し、指定した行から実行が再開されます。</td></tr>
+<tr><td><a href="000284.html">Right</a></td><td>右端から指定された文字数分の文字列を返します。</td></tr>
+<tr><td><a href="000240.html">Rnd</a></td><td>0以上1未満の乱数を返します。</td></tr>
+<tr><td><a href="005807.html">RobInfo</a></td><td>ロボット情報を返します。</td></tr>
+<tr><td><a href="000209.html">Rotate</a></td><td>指定した軸回りの回転動作をします。</td></tr>
+<tr><td><a href="000210.html">RotateH</a></td><td>アプローチベクトルを軸とした、回転動作をします。</td></tr>
+<tr><td><a href="000241.html">Rpm</a></td><td>指定した軸番号の回転数(rpm)をPTP動作時の最大内部速度に対する割合に変換します。</td></tr>
+<tr><td><a href="004554.html">RTrim</a></td><td>文字列の末尾のスペースを削除します。</td></tr>
+<tr><td><a href="000147.html">Run</a></td><td>プログラムを別タスクとして起動します。</td></tr>
+<tr><td><a href="005280.html">RunByName</a></td><td>プログラムを別タスクとして起動します。<a class="ahref-xref_id_000147" href="000147.html">Run</a>コマンドと異なり、タスク名に式を使用することができます。</td></tr>
+<tr><td><a href="000270.html">RVec</a></td><td><a href="000456.html" class="xref">ポジション型</a>データから姿勢成分を返します。</td></tr>
+</table>
+<h2 id="004559_18_s">S</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="002610.html">SafetyInfo</a></td><td>セーフティモーション仕様コントローラのシステム情報を返します。</td></tr>
+<tr><td><a href="000135.html">Select Case...End Select</a></td><td>条件式の値に従って、複数のステートメントブロックのいずれかを実行させます。</td></tr>
+<tr><td><a href="000365.html">Set</a></td><td><a href="000459.html" class="xref">I/O型</a>変数のBitをONにします</td></tr>
+<tr><td><a href="000212.html">SetArea</a></td><td>指定した<span class="term">検知エリア</span>を検知有効にします。</td></tr>
+<tr><td><a href="005102.html">SetCollisionDetection</a></td><td>指定したテーブル番号の衝突検出のパラメータを設定します。</td></tr>
+<tr><td><a href="002269.html">SetExclusiveArea</a></td><td>排他エリアを有効にします。</td></tr>
+<tr><td><a href="005937.html">SetHandIO</a></td><td>スレーブロボットのハンドIOを設定します。</td></tr>
+<tr><td><a href="003370.html">SetHoming</a></td><td>外部付加軸の原点復帰動作を行います。</td></tr>
+<tr><td><a href="000600.html">SetPriority</a></td><td>自タスクのプライオリティレベルを設定します。</td></tr>
+<tr><td><a href="005167.html">SetPublicValue</a></td><td>Public属性のローカル変数に値を代入します。</td></tr>
+<tr><td><a href="000242.html">Sgn</a></td><td>数値の符号(正/負)を調べて結果を返します。</td></tr>
+<tr><td><a href="000243.html">Sin</a></td><td>正弦(サイン)を返します。</td></tr>
+<tr><td><a href="000331.html">Single</a></td><td><a href="000452.html" class="ahref-xref_id_000452">単精度実数型</a>データを表します。</td></tr>
+<tr><td><a href="005286.html">SingularAvoid</a></td><td>特異点回避機能を有効化、または無効化します。</td></tr>
+<tr><td><a href="000215.html">Speed</a></td><td>内部速度を変更します。</td></tr>
+<tr><td><a href="000217.html">SpeedMode</a></td><td><a href="001542.html" class="xref">最適速度制御機能</a>の設定を変更します。</td></tr>
+<tr><td><a href="005096.html">Split</a></td><td>文字列を指定文字の位置で分割した1次元配列を作成します。</td></tr>
+<tr><td><a href="000278.html">Sprintf</a></td><td>データを指定したフォーマットに変換し、文字列として返します。</td></tr>
+<tr><td><a href="000244.html">Sqr</a></td><td>平方根を返します。</td></tr>
+<tr><td><a href="000755.html">SrvUnLock</a></td><td>指定した軸をサーボロック解除状態にします。</td></tr>
+<tr><td><a href="005939.html">StartServoLog</a></td><td><a href="001664.html">サーボログ</a>の記録を開始します。</td></tr>
+<tr><td><a href="005165.html">Static</a></td><td>Static属性のローカル変数を宣言します。</td></tr>
+<tr><td><a href="000148.html">Status</a></td><td>プログラムの状態を返します。</td></tr>
+<tr><td><a href="005281.html">StatusByName</a></td><td>タスクの状態を返します。<a class="ahref-xref_id_000148" href="000148.html">Status</a>コマンドと異なり、タスク名に式を使用することができます。</td></tr>
+<tr><td><a href="005941.html">StopServoLog</a></td><td><a href="001664.html">サーボログ</a>の記録を停止します。</td></tr>
+<tr><td><a href="000286.html">Str</a></td><td>数値データを<a href="000454.html" class="xref">文字列型</a>データに変換して返します。</td></tr>
+<tr><td><a href="000337.html">String</a></td><td><a href="000454.html" class="ahref-xref_id_000454">文字列型</a>データを表します。</td></tr>
+<tr><td><a href="000324.html">Sub...End Sub</a></td><td>Subプロシージャを宣言します。</td></tr>
+<tr><td><a href="000149.html">Suspend</a></td><td>指定したタスクを一時停止します。</td></tr>
+<tr><td><a href="000150.html">SuspendAll</a></td><td><a href="000492.html" class="xref">特権タスク</a>と<a href="000603.html" class="xref">操作盤タスク</a>以外の全てのタスクを一時停止します。</td></tr>
+<tr><td><a href="005283.html">SuspendByName</a></td><td>指定したタスクを一時停止します。<a class="ahref-xref_id_000149" href="000149.html">Suspend</a>コマンドと異なり、タスク名に式を使用することができます。</td></tr>
+<tr><td><a href="005518.html">SwapByteArray</a></td><td>バイト型の一次元配列の指定したバイト数の要素の並びを替えます。</td></tr>
+<tr><td><a href="005935.html">SyncTime</a></td><td>複数ロボットの動作コマンドを<a href="001986.html">同期</a>して実行します。</td></tr>
+<tr><td><a href="005189.html">SysInfo</a></td><td>コントローラのシステム情報を返します。</td></tr>
+<tr><td><a href="000393.html">SysLog.Ctrl.Clear</a></td><td>制御ログのデータを初期化します。</td></tr>
+<tr><td><a href="000391.html">SysLog.Ctrl.Start</a></td><td>制御ログの記録を開始します。</td></tr>
+<tr><td><a href="000392.html">SysLog.Ctrl.Stop</a></td><td>制御ログの記録を停止します。</td></tr>
+<tr><td><a href="005474.html">SysLog.Ctrl.UserData</a></td><td>設定された数値を、制御ログに記録します。</td></tr>
+<tr><td><a href="000399.html">SysLog.Servo.Clear</a></td><td><a href="001664.html">サーボログ</a>を初期化します。</td></tr>
+<tr><td><a href="000397.html">SysLog.Servo.Start</a></td><td><a href="001664.html">サーボログ</a>の記録を開始します。</td></tr>
+<tr><td><a href="000398.html">SysLog.Servo.Stop</a></td><td><a  href="001664.html">サーボログ</a>の記録を止めます。</td></tr>
+<tr><td><a href="000396.html">SysLog.Trace.Clear</a></td><td>トレースログデータをクリアします。</td></tr>
+<tr><td><a href="000394.html">SysLog.Trace.Start</a></td><td>トレースログの記録を開始します。</td></tr>
+<tr><td><a href="000395.html">SysLog.Trace.Stop</a></td><td>トレースログの記録を終了します。</td></tr>
+<tr><td><a href="000384.html">SysState</a></td><td>コントローラのステータスを返します。</td></tr>
+</table>
+<h2 id="004559_19_t">T</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000254.html">T2J</a></td><td><a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>データを<a href="000457.html" class="ahref-xref_id_000457">ジョイント型</a>データに変換して返します。</td></tr>
+<tr><td><a href="000255.html">T2P</a></td><td><a href="000458.html" class="xref">同次変換型</a>データを<a href="000456.html" class="xref">ポジション型</a>データに変換します。</td></tr>
+<tr><td><a href="000151.html">TakeArm</a></td><td><a href="000511.html" class="xref">軸の制御権</a>を取得します。</td></tr>
+<tr><td><a href="000385.html">TakeArmState</a></td><td>指定したアームグループが制御権を取得されているかどうかを返します。</td></tr>
+<tr><td><a href="005160.html">TakeMutex</a></td><td>Mutexオブジェクトを&quot;Unlocked&quot;状態から&quot;Locked&quot;状態にします。指定したMutexオブジェクトが&quot;Unlocked&quot;状態でない場合は実行待ちします。</td></tr>
+<tr><td><a href="000245.html">Tan</a></td><td>正接(タンジェント)を返します。</td></tr>
+<tr><td><a href="000387.html">Time</a></td><td>現在の時刻を返します。</td></tr>
+<tr><td><a href="000388.html">Timer</a></td><td>経過時間を返します。</td></tr>
+<tr><td><a href="000256.html">TInv</a></td><td><a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>データの逆行列を返します。</td></tr>
+<tr><td><a href="000259.html">TMul</a></td><td><a href="000458.html" class="xref">同次変換型</a>データの積を返します。</td></tr>
+<tr><td><a href="000258.html">TNorm</a></td><td><a href="000458.html" class="xref">同次変換型</a>データの正規化計算の結果を返します。</td></tr>
+<tr><td><a href="000320.html">Tool</a></td><td>ツール座標値を設定します。</td></tr>
+<tr><td><a href="000273.html">ToolPos</a></td><td>指定したツール定義データを<a href="000456.html" class="xref">ポジション型</a>で返します。</td></tr>
+<tr><td><a href="003133.html">TrackAbsApproach</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、基準位置から指定距離離れたアプローチ位置へ移動する作業動作を行います。</td></tr>
+<tr><td><a href="003134.html">TrackAbsMove</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、指定した目標位置へ移動する作業動作を行います。</td></tr>
+<tr><td><a href="003135.html">TrackAbsMove S</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、経路点を通過する<a href="005030.html">自由曲線補間</a>の作業動作を行います。</td></tr>
+<tr><td><a href="005346.html">TrackApproach</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、<a href="002221.html#targetWork">トラッキング対象ワーク</a>から指定距離離れたアプローチ位置へ移動します。</td></tr>
+<tr><td><a href="005351.html">TrackArrivalTime</a></td><td><a href="002221.html#targetWork">トラッキング対象ワーク</a>の現在位置が、<a href="002221.html#trackRange">トラッキング範囲</a>の指定端に到達するまでの時間を返します。</td></tr>
+<tr><td><a href="005671.html">TrackBufferDelete</a></td><td>「<a href="005491.html">TrackBufferIndexes</a>」で取得したインデックス番号を用いて、<a href="002221.html#trackBuf">トラッキングバッファ</a>のデータを削除します。</td></tr>
+<tr><td><a href="005491.html">TrackBufferIndexes</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>に保存されているデータのインデックス番号だけを抽出し、配列にして返します。</td></tr>
+<tr><td><a href="005492.html">TrackBufferRead</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>の中から指定されたデータを読み出します。</td></tr>
+<tr><td><a href="002285.html">TrackBufferSort</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>内のデータの並び順を変更します。</td></tr>
+<tr><td><a href="005349.html">TrackConveyorSpd</a></td><td>コンベアまたはターンテーブルの現在速度を取得します。</td></tr>
+<tr><td><a href="002224.html">TrackConveyorVector</a></td><td>コンベアキャリブレーション時に算出した<a href="002221.html#conveyorVec">コンベアベクトル</a>を<a href="000455.html">ベクトル型</a>にて取得します。</td></tr>
+<tr><td><a href="005347.html">TrackCount</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>内のワークのデータ数を返します。</td></tr>
+<tr><td><a href="002286.html">TrackCurBufferSort</a></td><td>現在設定されている<a href="002221.html#trackBuf">トラッキングバッファ</a>内のデータのソート方法を<a href="005067.html">バリアント(Variant)型</a>データの配列で返します。</td></tr>
+<tr><td><a href="005348.html">TrackCurPos</a></td><td><a href="002221.html#targetWork">トラッキング対象ワーク</a>の現在位置を<a href="000456.html">ポジション型</a>にて取得します。</td></tr>
+<tr><td><a href="002225.html">TrackCurStartArea</a></td><td>現在設定されている<a href="002221.html#trackRange">トラッキング範囲</a>を<a href="005067.html">Variant型</a>データの配列で返します。</td></tr>
+<tr><td><a href="005350.html">TrackDepart</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、現在位置からツール座標-Z方向に移動します。</td></tr>
+<tr><td><a href="003049.html">TrackDraw</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、現在位置から移動量で指定した位置に移動します。</td></tr>
+<tr><td><a href="005494.html">TrackEncoder</a></td><td>コンベアまたはターンテーブルのエンコーダ値を取得します。</td></tr>
+<tr><td><a href="005354.html">TrackInitialize</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>を初期化し、トリガ検出を開始します。</td></tr>
+<tr><td><a href="005355.html">TrackInRange</a></td><td><a href="002221.html#targetWork">トラッキング対象ワーク</a>の現在位置が、<a href="002221.html#trackRange">トラッキング範囲内</a>にあるかどうかを調べます。</td></tr>
+<tr><td><a href="005794.html">TrackMinimumIntervalLength</a></td><td>ワークの重複登録を防止するための閾値を設定します。</td></tr>
+<tr><td><a href="005356.html">TrackMove</a></td><td><a href="002221.html#tracking">追従動作</a>を行いながら、<a href="002221.html#targetWork">トラッキング対象ワーク</a>に移動します。</td></tr>
+<tr><td><a href="002983.html">TrackMove S</a></td><td>コンベアまたはターンテーブルで運ばれてくる<a href="002221.html#targetWork">トラッキング対象ワーク</a>を<a href="002221.html#tracking">追従</a>しながら<a href="005030.html">自由曲線補間</a>動作を行うことができます。</td></tr>
+<tr><td><a href="005489.html">TrackOffsetMargin</a></td><td><a href="002221.html#ofstMargin">トラッキング開始範囲</a>を定義するための<a href="002221.html#trackURange">トラッキング範囲上流限界</a>からのオフセット量を設定します。</td></tr>
+<tr><td><a href="002836.html">TrackPrepareData</a></td><td>ビジョンセンサが検出した複数のワークデータのうち、<a href="002221.html#trackBuf">トラッキングバッファ</a>に既に存在するデータを削除し、下流側のデータから順に並べ直したデータセットを返します。<br />
+    これは、<a href="005376.html">TrackSetVision</a>でトラッキングバッファにセットする前に、重複データ削除と並び替えを行う関数で、戻り値が、そのままTrackSetVisionの引数になります。</td></tr>
+<tr><td><a href="005375.html">TrackSetSensor</a></td><td>センサが検出したワークに関するデータを、<a href="002221.html#trackBuf">トラッキングバッファ</a>に保存します。</td></tr>
+<tr><td><a href="005376.html">TrackSetVision</a></td><td>ビジョンセンサが検出したワークに関するデータを、<a href="002221.html#trackBuf">トラッキングバッファ</a>に保存します。</td></tr>
+<tr><td><a href="003048.html">TrackShiftTarget</a></td><td>トラッキング動作の目標位置を、デフォルトの位置から、オフセット量で指定した位置に変更します。</td></tr>
+<tr><td><a href="005352.html">TrackStandByPos</a></td><td><a href="002221.html#targetWork">トラッキング対象ワーク</a>が、<a href="002221.html#trackURange">トラッキング範囲上流限界</a>に到達するときの座標を返します。</td></tr>
+<tr><td><a href="005377.html">TrackStart</a></td><td><a href="002221.html#trackingMode">トラッキングモード</a>を開始します。</td></tr>
+<tr><td><a href="005490.html">TrackStartArea</a></td><td><a href="002221.html#trackRange">トラッキング範囲</a>の設定を行います。</td></tr>
+<tr><td><a href="005378.html">TrackStop</a></td><td><a href="002221.html#trackingMode">
+  トラッキングモード</a>を終了します。</td></tr>
+<tr><td><a href="005493.html">TrackTargetOffset</a></td><td>コンベアまたは円形トラッキングのパラメータ「定常偏差調整量」の値を設定します。</td></tr>
+<tr><td><a href="005353.html">TrackTargetPos</a></td><td><a href="002221.html#trackBuf">トラッキングバッファ</a>からワークのデータを取り出し、<a href="002221.html#targetWork">トラッキング対象ワーク</a>に設定します。</td></tr>
+<tr><td><a href="005567.html">TrackTargetRelease</a></td><td><a href="002221.html#targetWork">トラッキング対象ワーク</a>のデータを削除、もしくは<a href="002221.html#trackBuf">トラッキングバッファ</a>に戻します。</td></tr>
+<tr><td><a href="000335.html">Trans</a></td><td><a href="000458.html" class="ahref-xref_id_000458">同次変換型</a>データを表します。</td></tr>
+</table>
+<h2 id="004559_20_u">U</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000602.html">UBound</a></td><td><a class="xref" href="000507.html">配列</a>の要素の最大のインデックス番号を返します。</td></tr>
+<tr><td><a href="000759.html">UCase</a></td><td>アルファベットの小文字を大文字に変換した値を返します。</td></tr>
+</table>
+<h2 id="004559_21_v">V</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000287.html">Val</a></td><td><a href="000454.html" class="xref">文字列型</a>データを数値へ変換します。</td></tr>
+<tr><td><a href="005520.html">VarChangeType</a></td><td>指定した値を、指定した<a href="005067.html">内部処理形式</a>の<a href="005067.html">バリアント型</a>データに変換します。</td></tr>
+<tr><td><a href="005068.html">Variant</a></td><td><a class="ahref-xref_id_000454" href="005067.html">バリアント（Variant）型</a>データを表します。</td></tr>
+<tr><td><a href="005519.html">VarType</a></td><td>変数の<a href="005067.html">内部処理形式</a>を表す値を返します。</td></tr>
+<tr><td><a href="000389.html">Ver</a></td><td>モジュールのバージョンを返します。</td></tr>
+<tr><td><a href="002287.html">VirtualFence</a></td><td>バーチャルフェンスの監視を開始または終了します。</td></tr>
+<tr><td><a href="000641.html">Vis.CalTrans</a></td><td>視覚座標とロボット座標のキャリブレーション。</td></tr>
+<tr><td><a href="000642.html">Vis.GetCalData</a></td><td>指定したCal番号の変換行列を返します。</td></tr>
+<tr><td><a href="000644.html">Vis.GetCalPos</a></td><td>指定したCal番号のキャリブレーション教示位置を返します。</td></tr>
+<tr><td><a href="000643.html">Vis.SetCalData</a></td><td>指定したCal番号の変換行列を設定。</td></tr>
+<tr><td><a href="000640.html">Vis.Trans</a></td><td>視覚座標をロボット座標(X, Y, Z)に変換します。</td></tr>
+</table>
+<h2 id="004559_22_w">W</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000218.html">Wait</a></td><td>条件式がTrueになるまでタスクを待機します。</td></tr>
+<tr><td><a href="005104.html">WaitMotion</a></td><td>現在動作中の動作命令が指定した状態に達するまでタスクを待機します。</td></tr>
+<tr><td><a href="000321.html">Work</a></td><td>ワーク座標系を設定します。</td></tr>
+<tr><td><a href="005766.html">WorkAttribute</a></td><td>指定したワーク座標系の属性値を取得します。</td></tr>
+<tr><td><a href="000274.html">WorkPos</a></td><td>指定したワーク定義データを<a href="000456.html" class="xref">ポジション型</a>で返します。</td></tr>
+<tr><td><a href="005522.html">WriteByteArray</a></td><td>変数の値を、その変数のバイトの並び順のまま、バイト単位の1次元配列(<a href="005067.html">バリアント型</a>)に1バイトずつ格納します。</td></tr>
+</table>
+<h2 id="004559_23_x">X</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000635.html">Xor 演算子</a></td><td>2つの式の排他的論理和を求めます。</td></tr>
+</table>
+<h2 id="004559_24_z">Z</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000761.html">ZForce</a></td><td>Hシリーズロボットの第3軸(Z軸)の<a href="001624.html" class="xref">電流制限機能</a>を推力で指定します。</td></tr>
+</table>
+<h2 id="004559_0_sgn">記号</h2>
+<table>
+<tr><th>コマンド</th><th>機能</th></tr>
+<tr><td><a href="000626.html">- 演算子</a></td><td>符号の反転、数値の差、または<a href="000455.html" class="xref">ベクトル型</a>データおよび<a href="000457.html" class="xref">ジョイント型</a>データの各要素の差を返します。</td></tr>
+<tr><td><a href="000112.html">#Define</a></td><td>マクロ定義をします。</td></tr>
+<tr><td><a href="000123.html">#Error</a></td><td>コンパイル時にエラーを出力します。</td></tr>
+<tr><td><a href="000118.html">#If ... #Endif</a></td><td>指定した条件によってコンパイルするソースコードを選択します。</td></tr>
+<tr><td><a href="000116.html">#Ifdef ... #Endif</a></td><td>指定したマクロが定義されているかを判定し、コンパイルするソースコードを選択します。</td></tr>
+<tr><td><a href="000117.html">#Ifndef ... #Endif</a></td><td>指定したマクロが定義されていないかを判定し、コンパイルするソースコードを選択します。</td></tr>
+<tr><td><a href="000115.html">#Include</a></td><td>指定したファイルを読込みます。</td></tr>
+<tr><td><a href="000124.html">#Pragma Encrypt</a></td><td><span class="term">ソースコード</span>を<span class="term">暗号化</span>します。</td></tr>
+<tr><td><a href="005942.html">#Pragma Optimize( &quot;DefaultRobot&quot; )</a></td><td>プログラム内で、[Robot*.]を省略した場合、選択されるロボットを設定します。</td></tr>
+<tr><td><a href="005120.html">#Pragma Optimize( &quot;idling&quot; )</a></td><td>CPUの負荷軽減のための空き時間をなくします。</td></tr>
+<tr><td><a href="005539.html">#Pragma Optimize( &quot;wait-idling-time&quot; )</a></td><td>タスク単位でWaitコマンドの休止時間を設定します。</td></tr>
+<tr><td><a href="000113.html">#Undef</a></td><td>#Defineで定義したマクロ定義を解除します(未定義にします)。</td></tr>
+<tr><td><a href="000122.html">#Warning</a></td><td>コンパイル時に警告を出力します。</td></tr>
+<tr><td><a href="000623.html">&amp; 演算子</a></td><td>2つの式に対して文字列連結を行います。</td></tr>
+<tr><td><a href="000624.html">* 演算子</a></td><td>2つの数値のデータの積、または<a href="000455.html" class="xref">ベクトル型</a>データのスカラ倍を求めます。</td></tr>
+<tr><td><a href="000627.html">/ 演算子</a></td><td>2つの数値の商を計算し、結果を小数点以下を含むデータで返します。または、ベクトルのスカラ割りの結果を返します。</td></tr>
+<tr><td><a href="000628.html">^ 演算子</a></td><td>数値のべき乗を求めます。</td></tr>
+<tr><td><a href="000636.html">\ 演算子</a></td><td>2つの数値の商を計算し、<a href="000451.html" class="xref">整数型</a>データで返します。</td></tr>
+<tr><td><a href="000625.html">+ 演算子</a></td><td>2つの数値の和、文字列の連結、または<a href="000455.html" class="xref">ベクトル型</a>データ、<a href="000457.html" class="xref">ジョイント型</a>データの各要素の和を返します。</td></tr>
+<tr><td><a href="000631.html">&lt;,=,&#62; (比較)演算子</a></td><td>左辺と右辺の式の比較を行います。</td></tr>
+<tr><td><a href="000638.html">&lt;&lt; 演算子</a></td><td>シフト演算します。指定した数だけビットを左シフトします。</td></tr>
+<tr><td><a href="000629.html">= (代入)演算子</a></td><td>右辺の値を代入します。</td></tr>
+<tr><td><a href="000637.html">&#62;&#62; 演算子</a></td><td>シフト演算します。指定した数だけビットを右シフトします。</td></tr>
+</table>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 4559</p>
+<p class="pre_next"><a href="000723.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

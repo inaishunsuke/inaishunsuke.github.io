@@ -1,0 +1,386 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>BLOBMEASURE</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">BLOBMEASURE<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">対象ラベル番号の特徴計測を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">BLOBMEASURE &lt;ラベル番号&gt;，&lt;特徴&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ラベル番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ラベリングで求めたラベル番号を指定します。(0～511)</div>
+            </div>
+            <div class="p">&lt;特徴&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">求めたい特徴を指定します。(0または1)</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0： 主軸角度</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1： 周囲長</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100902_01.jpg">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">本関数を実行する前に、BLOBであらかじめラベリングする必要があります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">周囲長を求める場合は、ラベリングを実行した際の元画像を残しておく必要があります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">以下は処理結果取得関数で得ることができるデータです。</div>
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISSTATUS (n)</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">n</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">項目</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行結果   0=正常  -1=異常</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行時間</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISGETNUM（a、b）</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">b</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 0～  max511</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">面積</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">重心X座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">重心Y座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">3</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">主軸角角度</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">4</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">フィレ径原点X座標</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">5</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">フィレ径原点Y座標</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">6</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">フィレ径幅</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">7</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">フィレ径高さ</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">8</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">周囲長</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">9</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100901.html" target="_top">BLOB</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画画面0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,512,480,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">BLOB 1,0,0,0,128</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ラベリングを実行します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF VISSTATUS(0)=0.0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">IF VISSTATUS(1)&lt;&gt;0.0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">FOR I1 = 0 TO VISSTATUS(1)-1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source04">
+                    <div class="p">BLOBMEASURE I1,0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'I1ラベル番号の主軸角度を求めます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source04">
+                    <div class="p">VISCROSS VISGETNUM(I1,1),VISGETNUM(I1,2),10,20,VISGETNUM(I1,3)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source03">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">END IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

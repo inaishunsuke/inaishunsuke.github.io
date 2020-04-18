@@ -1,0 +1,19 @@
+@charset "UTF-8";
+
+/*  fontsize-l
+---------------------------------------------*/
+body { font-size: 14px; line-height: 1.5; }
+
+* html body   { font-size: 120%; }			/* for IE6 */
+*+html body   { font-size: 120%; }			/* for IE7 */
+html>/**/body { font-size /*\**/: 120%\9; }	/* for IE8 */
+
+/* current
+---------------------------------------------*/
+#header .sizeBox #hSmall a	{ background: url("../img/b_size01.gif") no-repeat; }
+#header .sizeBox #hMiddle a	{ background: url("../img/b_size02.gif") no-repeat; }
+#header .sizeBox #hLarge a	{ background: url("../img/b_size03_on.gif") no-repeat; }
+
+#header .sizeBox #hSmall a:hover	{ background: url("../img/b_size01_on.gif") no-repeat; }
+#header .sizeBox #hMiddle a:hover{ background: url("../img/b_size02_on.gif") no-repeat; }
+#header .sizeBox #hLarge a:hover	{ background: url("../img/b_size03_on.gif") no-repeat; }

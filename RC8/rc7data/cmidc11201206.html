@@ -1,0 +1,261 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ST_SetCurLmt</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ST_SetCurLmt<span class="comment1">
+		　（ステートメント）</span><span class="comment2">
+		　【Ver.1.9 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">指定した軸のモータ電流値を制限します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ST_SetCurLmt &lt;軸番号&gt;、&lt;設定値&gt;</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;軸番号&gt;で指定した軸のモータ電流値（トルク）を設定値に制限します。挿入作業、突き当て作業時にワークに加わる力を制限したい場合に使用します。</div>
+            <div class="p">&lt;設定値&gt;は、モータ定格電流値が100になります。各軸の許容値を超える設定をした場合は、許容値に制限されます。</div>
+            <div class="p">1以上の値を設定してください。0以下の値を設定した場合は、エラー6003「有効な数値範囲を越えました」が発生します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11201207.html" target="_top">ST_ResetCurLmt</a>、<a href="cmidc11201203.html" target="_top">ST_SetGravity</a>、<a href="cmidc11201232.html" target="_top">ST_SetGrvOffset</a>、<a href="cmidc11201208.html" target="_top">ST_SetEralw</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">電流制限設定中は、モータ電流が制限される為、最高速度、最高加速度で動作できません。電流制限は、必要なステップのみ使用してください。また、電流制限を使用する際は、加速度を下げてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">電流制限にて推力を制限しても高速でワークが衝突すると、ワークとハンドと軸の慣性で衝撃力が発生します。電流制限はワークが接触する直前からSETし、かつ速度を下げてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">電流制限は、ロボット停止状態でSETしてください。パス動作中にSETすると、エラーが発生する事があります。</div>
+              </li>
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">使用条件の電流制限リセット設定値が１、３、５、７以外の場合は、モータ電源投入時に電流制限がリセットされます。</div>
+                <div class="p">モータ電源投入直後から電流制限を有効にする場合は、電流制限リセット設定値の最下位ビットを1に設定してください。</div>
+              </li>
+            </ul>
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <ul type="disc" class="list1">
+                <li class="item">
+                  <div class="p">電流制限設定する際は、必ず重力補償機能を有効にしてください。重力補償機能が無効の状態で電流制限を設定すると、エラー「665a電流制限設定できません」が発生します。重力補償は、ST_SetGravityを参照ください。</div>
+                </li>
+                <li class="item">
+                  <div class="p">先端負荷質量と負荷重心位置を正確に設定して下さい。正確に設定されていない状態で、設定値を小さく(30以下程度)設定すると重力落下する場合がありますのでご注意ください。先端負荷質量と負荷重心位置設定は、プログラミングマニュアル「4.7「使用条件」における最適可搬質量設定機能」を参照ください。</div>
+                </li>
+                <li class="item">
+                  <div class="p">電流制限リセット設定値の最下位ビットが1に設定されている場合、モータ電源投入直後に重力落下する場合があります。モータ電源OFF状態で電流制限をRESET (ST_ResetCurLmtを実行)し、モータ電源を入れてください。</div>
+                </li>
+                <li class="item">
+                  <div class="p">先端負荷質量と負荷重心位置が正確に分からない場合、正確に設定しても重力落下する場合は、重力補償補正機能(ST_SetGrvOffset)を使用し、重力補償値の補正を行ってください。</div>
+                </li>
+              </ul>
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸HS-E</div>
+              <div class="p">エアバランスの無い4軸ロボットのZ軸、T軸に電流制限を設定する場合、制限値を小さくするとZ軸が落下したり、T軸が回転する場合があります。Z軸、T軸重力補償値設定機能(ST_SetZBalance)を実行した後、電流制限を実行してください。</div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetGravity</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'重力補償を有効にする。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetGrvOffset</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'重力補償値を補正する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetEralw 2, 20</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'２軸の偏差許容値を20度に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetCurLmt 2, 30</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'２軸の電流制限値を30%に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetEralw 2, 20</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'２軸の偏差許容値を20度に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetCurLmt 2, 30</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'２軸の電流制限値を30%に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸HS-E</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetZBalance</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'Z軸重力補償値を設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetEralw 3, 100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'Z軸の偏差許容値を100mmに設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetEralw 4, 30</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'T軸の偏差許容値を30度に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetCurLmt 3, 10</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'Z軸の電流制限値を10%に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">ST_SetCurLmt 4, 10</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'T軸の電流制限値を10%に設定する。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>ROTATEH</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">ROTATEH<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">アプローチベクトルを軸とした、回転動作を行ないます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">ROTATEH [@&lt;パス開始変位&gt; ]&lt;アプローチベクトル回りの相対回転角&gt;[,&lt;動作オプション&gt;][,NEXT]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">アプローチベクトルを軸として&lt;アプローチベクトル回りの相対回転角&gt;分、手先を回転します。</div>
+            <div class="p">&lt;アプローチベクトル回りの相対回転角&gt;の単位は度(DEG)です。</div>
+            <div class="p">ただし、回転角は「-180°＜ 回転角 ＜ 180°」で指定してください。</div>
+            <div class="p">&lt;パス開始変位&gt;の値は指定座標(ポーズ)を中心とした球の半径で、動作指令値がその中に入ると次の制御へ移ります。mm単位で指定します。パス開始タイミングを変えるための目安となる数値であり、アーム先端がその中に入ったときに次の制御へ移るわけではありません。</div>
+            <div class="p">省略するとデフォルト値@0として処理します。</div>
+            <div class="p">@0とすると、エンド動作で動きます。</div>
+            <div class="p">@Pとすると、パス動作で動きます。</div>
+            <div class="p">@Eとすると、エンコーダ値によって目標位置への到達を確認し、次の動作に移ります。</div>
+            <div class="p">&lt;動作オプション&gt;にはSPEED、ACCEL、DECELがあります。</div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">動作オプション</div>
+                </th>
+                <th valign="top" align="center" class="tablehead01">
+                  <div class="p">意味</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="ptxtnowrap">
+                    <div class="p">SPEED（またはSと表記）</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">移動速度を指定します。意味はSPEED文と同じです。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">ACCEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">加速度を指定します。意味はACCEL文と同じです。ただし、減速度の指定はできません。減速度の指定はDECEL文を使ってください。</div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="p">DECEL</div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="p">減速度を指定します。意味はDECEL文と同じです。</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="p">&lt;NEXTオプション&gt;を付けると、ロボットの動作完了を待たずに次の非動作命令に続きます。ただし、以下の命令は、ロボットの動作完了（パス開始）まで実行待ちになります。</div>
+            <div class="p">ロボット動作命令（CHANGETOOL、CHANGEWORK、SPEED、JSPEED、ACCEL、JACCEL、DECEL、JDECEL）、最適可搬質量設定ライブラリ（aspACLD、aspChange）、アーム動作ライブラリ（mvSetPulseWidthなど）</div>
+            <div class="p">また、動作オプションと併用した場合、NEXTオプションは無効になります。&lt;NEXTオプション&gt;を付けた場合、ステップ停止を実行すると、次の動作命令実行待ちの場合は、その動作を終了後に停止します。したがって、停止までの移動が長くなりますので注意してください。</div>
+            <div class="p">また、ティーチチェックモードのときは、NEXTオプションは無効になります。</div>
+            <div id="hint">
+              <img src="common/hint.jpg">
+              <div id="hintgroup">
+                <div id="hintitem">
+                  <div class="p">ROTATEHステートメントは、MOVEステートメントによって書き換えることができます。ROTATEH，［&lt;パス開始変位&gt;］&lt;回転角&gt;［,&lt;動作オプション&gt;］［,NEXT］のROTATEステートメントをMOVEステートメントで書くと、以下のようになります。</div>
+                  <div class="p">MOVE L,［&lt;パス開始変位&gt;］&lt;現在位置&gt;+(0，0，0，0，0，&lt;回転角&gt;) H［, &lt;動作オプション&gt;］［,NEXT］</div>
+                  <div class="p">例：</div>
+                  <div class="p">ROTATEH @P，F1 'MOVE L，@P PO+(0，0，0，0，0，F1) Hと同じ：POは現在位置</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200208.html" target="_top">ROTATE</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFSNG FF1=50</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'相対回転角を50度とします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ロボット制御権を取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">MOVE P,P1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'P1点へPTP移動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CHANGETOOL 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'TOOLの1を有効にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">ROTATEH @50 FF1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'パス開始変位を50、相対回転角をFF1とします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CHANGETOOL 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'TOOLを0にします。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

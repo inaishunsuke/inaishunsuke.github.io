@@ -1,0 +1,491 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SHMODEL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SHMODEL<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">モデルをサーチします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SHMODEL &lt;ウィンドウ番号&gt;，&lt;X座標&gt;，&lt;Y座標&gt;，&lt;モデル番号&gt;，&lt;一致度&gt;</div>
+            <div class="p">［，&lt;モード&gt;［，&lt;個数&gt; [，&lt;開始角度&gt;［，&lt;終了角度&gt;]]]]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ウィンドウ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">ウィンドウの番号を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;X座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">X座標を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;Y座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">Y座標を指定します。（0～479）</div>
+            </div>
+            <div class="p">&lt;モデル番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">サーチするモデル番号を指定します。（0～99）</div>
+            </div>
+            <div class="p">&lt;一致度&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">サーチするモデルの一致度を指定します。（0～100）</div>
+            </div>
+            <div class="p">&lt;モード&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">サーチする際のモードを指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：ピクセル単位のサーチ</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：サブピクセル単位のサーチ</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">省略時は0を指定します。</div>
+            </div>
+            <div class="p">&lt;個数&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">一度にサーチする個数を指定します。（1～49）省略時は1を指定します。</div>
+            </div>
+            <div class="p">&lt;開始角度&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">サーチする対象の回転範囲（開始角度）を指定します。（-360～360）　　　省略時は0を指定します。［V1.4以降］</div>
+            </div>
+            <div class="p">&lt;終了角度&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> サーチする対象の回転範囲（終了角度）を指定します。（-360～360）　　　省略時は0を指定します。［V1.4以降］</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12101006_01.jpg">
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12101006_02.jpg">
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12101006_03.jpg">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">サーチするモデルをSHDEFMODELで登録する必要があります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">個数を2以上に設定した場合、設定個数サーチできなければ検出できた結果だけを格納します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">サーチには時間がかかる場合がありますが、制限時間内にサーチが終了しない場合タイムアウトになります。設定はパソコンで行ないます。（初期値2秒）</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">対象画面の状態によっては、一致度を高めに設定するとサーチできない場合があります。そのような場合、一致度を下げるなどの調整をしてください。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理範囲をウィンドウで指定します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定したウィンドウの位置が画面をはみ出す場合、実行結果はエラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定できるウィンドウの形状は矩形の角度0&deg;のみです。その他のウィンドウの場合、エラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理対象はVISWORKPLNで指定した画面になります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令を実行時に処理画面3番をワークエリアとして使用するため処理画面3番のデータは保証されません。処理画面3番（VISWORKPLN 3）は処理できません。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">以下は処理結果取得関数で得ることができるデータです。</div>
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISSTATUS (n)</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">n</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">項目</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行結果</div>
+                            <div class="p"> 0 = 正常</div>
+                            <div class="p">-1 = モデル未登録</div>
+                            <div class="p">-2 = 失敗</div>
+                            <div class="p">-3 = タイムアウト</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">個数</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行時間</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISGETNUM（a、b）</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">b</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 0 ～ 49</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">個数</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">X座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">Y座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">3</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">一致度</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">4</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">角度［V1.4］</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">5</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">原点X座標値［V1.4］</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">6</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">原点Y座標値［V1.4］</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">7</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">原点角度［V1.4］</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">8</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">Unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">9</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">Unknown</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はμVisionボード（オプション）が必要です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">サーチモデルサイズとウィンドウサイズが同じ場合、その位置での一致度のみ計算します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">[開始角度]=0，[終了角度]=0に設定すると角度計測を行いません。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">[開始角度]と[終了角度]を0以外の同じ値に設定すると、[開始角度]=0，[終了角度]=360と同じ角度計測を行います</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100501.html" target="_top">WINDMAKE</a>、<a href="cmidc12100701.html" target="_top">VISWORKPLN</a>、<a href="cmidc12101101.html" target="_top">VISGETNUM</a>、<a href="cmidc12101105.html" target="_top">VISSTATUS</a>、<a href="cmidc12101001.html" target="_top">SHDEFMODEL</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画画面0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPLNOUT 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,512,480,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISWORKPLN 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'対象を格納メモリ0番に指定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SHMODEL 1,0,0,1,80</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'モデル1番と一致度80%の部分を画面からサーチしま</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'す。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1 = VISSTATUS(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISDEFCHAR 1,1,3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPRINT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF I1 = 0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source02">
+                    <div class="p">VISPRINT VISGETNUM(0,1),VISGETNUM(0,2)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source02">
+                    <div class="p">VISCROSS VISPOSX(0),VISPOSY(0)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

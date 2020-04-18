@@ -1,0 +1,231 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>INTERRUPT ON/OFF</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">INTERRUPT ON/OFF<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ロボットの動作を中断します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">INTERRUPT {ON|OFF}</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">INTERRUPT ONとINTERRUPT OFFは対に用いられ、それに囲まれた範囲内では、動作命令実行中に割り込みスキップ信号がONした場合、動作命令を中断後、次のステップに進みます。</div>
+            <div class="p">INTERRUPTコマンドを実行するためには、タスクがアームグループを取得している必要があります。</div>
+            <div class="p">INTERRUPT ON文を実行して割り込み可能な状態にしておかないと、割り込みスキップ信号をONしても、実行中の動作命令は終了しません。</div>
+            <div class="p">プログラムが停止状態になる、またはGIVEARM命令を実行した場合、自動的にINTERRUPTはOFFされます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">割り込みスキップ直後に相対動作命令を実行すると、停止した位置からの相対動作となります。INTERRUPTで囲んだ範囲の動作命令は、絶対動作命令を使用してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">INTERRUPT ON中は、パス動作を行ないません。</div>
+                <div class="p">パス動作を指定した場合は、すべてエンド動作で実行されます。</div>
+              </li>
+              <li class="item">
+                <div class="p">INTERRUPTで囲まれた範囲の動作命令は、割り込みスキップ信号入力で、すべて動作を停止します。マルチタスクで動作中は注意が必要です。</div>
+                <div class="p">例</div>
+                <div class="figure">
+                  <img src="image/cmidc11200403_01.jpg">
+                </div>
+                <div class="p">PRO1、PRO2が同時に動作命令実行中に、割り込みスキップ信号がONした場合、PRO1のMOVE命令、PRO2のDRIVE命令のどちらも動作を中断し、次のステップに進みます。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DIM lp1 As Position</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INTERRUPT ON </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'専用I/Oポートの割り込み信号がONされたときに、実 </div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'行中の動作命令を中断後、次のステップに進みます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P, lp1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INTERRUPT OFF</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2（付加軸の例）：</div>
+              <div class="figure">
+                <img src="image/cmidc11200403_02.jpg">
+              </div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">PROGRAM PRO1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">TAKEARM 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'アームグループ１を取得(7軸、8軸を含むアームグループ）</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INTERRUPT ON</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DRIVE (7,100),(8,30)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'INTERRUPT命令で囲まれた範囲の動作命令実行中に、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'割り込みスキップ信号がONした場合、動作命令を中断後、</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'次のステップに進みます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INTERRUPT OFF</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">END</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

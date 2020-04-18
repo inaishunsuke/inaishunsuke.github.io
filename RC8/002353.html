@@ -1,0 +1,847 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>RC8Aコントローラの仕様</title>
+<meta name="description" content="" />
+<meta name="keywords" content="RC8Aコントローラの仕様" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="002353" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="21" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="000987.html">コントローラ、I/O接続</a></li>
+<li><a href="001311.html">RC8シリーズロボットコントローラ説明書</a></li>
+<li><a href="001313.html">概要</a></li>
+<li><a href="002354.html">コントローラの仕様</a></li>
+<li><span>RC8Aコントローラの仕様</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="002354.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="001317.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 2353</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>RC8Aコントローラの仕様</h1>
+  <table>
+    <tr>
+      <th colspan="2">項目</th>
+      <th>仕様</th>
+    </tr>
+    <tr>
+      <th colspan="2">適用ロボット</th>
+      <td><p>VM-6083 / VM-60B1</p>
+        <p>VS-6556 / VS-6577</p>
+        <p>VS050 / VS060 / VS068 / VS087</p>
+        <p>VP-6242/ VP-5243</p>
+        <p>HMシリーズ / HSシリーズ / HSA1シリーズ / HSRシリーズ</p>
+        <p>XRシリーズ / SCシリーズ</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">型式</th>
+      <td>RC8A-****-****-**-***</td>
+    </tr>
+    <tr>
+      <th colspan="2">制御軸数</th>
+      <td><p>ロボット：4～6軸<br />
+        付加軸：2～4軸（オプション）</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">制御方式</th>
+      <td><p>PTP、CP3次元直線、3次元円弧</p>
+        <p>（SCシリーズ、付加軸はPTP制御のみ）</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">駆動方式</th>
+      <td>全軸オールデジタルACサーボ</td>
+    </tr>
+    <tr>
+      <th colspan="2">使用言語</th>
+      <td>デンソーロボット言語　PacScript</td>
+    </tr>
+    <tr>
+      <th colspan="2">メモリ容量</th>
+      <td>ユーザ領域　変数領域:1.75Mbyte（32766 ポイント相当）、ファイル領域:400Mbyte（5000ステップｘ256ファイル）</td>
+    </tr>
+    <tr>
+      <th colspan="2">教示方式</th>
+      <td><ol>
+        <li>ダイレクトティーチング・・・水平多関節型のみ</li>
+        <li>リモートティーチング</li>
+        <li>数値入力（MDI）</li>
+      </ol></td>
+    </tr>
+    <tr>
+      <th rowspan="13">外部信号<br />
+        （I/Oなど）</th>
+      <th>Mini I/O</th>
+      <td><p>入力：ユーザ開放8点 ＋ システム固定14点<br />
+出力：ユーザ開放8点 ＋ システム固定18点</p></td>
+    </tr>
+    <tr>
+      <th>Hand I/O</th>
+      <td>入力：8点 / 出力：8点</td>
+    </tr>
+    <tr>
+      <th>セーフティI/O</th>
+      <td>入出力信号はMini I/Oコネクタに集約</td>
+    </tr>
+    <tr>
+      <th>Motion I/O<br />
+        (オプション)</th>
+      <td>入力：安全回路用信号30点<br />
+出力：安全回路用信号14点</td>
+    </tr>
+    <tr>
+      <th>パラレルI/O ボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI</p>
+        <p>入力：40点 / 出力：48点</p></td>
+    </tr>
+    <tr>
+      <th>CC-Linkリモートデバイスボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大8192点 / 出力：最大8192点</p>
+        <p>リモートレジスタ　入力：最大2048ワード / 出力：2048ワード</p></td>
+    </tr>
+    <tr>
+      <th>DeviceNetスレーブボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大256点 / 出力：最大256点</p></td>
+    </tr>
+    <tr>
+      <th>DeviceNetマスタボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：1024点 / 出力：1024点</p></td>
+    </tr>
+    <tr>
+      <th>EtherNet/IP Adapterボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大4032点 / 出力：最大4032点</p></td>
+    </tr>
+    <tr>
+      <th>PROFIBUSスレーブボード<br />
+        (オプション) (*1)</th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大256点 / 出力：最大256点</p></td>
+    </tr>
+    <tr>
+      <th><p>PROFINET IOデバイスボード<br />
+        (オプション)</p></th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大8192点 / 出力：最大8192点</p></td>
+    </tr>
+    <tr>
+      <th>EtherCATスレーブボード<br />
+        (オプション) </th>
+      <td><p>拡張スロット：PCI Express</p>
+        <p>入力：最大2048点 / 出力：最大2048点</p></td>
+    </tr>
+    <tr>
+      <th>RS232C増設ボード<br />
+        （オプション・お客様準備）</th>
+      <td>ソフトウェアのみをデンソーが供給しボードはお客様にて準備</td>
+    </tr>
+    <tr>
+      <th rowspan="4">外部通信</th>
+      <th>RS232C</th>
+      <td>1回線</td>
+    </tr>
+    <tr>
+      <th>Ethernet</th>
+      <td>1回線（GbE：Gigabit Ethernet）</td>
+    </tr>
+    <tr>
+      <th>USB</th>
+      <td>2回線</td>
+    </tr>
+    <tr>
+      <th>VGAオプション</th>
+      <td>1回線</td>
+    </tr>
+    <tr>
+      <th colspan="2">電動ハンドコントロールボード<br />
+        (オプション) (*1)</th>
+      <td>拡張スロット：PCI</td>
+    </tr>
+    <tr>
+      <th colspan="2">拡張スロット</th>
+      <td><ul>
+        <li>PCI 1スロット</li>
+        <li>PCI Express 1スロット</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <th colspan="2">自己診断機能</th>
+      <td>オーバーラン・サーボ異常・メモリ異常・入力ミス、短絡検知（ユーザ配線部）など</td>
+    </tr>
+    <tr>
+      <th colspan="2">タイマ機能</th>
+      <td>0.02～10sec（1/60secきざみ）</td>
+    </tr>
+    <tr>
+      <th colspan="2">エラー表示</th>
+      <td><ul>
+        <li>外部エラー出力</li>
+        <li>ミニペンダント（オプション）にエラーコードを表示</li>
+        <li>ティーチングペンダント（オプション）にエラーメッセージ、復帰方法を表示</li>
+      </ul></td>
+    </tr>
+    <tr>
+      <th rowspan="6">ケーブル</th>
+      <th>RC8シリーズ電源ケーブル</th>
+      <td>5m</td>
+    </tr>
+    <tr>
+      <th>RC8シリーズ本体間ケーブル<br />
+        （オプション）</th>
+      <td><p>2m、4m、6m、12m、20m</p>
+        <p>注）モータコネクタ×3、エンコーダコネクタ×1<br />
+          注）VM、HS、HMは標準/防滴仕様あり<br />
+          注）VSは専用仕様<br />
+          注）SCは4m、6m、12mのみ対応。モータケーブル（コネクタ×1）、エンコーダケーブル（コネクタ×1）<br />
+          注）UL仕様では20mは使用不可</p></td>
+    </tr>
+    <tr>
+      <th>I/Oケーブル<br />
+        （オプション）</th>
+      <td><p>8m、15m<br />
+        （Mini I/O用、Hand I/O用、増設パラレルI/O用）</p></td>
+    </tr>
+    <tr>
+      <th>Motion I/O用ケーブル（オプション）</th>
+      <td>8m、15m</td>
+    </tr>
+    <tr>
+      <th>RC8シリーズ付加軸用<br />
+        モータケーブル<br />
+        （オプション）</th>
+      <td>2m、4m、6m、12m<br />
+        注）別途中継ケーブルあり</td>
+    </tr>
+    <tr>
+      <th>RC8シリーズ付加軸用<br />
+        エンコーダケーブル<br />
+        （オプション）</th>
+      <td><p>1m、2m、3m、4m、6m、12m<br />
+        注）別途中継ケーブルあり</p></td>
+    </tr>
+    <tr>
+      <th rowspan="4">外部操作機器</th>
+      <th>ティーチングペンダント<br />
+        （オプション）</th>
+      <td>4m、8m、12m</td>
+    </tr>
+    <tr>
+      <th>ミニペンダント<br />
+        （オプション）</th>
+      <td>4m、8m、12m</td>
+    </tr>
+    <tr>
+      <th>非常停止スイッチボックス<br />
+        （オプション）</th>
+      <td>4m</td>
+    </tr>
+    <tr>
+      <th>ペンダント延長ケーブル<br />
+        （オプション）</th>
+      <td>4m、8m<br />
+        （非常停止スイッチボックスも使用可）</td>
+    </tr>
+    <tr>
+      <th colspan="2">環境条件（動作時）</th>
+      <td>温度0～40℃、湿度20～90%RH (結露不可)</td>
+    </tr>
+    <tr>
+      <th colspan="2" rowspan="11">電源</th>
+      <td>VM<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、3.3kVA</td>
+    </tr>
+    <tr>
+      <td>VS-6556/6577 <br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、1.8kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、1.8kVA</td>
+    </tr>
+    <tr>
+      <td>VS-050/060<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、1.15kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、1.15kVA</td>
+    </tr>
+    <tr>
+      <td>VS-068/087<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、2.78kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、2.78kVA</td>
+    </tr>
+    <tr>
+      <td>VP<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、1.0kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、1.0kVA<br />
+        100V仕様　AC100V-5%～AC110V+10%、47～63Hz、1.0kVA （*2） ※付加軸仕様は100V入力対象外</td>
+    </tr>
+    <tr>
+      <td>HMシリーズ<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、2.45ｋVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、2.45kVA</td>
+    </tr>
+    <tr>
+      <td>HSシリーズ<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、1.8kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、1.8kVA</td>
+    </tr>
+    <tr>
+      <td>HSA1シリーズ<br />
+        3相　AC200V-15%～AC240V+10%、47～63Hz、1.69kVA<br />
+        単相　AC230V-10%～AC240V+10%、47～63Hz、1.69kVA</td>
+    </tr>
+    <tr>
+      <td>HSRシリーズ<br />
+3相　AC200V-15%～AC240V+10%、47～63Hz、1.8kVA<br />
+単相　AC230V-10%～AC240V+10%、47～63Hz、1.8kVA</td>
+    </tr>
+    <tr>
+      <td>XRシリーズ<br />
+3相　AC200V-15%～AC240V+10%、47～63Hz、1.85kVA<br />
+単相　AC230V-10%～AC240V+10%、47～63Hz、1.85kVA</td>
+    </tr>
+    <tr>
+      <td>SCシリーズ<br />
+3相　AC200V-15%～AC240V+10%、47～63Hz、1.5kVA<br />
+単相　AC230V-10%～AC240V+10%、47～63Hz、1.5kVA</td>
+    </tr>
+    <tr>
+      <th rowspan="2">I/O電源</th>
+      <th>外部電源を使用</th>
+      <td>外部からDC24V±10%を供給</td>
+    </tr>
+    <tr>
+      <th>内部電源を使用</th>
+      <td>コントローラ内部からDC24V±10%を供給</td>
+    </tr>
+    <tr>
+      <th colspan="2">SCCR</th>
+      <td>5KA</td>
+    </tr>
+    <tr>
+      <th colspan="2">安全性能 (*3)</th>
+      <td><p>構造： カテゴリ4</p>
+        <p>パフォーマンスレベル： e</p>
+        <p>MTTFd：100年</p>
+        <p>DCavg：99%</p>
+        <p>PFHd：7.42&times;10<sup>-8</sup><br />
+          ただし、イネーブル（デッドマン）操作の安全機能は、9.89&times;10<sup>-8</sup>となります。</p>
+        <p>※標準仕様に搭載のセーフティI/Oが不要な場合は、セーフティI/Oレス仕様のご指定をお願いします。</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">停止カテゴリ</th>
+      <td><p>カテゴリ1 （セーフティI/Oレス仕様除く）<br />
+        ※停止カテゴリの詳細はIEC60204-1参照してください。</p></td>
+    </tr>
+    <tr>
+      <th colspan="2"><a href="002479.html">安全機能</a></th>
+      <td><p>IEC 61508に適合 （セーフティI/Oレス仕様除く）。</p>
+          <p>第三者認証機関による認証書は<a href="img/002353/01_205_5571_01_17_en_el.pdf" target="_blank">こちら<span class="DispSize">(PDF:612KB)</span></a>を参照してください。</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">保護等級</th>
+      <td><p>天面： IP3X<br />
+        その他： IP20<br />
+          保護ボックス（オプション）の使用でIP54</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">縦置用スタンド</th>
+      <td>注）右側面（電源コネクタ側）が下側になるように設置</td>
+    </tr>
+    <tr>
+      <th colspan="2">外形寸法</th>
+      <td><p>【UL仕様以外】</p>
+        <p>標準： W356.5×D319.6×H96.8[mm] 11.1L<br />
+          　セーフティモーション： W410.3×D319.6×H96.8[mm] 12.7L</p>
+        <p>【UL仕様】</p>
+        <p>標準、セーフティモーション： W410.3×D420×H130[mm] L</p>
+        <p>※突起部を除く</p></td>
+    </tr>
+    <tr>
+      <th colspan="2">質量</th>
+      <td><p>【UL仕様以外】</p>
+        <p>標準： 約10kg<br />
+          　セーフティモーション： 約11kg</p>
+        <p>【UL仕様】</p>
+        <p>標準、セーフティモーション： 約16kg</p></td>
+    </tr>
+</table>
+  <div class="notelv3">
+    <p>安全機能の確認のため、24時間に1度コントローラの電源を入れ直してください。</p>
+  </div>
+  <p>*1 : RC7ロボットコントローラで使用していたボードは使用できません。</p>
+  <p>*2 : 負荷が大きい設備などで、電源が仕様の95V以下に落込み得る場合、下記トランスの使用を推奨します。ただし、85V以下に落込む際は動作保証外です。</p>
+  <dl>
+    <dt>トランス仕様</dt>
+    <dd>
+      <p>入力電圧 : 1Ph 100V</p>
+      <p>出力電圧 : 1Ph 200V</p>
+      <p>容量 : 1kVA</p>
+    </dd>
+  </dl>
+  <p>*3 : ロボットの停止機能 (非常停止、自動イネーブル、防護停止、デッドマンスイッチ) の安全性能です。ただし、お客様で準備いただく入力機器 (非常停止、自動イネーブル、防護停止に接続されるスイッチなど) は、この安全性能の算定に含んでいません。</p>
+  <dl>
+    <dt>算定条件</dt>
+    <dd>
+      <p>&middot; 本算定は、ISO 13849-1:2006に基づきます。</p>
+      <p>&middot; 1年間の操作回数（Nop）は、以下を想定しています。</p>
+      <table>
+        <tbody>
+          <tr>
+            <th rowspan="2" scope="col">操作内容</th>
+            <th colspan="2" scope="col">ミッションタイム（年）</th>
+          </tr>
+          <tr>
+            <th>10</th>
+            <th>20</th>
+          </tr>
+          <tr>
+            <th scope="row">起動/停止（モータON/OFF）</th>
+            <td>136,986</td>
+            <td>68,493</td>
+          </tr>
+          <tr>
+            <th scope="row">イネーブル（デッドマン）スイッチ</th>
+            <td>10,000</td>
+            <td>5,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </dd>
+  </dl>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 2353</p>
+<p class="pre_next"><a href="002354.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="001317.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

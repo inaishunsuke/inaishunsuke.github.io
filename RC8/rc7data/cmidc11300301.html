@@ -1,0 +1,310 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>INPUT</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">INPUT<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">RS232CおよびEthernetポートからのデータを得ます。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">INPUT [#&lt;回線番号&gt;,]&lt;変数名&gt;[,WTIME=&lt;タイムアウト時間&gt; [,RVAL=&lt;格納変数&gt;]]</div>
+            <div class="p">[,&lt;変数名&gt;[,WTIME=&lt;タイムアウト時間&gt; [,RVAL=&lt;格納変数&gt;]]…]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">RS232CおよびEthernetポートに受信したデータを、&lt;変数名&gt;で指定した変数に格納します。</div>
+            <div class="p">&lt;回線番号&gt;には、使用するRS232CおよびEthernetポートの回線番号を指定します。&lt;回線番号&gt;を省略するとデフォルト値のch2となります。ch1はティーチングペンダント用に使用するため指定できません。(「2.4.1　回線番号」参照)　複数の情報を、それと同数の変数で受ける場合は、個々の変数間にカンマ(,)を付けます。</div>
+            <div class="p">デリミタ（CRまたはCR+LF）の直前までのすべてを、指定した変数に格納します。</div>
+            <div class="p">デリミタは、変数には読み込まれません。</div>
+            <div class="p">ボーレートは、システムパラメータで指定します。</div>
+            <div class="p">＜タイムアウト時間＞　［RC7_Ver2.2以降］</div>
+            <div class="p">変数毎にタイムアウト時間を指定できます。入力データがない場合、指定時間を経過した後、現在の変数に対しての入力待ちを終了し、次に制御が移ります。単位はmsですが、実際の遅延時間は1/60s単位で増減します。</div>
+            <div class="p">＜格納変数＞　［RC7_Ver2.2以降］</div>
+            <div class="p">＜タイムアウト時間＞の設定と対で使います。入力データを受けて正常に抜けた場合TRUE(1)が入り、タイムアウトで抜けたときは指定した変数にFALSE(0)が入ります。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">データの受信に先立って、受信データの入力バッファに残っているデータをクリアするために、FLUSHコマンドを実行してください。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">入力したデータが、代入する変数の型が表せる値の最大値を超えている場合、結果はその型の最大値となります。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11300305.html" target="_top">FLUSH</a>、<a href="cmidc11300303.html" target="_top">PRINT</a>、<a href="cmidc11300304.html" target="_top">WRITE</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">例1：</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DIM li1 As Integer</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">defint li</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFSTR ls1, ls2, ls3, ls4</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT #1, ls1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ch2からのデータをls1に書きます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT #1, li1, ls2, ls3</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ch2からのデータをli1, ls2, ls3に書きます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT ls4</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ch2からのデータをls4に書きます。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT ls4 ,WTIME=100,RVAL=li </div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'入力がない場合100msec時間後次のコマン</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ドへ処理が移ります。liにはタイムアウト</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'で抜けたことを表す0が入ります。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+              <div id="note">
+                <img src="common/note.jpg">
+                <div id="notegroup">
+                  <div id="noteitem">
+                    <div class="p">次の用例2、用例3は、文字列情報がカンマ（,）で区切られ、その区切られた数と同じ要素数の変数で受けることができるので余分な文字列演算の必要はありません。</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例2：外部から、"505.425,-125.325,400.238"を送った場合（6軸ロボットの例）</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DIM lv1 AS VECTOR</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT #1,lv1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">LETP P11=lv1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'受信したx,y,zをP11へ代入</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">LETR P11=RVEC(P10)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'姿勢データに基準位置P10の値を代入</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">LETF P11=FIG(P10)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'形態データに基準位置P10の値を代入</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P,@E P11,S=100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div class="p">
+            </div>
+            <div id="para">
+              <div class="paratitle1">例3：外部から、"505.425,-125.325,400.238,180,0,180,5"を送った場合（6軸ロボットの例）</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">INPUT #1,P11</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">MOVE P,@E P11,S=100</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

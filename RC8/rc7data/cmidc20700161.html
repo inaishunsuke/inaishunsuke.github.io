@@ -1,0 +1,177 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetCollisionJnt</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetCollisionJnt<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.2.61 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">指定した軸の衝突検出を有効にします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetCollisionJnt(&lt;軸番号&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">指定した軸の衝突検出を有効にします。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">＜pacman.h＞ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700162.html" target="_top">ResetCollisionJnt</a>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">軸番号は、ロボット軸を指定してください。ロボット軸以外を指定した場合、「指定軸が範囲外です」のエラーが表示されます。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限機能有効時は実行できません。</div>
+              </li>
+              <li class="item">
+                <div class="p">衝突検出機能は下記のコントローラバージョンで機能します。</div>
+                <div class="p">下記コントローラバージョンより古いプロジェクトデータをご使用する場合はプログラミングマニュアルⅠの「衝突検出機能」を参照してください。</div>
+              </li>
+              <ul type="circle" class="list2">
+                <li class="item">
+                  <div class="p">VS-G シリーズ：Ver.2.61 以降</div>
+                </li>
+                <li class="item">
+                  <div class="p">VS-***シリーズ：Ver.3.20 以降</div>
+                </li>
+                <li class="item">
+                  <div class="p">VM-G、VP-G シリーズ：Ver.2.70 以降</div>
+                </li>
+                <li class="item">
+                  <div class="p">HM-G、HS-G シリーズ：Ver.2.80 以降</div>
+                </li>
+              </ul>
+              <li class="item">
+                <div class="p">衝突検出機能は旧エンジンボードでは機能しません。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">TAKEARM</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ロボット制御権を取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetCollisionJnt(2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2軸の衝突検出を有効にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">MOVE P, P1,P2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2軸の衝突検出が有効の状態でP1点から</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'P2点へPTP移動します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL ResetCollisionJnt(2)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2軸の衝突検出を無効にします。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">MOVE P, P2,P3</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'2軸の衝突検出が無効の状態でP2点から</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'P3点へPTP移動します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

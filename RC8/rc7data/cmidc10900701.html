@@ -1,0 +1,269 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>WORK</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">WORK<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">ユーザ座標系を宣言します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">WORK &lt;ユーザ座標系番号&gt;,&lt;ポジション型&gt;[,&lt;属性&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ポジション型&gt;で示されるポジション型変数に代入したユーザ座標を、&lt;ユーザ座標系番号&gt;で示されるユーザ座標系として宣言します。</div>
+            <div class="p">ユーザ座標系番号には、1～7が使用できます。</div>
+            <div class="p">&lt;属性&gt;ではワーク座標に属性を付加します。（0：標準、1：固定工具）省略時は0が入力されます。（Ver.3.0以降）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11200702.html" target="_top">CHANGEWORK</a>、<a href="cmidc11501504.html" target="_top">WORKPOS</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ワーク座標のX，Y，Z要素にロボットの作業エリアを超える値を設定した場合、数値処理の桁落ちにより、ロボットの位置ずれが発生する場合があります。ワーク座標のX，Y，Z要素はロボットの作業エリア内の値を用いてください。</div>
+              </li>
+              <li class="item">
+                <div class="p">このコマンドにより変更される値は、電源が入っている限り値を保持します。電源が切れても値を保持したい場合は使用条件の「TOOL・WORK 復帰条件」を設定変更してください。</div>
+              </li>
+              <li class="item">
+                <div class="p">現在選択されている番号のワーク座標系の値を「WORK」コマンドで変更しても、ロボットのワーク座標系は変更されません。「CHANGEWORK」で再度選択してください。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <div id="para">
+              <div class="paratitle1">6軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFINT li1, li2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK 1, P1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ユーザ座標系番号1に、ポジション型変数番号2に代</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'入した座標を、ユーザ座標系として宣言します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, P[li2]</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'li1で示されるユーザ座標系番号に、li2で示される</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ポジション型変数に代入した座標を、ユーザ座標系</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'として宣言します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, (100, 100, 50, 0, 0, 90)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, P[li2], 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標系li1にP[li2]を固定工具の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標として設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, (100, 100, 50, 0, 0, 90) , 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標系li1に固定工具の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標を設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+            <div id="para">
+              <div class="paratitle1">4軸</div>
+              <table border="0" class="framenone" width="83%" align="left">
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">DEFINT li1, li2</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK 1, P1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ユーザ座標系番号1に、ポジション型変数番号2に代</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'入した座標を、ユーザ座標系として宣言します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, P[li2]</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'li1で示されるユーザ座標系番号に、li2で示される</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ポジション型変数に代入した座標を、ユーザ座標系</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'として宣言します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, (100, 100, 50, 0)</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, P[li2], 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標系li1にP[li2]を固定工具の</div>
+                    </div>
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標として設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td valign="top" align="left">
+                    <div class="source01">
+                      <div class="p">WORK li1, (100, 100, 50, 90) , 1</div>
+                    </div>
+                  </td>
+                  <td valign="top" align="left">
+                    <div class="source_ptxt">
+                      <div class="p">'ワーク座標系li1に固定工具のワーク座標を設定します。</div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <br clear="left">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

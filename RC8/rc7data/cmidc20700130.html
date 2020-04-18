@@ -1,0 +1,158 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>SetFrcCoord</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">SetFrcCoord<span class="comment1">
+		　（ライブラリ）</span><span class="comment2">
+		　【Ver.1.4 以降】</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">力制限設定座標系を選択します。(６軸専用命令応)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">SetFrcCoord(&lt;設定値&gt;)</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">SetFrcLimit,SetCompRateにて設定する力制限値の座標系を選択します。</div>
+            <div class="p">設定値が0の場合、ロボットのベース座標を選択し、設定値が１の場合は、ツール座標、設定値が２の場合は、ワーク座標を選択します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-macro">
+          <img src="common/cmd-macro.jpg">
+          <br>
+          <div id="cmd-macrogroup">
+            <div class="p">&lt;pacman.h&gt;ファイルが必要です。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc20700131.html" target="_top">SetFrcLimit</a>、<a href="cmidc20700133.html" target="_top">SetCompRate</a>、<a href="cmidc20700130.html" target="_top">SetFrcCoord</a>、<a href="cmidc20700129.html" target="_top">ResetCompControl</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-caution">
+          <img src="common/cmd-caution.jpg">
+          <br>
+          <div id="cmd-cautiongroup">
+            <ul type="disc" class="list1">
+              <li class="item">
+                <div class="p">ロボット制御権を取得(TAKEARM)したタスクにて実行下さい。ロボット制御権未取得の場合は、エラー「21F7アームセマフォを取得できません」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">力制限中は、実行できません。力制限中に本ライブラリを実行すると、エラー「60fa 力制限中です」が発生します。</div>
+              </li>
+              <li class="item">
+                <div class="p">&lt;設定値&gt;を１とし、ツール座標を選択した場合、ツール座標は、力制限有功設定（SetCompControl実行）時のツール座標となります。力制限中にchangetool命令にてツール座標を変更しても、力制限座標は変化しません。</div>
+              </li>
+              <li class="item">
+                <div class="p">&lt;設定値&gt;を2とし、ワーク座標を選択した場合、ワーク座標は、力制限有功設定（SetCompControl実行）時のワーク座標となります。力制限中にchangework命令にてワーク座標を変更しても、力制限座標は変化しません。</div>
+              </li>
+              <li class="item">
+                <div class="p">コントローラ電源立ち上げ直後は、設定値は初期化され、０（ベース座標）となります。</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetFrcCoord(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限座標系をツール座標に設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">Changetool 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ツール座標をツール２に設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source01">
+                    <div class="p">CALL SetFrcLimit(100,0,100,100,100,100)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'力制限割合を設定する。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CALL SetCompControl</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ツール２座標系のＹ方向の力制限割合を0%に設定し、</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'力機能を有効にする。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

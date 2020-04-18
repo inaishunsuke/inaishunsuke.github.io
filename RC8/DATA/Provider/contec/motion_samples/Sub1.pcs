@@ -1,0 +1,62 @@
+'!TITLE "デンソーロボットプログラム"
+
+#Include "CONTEC_Motion.pcs"
+
+Sub Main
+	Wait IO[128] = On
+	
+	'CONTECモーション 初期化
+	MotionInitialize
+
+	'CONTECモーション 軸速度設定
+	smcSetMvStSpd "SIGMA_5", 1, 100000                                                      '開始速度 [PPS]
+	smcSetMvTgSpd "SIGMA_5", 1, 500000                                                     '目標速度 [PPS]
+	smcSetMvAccTm "SIGMA_5", 1, 100                                                          '加速時間 [ms]
+	smcSetMvDecTm "SIGMA_5", 1, 100                                                          '減速時間 [ms]
+	
+	'サーボON
+	smcOut1_On "SIGMA_5", 1
+	
+	'相対動作 正転
+	smcMvPtoP "SIGMA_5", 1, 1, 262140
+	
+		'停止まで待つ
+		Wait smcGetStsMov("SIGMA_5", 1) = 0
+	
+	'相対動作 逆転
+	smcMvPtoP "SIGMA_5", 1, 1, - 262140
+	
+		'停止まで待つ
+		Wait smcGetStsMov("SIGMA_5", 1) = 0
+
+	
+End Sub
+
+'-------------------------------------------------------------------------------------------------
+'	初期化
+'-------------------------------------------------------------------------------------------------
+Sub MotionInitialize
+	'CONTECモーション AddAddController
+	CONTEC_Motion "SIGMA_5", "CaoProv.CONTEC.SMC", "", "DeviceName=SMC000,@Ifnotmember=True"
+	
+	'CONTECモーション 1軸パルス出力初期化
+	smcSetIniPis "SIGMA_5", 1, 4, 1, 0
+	
+	'CONTECモーション 1軸カウンタ動作設定
+	smcSetIniCnt "SIGMA_5", 1, 0, 0, 0
+	
+	'CONTECモーション 1軸制御入出力設定
+	smcSetIniDio "SIGMA_5", 1, 1, 0, 0, 0, 0
+	
+	'CONTECモーション 1軸エンコーダ設定
+	smcSetIniEnc "SIGMA_5", 1, 1, 0, 0, 0, 0
+	
+	'CONTECモーション 1軸原点設定
+	smcSetIniOrg "SIGMA_5", 1, 1, 1, 0, 0, 1
+	
+	'CONTECモーション 1軸速度分解能設定
+	smcSetReSpd "SIGMA_5", 1, 10
+	
+	'CONTECモーション 1軸その他の初期設定
+	smcSetIniExt "SIGMA_5", 1, 0, 0, 0
+End Sub

@@ -1,0 +1,15 @@
+'!TITLE "ProCV.pcs"
+
+Sub Main 
+	
+	Dim caoCtrl As Object
+	Dim strRet As String
+	
+	caoCtrl = Cao.AddController("CV", "CaoProv.KEYENCE.CV", "", "conn=eth:192.168.0.3, timeout=1000")
+	
+	strRet = caoCtrl.TriggerAndGetResult(1)
+	PrintDbg strRet
+	
+	cao.Cotrollers.Remove caoCtrl.Index
+	caoCtrl = Nothing
+End Sub

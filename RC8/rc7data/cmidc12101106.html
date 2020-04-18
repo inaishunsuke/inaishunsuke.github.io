@@ -1,0 +1,456 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISREFCAL</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISREFCAL<span class="comment1">
+		　（関数）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">CAL（視覚－ロボット座標変換）データを取得します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISREFCAL（&lt;セット番号&gt;，&lt;データ番号&gt;）</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;セット番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">何番のCALデータ群を使用するかを指定します。（0～31）</div>
+            </div>
+            <div class="p">&lt;データ番号&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">CALデータ番号を指定します。</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">［Ver. 1.5以前：0～11］</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">［Ver. 1.6以前：0～38］</div>
+            </div>
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">データ番号</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">0</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">1</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">2</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">3</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">4</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">5</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">6</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">7</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">8</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">9</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">10</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">11</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">内容</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">NX</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">OX</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">AX</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">RX</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">NY</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">OY</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">AY</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">RY</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">NZ</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">OZ</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">AZ</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">RZ</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">データ番号</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">12</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">13</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">14</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">15</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">16</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">17</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">18</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">19</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">20</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">内容</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vx1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vy1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vz1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vx2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vy2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vz2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vx2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vy2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Vz2</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">データ番号</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">21</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">22</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">23</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">24</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">25</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">26</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">27</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">28</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">29</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">30</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">31</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">32</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">内容</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rx1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Ry1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rz1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrx1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rry1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrz1</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rx2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Ry2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rz2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrx2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rry2</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrz2</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <table border="1" class="frameall" cellpadding="4" cellspacing="0" width="88%" align="left">
+              <tr class="theadbg">
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">データ番号</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">33</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">34</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">35</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">36</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">37</div>
+                </th>
+                <th valign="middle" align="center" class="tablehead01">
+                  <div class="p">38</div>
+                </th>
+              </tr>
+              <tr>
+                <td valign="middle" align="center">
+                  <div class="p">内容</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rx3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Ry3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rz3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrx3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rry3</div>
+                </td>
+                <td valign="middle" align="center">
+                  <div class="p">Rrz3</div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+            <div class="ptxt-ind5">
+              <div class="p">0-11：変換テーブルデータ</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">12-20：視覚座標データ</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">21-38：ロボット座標データ</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">CALデータ群は32セット記憶することができます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">CALデータの設定はパソコンから行ないます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'格納メモリ0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 0 TO 11</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10+I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source02">
+                    <div class="p">VISPRINT "Data";I1;"=";VISREFCAL(0,I1)</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

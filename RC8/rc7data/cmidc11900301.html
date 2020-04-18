@@ -1,0 +1,87 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>STARTLOG</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">STARTLOG<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">サーボ制御ログの記録を開始します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">STARTLOG</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">プログラムでサーボ制御ログの記録を開始するのに、STARTLOGコマンドを使います。</div>
+            <div class="p">確実にサーボ制御ログを記録するために、STARTLOGコマンドを実行する前に、あらかじめCLEARLOGコマンドを実行するか、WINCAPSⅢでサーボログクリア操作を行なってください。すでに、サーボ制御ログの記録を開始しているときには、STARTLOGコマンドを実行しても、記録できません。</div>
+            <div class="p">手動モードとティーチチェックモードのときには、自動的にサーボ制御ログの記録を開始します。</div>
+            <div class="p">自動モードでは、プログラムの中で記録開始指示があるか、またはWINCAPSⅢでの記録開始操作によって、サーボ制御ログの記録を開始します。</div>
+            <div class="p">サーボ制御ログの記録を停止するのは、エラーが発生したときと、バッファがいっぱいになった（10秒間）ときです。手動モード時は、記録停止の指示がされるまで最新の10秒間分のログを保持します。</div>
+            <div id="para">
+              <div class="paratitle1">ログ動作の状態遷移図</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc11900301_01.jpg">
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc11900302.html" target="_top">CLEARLOG</a>、<a href="cmidc11900303.html" target="_top">STOPLOG</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">STARTLOG</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'サーボ制御ログの記録を開始します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

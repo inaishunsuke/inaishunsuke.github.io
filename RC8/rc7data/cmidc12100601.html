@@ -1,0 +1,250 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISSCREEN</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISSCREEN<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">描画する画面を指定します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISSCREEN &lt;描画対象&gt;，&lt;画面番号&gt;[，&lt;描画モード&gt;]</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;描画対象&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">格納メモリ、オーバレイメモリ（画面）のどちらかを指定します。（0または1）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：格納メモリ（処理画面）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：オーバレイメモリ（描画専用画面）</div>
+            </div>
+            <div class="p">&lt;画面番号&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> 各画面での画面番号</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">格納メモリ（処理画面）：0～3の4画面</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">オーバレイメモリ（描画専用画面）：0、1の2画面</div>
+            </div>
+            <div class="p">&lt;描画モード&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p">描画する際の表示方法を指定します。（0または1）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：即時表示 OFF</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：即時表示 ON</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">省略時は1を指定します。</div>
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">電源投入直後の初期設定はVISSCREEN 1，0，1に設定されています。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">即時表示ONでは描画命令実行時、描画結果はモニタ表示されますが、OFFではVISPLNOUT、VISOVERLAYのいづれか描画対象に応じた命令を実行することで画面が更新されます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">即時描画ONでは描画命令実行時約0.02秒の更新時間が含まれますので、頻繁に描画する場合その累積が大きくなります。即時描画をOFFし、まとめて表示することで処理時間を短縮することができます。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100602.html" target="_top">VISBRIGHT</a>、<a href="cmidc12100603.html" target="_top">VISCLS</a>、<a href="cmidc12100604.html" target="_top">VISPUTP</a>、<a href="cmidc12100605.html" target="_top">VISLINE</a>、<a href="cmidc12100606.html" target="_top">VISPTP</a>、<a href="cmidc12100607.html" target="_top">VISRECT</a>、<a href="cmidc12100608.html" target="_top">VISCIRCLE</a>、<a href="cmidc12100609.html" target="_top">VISELLIPSE</a>、<a href="cmidc12100610.html" target="_top">VISSECT</a>、<a href="cmidc12100611.html" target="_top">VISCROSS</a>、<a href="cmidc12100612.html" target="_top">VISLOC</a>、<a href="cmidc12100613.html" target="_top">VISDEFCHAR</a>、<a href="cmidc12100614.html" target="_top">VISPRINT</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画画面0番に即時描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 100 TO 200 STEP 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISRECT I1,I1,200,200</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'幅200高さ200の矩形を描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'画面のクリア</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画専用画面0番に描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">FOR I1 = 100 TO 200 STEP 2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISRECT I1,I1,200,200</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'幅200高さ200の矩形を描画します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">NEXT I1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISOVERLAY 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'描画専用画面0番をモニタに表示(更新)します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,148 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>DEFEND</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">DEFEND<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">タスクを保護します。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">DEFEND {ON|OFF}</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">通常、プログラムタスクは、一定期間ごとに自分よりもプライオリティの高い、または同等のプログラムタスクに、実行権を明け渡します。</div>
+            <div class="p">他のプログラムタスクに実行権を渡さずに、一気に処理したい場合には、DEFENDコマンドを使います。DEFEND ON実行後は、DEFEND OFFが実行されるまで、実行権が確保されます。ただし、動作命令と、DELAY、WAIT、SET IOの時間指定の各コマンドを実行すると、実行権は他のプログラムタスクに移ります。</div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">DEFEND ONで保護する区間はできるだけ短く設定してください。DEFEND ON実行後に、無限ループ状態になると、他のプログラムタスクに実行権が移らなくなります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">DEFEND ONで保護されていても、次の場合には、自動的に保護状態は解除されます。</div>
+                    </li>
+                    <ul type="circle" class="list2">
+                      <li class="item">
+                        <div class="p">ENDコマンドを実行した場合（呼び出したプログラムの最後にあるENDコマンドは除く）</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">KILLコマンドを実行した場合</div>
+                      </li>
+                      <li class="item">
+                        <div class="p">ティーチングペンダントまたはI/Oによって、ロボットコントローラが初期化された場合</div>
+                      </li>
+                    </ul>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFEND ON </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'自タスクを保護します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[100] </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'保護されているため、以下の3命令は必ず連続して実</div>
+                  </div>
+                  <div class="source_ptxt">
+                    <div class="p">'行されます。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[102]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">SET IO[104]</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">DEFEND OFF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'自タスクの保護を解除します。</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

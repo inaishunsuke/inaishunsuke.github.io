@@ -1,0 +1,864 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-style-type" content="text/css" />
+<meta http-equiv="content-script-type" content="text/javascript" />
+<meta http-equiv="imagetoolbar" content="no" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>ロボット3台、コンベアN台のセットアップ手順</title>
+<meta name="description" content="" />
+<meta name="keywords" content="ロボット3台、コンベアN台のセットアップ手順" />
+<meta name="copyright" content="Copyright &copy; DENSO WAVE INCORPORATED. All Right Reserved." />
+<link rel="stylesheet" href="common/css/reset.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/base.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/skin.css" type="text/css" media="all" />
+<link rel="stylesheet" href="common/css/clearfix.css" type="text/css" media="all" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-s.css" title="Small" />
+<link rel="alternate stylesheet" type="text/css" href="common/css/font-l.css" title="Large" />
+<link rel="stylesheet" href="common/css/print.css" type="text/css" media="print" />
+<script type="text/javascript" src="common/js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="common/js/jquery-migrate-1.2.1.min.js"></script>
+<script type="text/javascript" src="common/js/default.js"></script>
+<script type="text/javascript" src="common/js/jQselectable.js"></script>
+
+<script type="text/javascript" src="common/js/id_search.js"></script>
+
+<script type="text/javascript" src="common/js/side_menu.js"></script>
+<script type="text/javascript">
+
+var storageExist = 1;
+try {
+    var storage = sessionStorage;
+    if (typeof sessionStorage == 'undefined') {
+        var storageExist = 0;
+    }
+} catch(domException) {
+    var storageExist = 0;
+}
+
+$(function(){
+
+    // セッションストレージにサイドメニューデータがある場合読み出す。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('sidebar1') != null){
+    		$(".sidebar").html(storage.getItem('sidebar1'));
+
+    	    // セッションストレージのスクロールの先頭位置を読み出す。
+    		$(".sidebar").scrollTop(storage.getItem('scrollTop1'));
+    	}
+    }
+
+    var file_name = location.href.split('/').pop();
+	
+    // サイドメニューツリーにまだ自分自身が書込まれていない場合、もしくは展開されていない場合、
+    // 自分自身までサイドメニューツリーを展開する。
+    if ((file_name.indexOf('index.html') == -1) && (file_name.indexOf('search.html') == -1)) {
+        var own_id = parseInt(file_name.split('.').shift(), 10);
+
+        var sidebarTop = $(".sidebar").offset().top;
+        var sidebarHeight = $(".sidebar").height();
+        var sidebarSpaceHeight = ($(".sidebar").outerHeight() - $(".sidebar").height()) / 2;
+    	var targetObj;
+    	var targetPos;
+
+    	var bOpen = false;
+
+	    // サイドメニューツリーにまだ自分自身が書込まれてされていない場合。
+		if ($(".sidebar a[href='" + file_name + "']").length <= 0) {
+			bOpen = true;
+		} else {
+			targetObj = $(".sidebar #" + own_id);
+			targetPos = targetObj.offset().top;
+
+		    // 自分自身がたたまれている場合。
+			if (targetPos < sidebarTop) {
+				bOpen = true;
+			}
+		}
+
+		//サイドメニューツリーの展開が必要な場合。
+		if (bOpen == true) {
+	        if (parent_ids[own_id]) {
+	            $.each(parent_ids[own_id], function(a, b) {
+	                open_child($(".sidebar #" + b + " > div > a.left_a"));
+	            });
+	        }
+		}
+
+
+    	targetObj = $(".sidebar #" + own_id);
+    	targetPos = targetObj.offset().top;
+    	
+        // サイドメニューを展開し直した、または、自分自身がスクロール枠より上、または自分自身がスクロール枠より下の場合
+    	// スクロール位置を自分自身がスクロール枠の半分の高さになるように調整する。
+    	if ( (bOpen == true) || (targetPos < (sidebarTop + sidebarSpaceHeight)) || (sidebarHeight < (targetPos - sidebarTop - sidebarSpaceHeight)) ) {
+            $(".sidebar").animate({
+                scrollTop : targetPos + $(".sidebar").scrollTop() - sidebarTop - sidebarSpaceHeight - sidebarHeight / 2
+            });
+    	}
+    	
+        // 自分自身にアクティブカーソルを設定する。
+        $(".sidebar div.current").removeClass('current');
+        $(".sidebar div a.current").removeClass('current');
+        targetObj.children("div").addClass('current');
+        targetObj.children("div").children("a.right_a").addClass('current');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+                // セッションストレージにサイドメニューデータを書込む。
+            	storage.setItem('sidebar1', $(".sidebar").html());
+
+                // セッションストレージにスクロールの先頭位置を書込む。 
+            	storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+		}
+    }
+
+
+
+    $(".sidebar").on("click", ".plus", function(){
+        // +クリック時、下層がなければsearch.jsからデータ取得。
+        open_child($(this));
+    });
+
+    $(".sidebar").on("click", ".minus", function(){
+        $(this).html('<img src="common/img/i_plus.gif" />');
+        $(this).removeClass('minus').addClass('plus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        $(this).parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+		});
+    });
+
+	//スクロール後にスクロールの先頭位置をストレージに書込む。 
+    $(".sidebar").on("scroll", function(){
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('scrollTop1', $(".sidebar").scrollTop());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+    });
+	
+});
+
+function open_child(obj) {
+    var click_id = obj.parent().parent().attr('id');
+    var level = obj.parent().parent().attr('class');
+    level = parseInt(level.split(' ')[0].replace('level', ''), 10);
+    if ($("#" + click_id).children().length == 1) {
+
+        var child_html = '<ul class="sub">';
+        $.each(content_id[click_id], function(k, c) {
+            var plus_a = '';
+            if (c.has_child) {
+                plus_a = '<a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a>';
+            } else {
+                plus_a = '<a href="javascript:void(0);" class="left_a"></a>';
+            }
+            child_html += '<li id="' + c.id + '" class="level' + (level + 1) + '"><div style="margin-left:' + (level * 15) + 'px;">' + plus_a + '<a href="' + c.href + '"' + c.target + ' class="right_a"><span>' + c.title + '</span></a></div></li>';
+        });
+        child_html += '</ul>';
+		
+        $("#" + click_id).append(child_html);
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		if(storageExist !== 0){	//ローカルでのIE対応
+            try {
+        		storage.setItem('sidebar1', $(".sidebar").html());
+            } catch(domException) {
+                if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    // 容量オーバーの場合は一旦クリア。
+                    storage.removeItem('sidebar1');
+                    storage.removeItem('scrollTop1');
+                }
+            }
+        }
+
+	//まだ展開していない場合。
+	} else if (obj.parent().children('a.left_a').hasClass('plus') == true) {
+
+	    obj.html('<img src="common/img/i_minus.gif" />');
+	    obj.removeClass('plus').addClass('minus');
+
+		//展開アニメーション終了後、セッションストレージにサイドメニューデータを書込む。
+        obj.parent().next().slideToggle('normal', function(){
+			if(storageExist !== 0){	//ローカルでのIE対応
+                try {
+        			storage.setItem('sidebar1', $(".sidebar").html());
+                } catch(domException) {
+                    if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                        // 容量オーバーの場合は一旦クリア。
+                        storage.removeItem('sidebar1');
+                        storage.removeItem('scrollTop1');
+                    }
+                }
+            }
+
+		});
+    }
+}
+
+</script>
+
+
+<!-- [ CONTENT_ID="003412" ] -->
+
+<!-- [ EXT_ID="" ] -->
+<!-- [ PAGE_REV="7" ] -->
+</head>
+
+<body id="top">
+
+<div id="langArea">
+<div class="langCon clearfix">
+&nbsp;
+</div>
+</div>
+
+<div id="wrap">
+
+<!-- [ HEADER AREA ] -->
+
+<div id="header">
+  <p class="logo"><a href="index.html"><img src="common/img/logo.gif" alt="DESO WAVE" /></a></p>
+
+  <div class="headCon">
+    <form action="search.html" method="get" id="search_form">
+
+        <div class="searchArea">
+            
+        <div class="searchBoxLeft"><img src="common/img/bg_search_box_left.gif" /></div>
+        <div class="searchBox">
+            <ul class="search_type">
+                <li><input id="search_type1" name="search_type" type="radio" value="1" checked /><label for="search_type1">全文検索</label></li>
+                <li><input id="search_type2" name="search_type" type="radio" value="2"  /><label for="search_type2">コマンド検索</label></li>                  <li><input id="search_type3" name="search_type" type="radio" value="3" /><label for="search_type3">
+                  <select id="manual_id" name="manual_id" class="callback" disabled="disabled">
+                  <option value="">マニュアルを選択してください</option><option value="1">VSロボット取扱説明書</option><option value="2">VMロボット取扱説明書</option><option value="3">VPロボット取扱説明書</option><option value="5">プログラマーズマニュアル</option><option value="6">RC8シリーズロボットコントローラ説明書</option><option value="7">RC8 Mini I/O取扱説明書</option><option value="8">専用入出力信号説明書</option><option value="9">パラレルI/Oボード取扱説明書</option><option value="10">DeviceNetスレーブボード取扱説明書</option><option value="11">CC-Linkリモートデバイスボード取扱説明書</option><option value="12">電動ハンドガイド</option><option value="13">プロバイダガイド</option><option value="14">機能ガイド</option><option value="15">ティーチングペンダント操作ガイド</option><option value="16">ミニペンダント操作ガイド</option><option value="17">操作盤ガイド</option><option value="18">安全上のご注意</option><option value="19">ロボットの基礎知識</option><option value="20">オプション品番リスト</option><option value="21">WINCAPSIIIガイド</option><option value="23">非推奨コマンド</option><option value="24">HMロボット取扱説明書</option><option value="25">HSロボット取扱説明書</option><option value="26">RC7Mのコマンド対応表</option><option value="27">PROFIBUSスレーブボード取扱説明書</option><option value="28">エラーコード</option><option value="30">XRロボット取扱説明書</option><option value="31">EtherNet/IP Adapterボード取扱説明書</option><option value="32">立上げハンドブック</option><option value="35">付加軸取扱説明書</option><option value="38">コンベアトラッキング取扱説明書</option><option value="39">Hand I/O取扱説明書</option><option value="40">VS-6556/6577ロボット取扱説明書</option><option value="41">MC8(モーションコントローラ)取扱説明書</option><option value="43">コントローラ保護ボックス取扱説明書</option><option value="45">PROFINET IOデバイスボード取扱説明書</option><option value="46">DeviceNetマスタボード取扱説明書</option><option value="47">工程間搬送ロボット取扱説明書</option><option value="64">I/O変換ボックス取扱説明書</option><option value="65">パラメータリスト</option><option value="69">EtherCATスレーブボード取扱説明書</option><option value="72">外部視覚ガイド</option><option value="73">内蔵視覚ガイド</option><option value="74">協調機能ガイド</option><option value="85">非常停止スイッチボックス取扱説明書</option><option value="86">用語集</option><option value="87">本書の見方と操作方法</option><option value="88">Q&A</option><option value="90">HSRロボット取扱説明書</option><option value="92">RC8A セーフティモーション仕様 取扱説明書</option><option value="93">RC8A Mini I/O取扱説明書</option><option value="97">EtherCAT Slave Motion取扱説明書</option><option value="98">HSA1ロボット取扱説明書</option><option value="99">外部付加軸（EtherCAT）取扱説明書</option><option value="101">円形トラッキング取扱説明書</option><option value="120">Command-Slave FBリファレンスガイド_SIEMENS-S7</option><option value="121">Command-Slave 活用ガイド_SIEMENS-S7</option><option value="122">デュアルアーム制御機能取扱説明書</option><option value="129">Command-Slave 活用ガイド_Rockwell</option><option value="130">Command-Slave AOIリファレンスガイド_Rockwell</option><option value="131">Command-Slave FBリファレンスガイド_CODESYS</option><option value="132">Command-Slave 活用ガイド_CODESYS</option><option value="133">Command-Slave FBリファレンスガイド_ProConOS</option><option value="134">Command-Slave 活用ガイド_ProConOS</option><option value="136">食品用ロボットジャケットセット</option>                  </select>
+                  </label></li>                <li><input id="search_type4" name="search_type" type="radio" value="4" /><label for="search_type4">IDジャンプ</label></li>
+            </ul>
+
+
+              <ul class="search_box">
+                <li><a href="003087.html"><img src="common/img/b_help.gif" alt="help" class="imgover" /></a></li>
+                <li><a id="search-submit" href="javascript:void(0);" onclick="searchSubmit();"><img src="common/img/b_search.gif" alt="search" class="imgover" /></a></li>
+                <li class="keyword_box">
+                    <input id="keywords" name="words" type="text" value="" /><input type="text" name="dummy" style="display:none;">
+
+                    <ul class="and_or_box">
+                    <li><input id="keyword_and" name="and_or" type="radio" value="and" checked /><label for="keyword_and">AND</label></li>
+                    <li><input id="keyword_or" name="and_or" type="radio" value="or" /><label for="keyword_or">OR</label></li>
+                    </ul>
+                </li>
+              </ul>
+        </div>
+        <div class="searchBoxRight"><img src="common/img/bg_search_box_right.gif" /></div>
+
+          <div class="sizeBox">
+            <p>文字サイズ</p>
+            <ul>
+              <li id="hSmall"><a onclick="setActiveStyleSheet('Small'); return false;">小</a></li>
+              <li id="hMiddle"><a onclick="setActiveStyleSheet('Default'); return false;">中</a></li>
+              <li id="hLarge"><a onclick="setActiveStyleSheet('Large'); return false;">大</a></li>
+            </ul>
+          </div>
+        </div><!-- /searchArea -->
+
+    </form>
+
+<script type="text/javascript">
+$(function(){
+
+    // 検索条件がローカルストレージにあればそれをセット。
+	if(storageExist !== 0){	//ローカルでのIE対応
+    	if (storage.length != 0 && storage.getItem('select_search_type') != null){
+            var select_search_type = storage.getItem('select_search_type');
+            $("input[name='search_type']").val([select_search_type]);
+            if (select_search_type == 4) {
+                $("input[name='and_or']").attr('disabled', 'disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            } else if (select_search_type == 3) {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").removeAttr('disabled');
+            } else {
+                $("input[name='and_or']").removeAttr('disabled');
+                $("#manual_id").attr('disabled', 'disabled');
+            }
+        }
+    	if (storage.length != 0 && storage.getItem('select_manual_id') != null){
+            $("#manual_id").val(storage.getItem('select_manual_id'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_keyword') != null){
+            $("#keywords").val(storage.getItem('select_keyword'));
+        }
+    	if (storage.length != 0 && storage.getItem('select_and_or') != null){
+            $("input[name='and_or']").val([storage.getItem('select_and_or')]);
+        }
+    }
+
+    $("input[name='search_type']:radio").change(function(){
+        if ($(this).val() == 4) {
+            $("input[name='and_or']").attr('disabled', 'disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        } else if ($(this).val() == 3) {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").removeAttr('disabled');
+        } else {
+            $("input[name='and_or']").removeAttr('disabled');
+            $("#manual_id").attr('disabled', 'disabled');
+        }
+    });
+
+    $("#keywords").keydown(function(ev) {
+        if (!ev) {
+            ev = event;
+        }
+        if( ev.keyCode == 13 ) {
+            searchSubmit();
+            return false;
+        }
+    });
+
+});
+
+function searchSubmit() {
+	if(storageExist !== 0){	//ローカルでのIE対応
+        try {
+            // セッションストレージに検索条件を書込む。
+        	storage.setItem('select_search_type', $("input[name='search_type']:checked").val());
+        	storage.setItem('select_manual_id', $("#manual_id").val());
+        	storage.setItem('select_keyword', $("#keywords").val());
+        	storage.setItem('select_and_or', $("input[name='and_or']:checked").val());
+        } catch(domException) {
+            if (domException.name === 'QuotaExceededError' || domException.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                // 容量オーバーの場合は一旦クリア。
+                storage.removeItem('select_search_type');
+                storage.removeItem('select_manual_id');
+                storage.removeItem('select_keyword');
+                storage.removeItem('select_and_or');
+            }
+        }
+	}
+
+    if ($("input[name='search_type']:checked").val() == 4) {
+        search_id();
+        return false;
+
+    } else {
+        $("#search_form").submit();
+    }
+}
+</script>
+
+  </div><!-- /headCon -->
+</div>
+
+<!-- [ /HEADER AREA ] -->
+
+<div id="topicPath">
+<ul>
+<li><a href="index.html"><img src="common/img/icon_home.gif" />HOME</a></li>
+<li><a href="001104.html">オプション</a></li>
+<li><a href="005322.html">コンベアトラッキング取扱説明書</a></li>
+<li><a href="005331.html">セットアップ手順</a></li>
+<li><a href="005342.html">ビジョントラッキングのセットアップ</a></li>
+<li><a href="003403.html">デュアルアーム制御機能使用時のセットアップ手順</a></li>
+<li><span>ロボット3台、コンベアN台のセットアップ手順</span></li>
+
+</ul>
+
+<p class="pre_next"><a href="003405.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="018027.html">次へ &gt;&gt;</a></p>
+</div>
+<!-- /#topicPath -->
+
+
+
+<!-- [ CONTENT AREA ] -->
+<div class="content">
+
+<!-- [ SIDE AREA ] -->
+<div class="sidebar">
+<div id="lnav_fr">
+<ul>
+<li id="1924" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001924.html" class="right_a"><span class="category">安全上のご注意</span></a></div></li>
+<li id="986" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000986.html" class="right_a"><span class="category">ロボット概要、設置、保守</span></a></div></li>
+<li id="5193" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005193.html" class="right_a"><span class="category">立上げハンドブック</span></a></div></li>
+<li id="987" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000987.html" class="right_a"><span class="category">コントローラ、I/O接続</span></a></div></li>
+<li id="988" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000988.html" class="right_a"><span class="category">操作ガイド</span></a></div></li>
+<li id="1102" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001102.html" class="right_a"><span class="category">プログラミング</span></a></div></li>
+<li id="4552" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="004552.html" class="right_a"><span class="category">WINCAPSIIIガイド</span></a></div></li>
+<li id="1104" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001104.html" class="right_a"><span class="category">オプション</span></a></div></li>
+<li id="1075" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="001075.html" class="right_a"><span class="category">エラーコード</span></a></div></li>
+<li id="5817" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="005817.html" class="right_a"><span class="category">パラメータリスト</span></a></div></li>
+<li id="989" class="level1"><div><a href="javascript:void(0);" class="left_a plus"><img src="common/img/i_plus.gif" /></a><a href="000989.html" class="right_a"><span class="category">その他</span></a></div></li>
+
+</ul>
+</div>
+</div>
+<!-- [ /SIDE AREA ] -->
+
+<!-- [ MAIN AREA ] -->
+<div class="main">
+<p class="disp_id">ID : 3412</p>
+<div id="detail">
+<div class="category" id="category_standard">
+<h1>ロボット3台、コンベアN台のセットアップ手順</h1>
+<p>共有するコンベアの設定をマスタとスレーブ(2台)でそれぞれ行います。</p>
+<p>ここでは、デュアルアーム制御機能を使用するロボットコントローラを&quot;デュアルアームコントローラ&quot;、デュアルアーム制御機能を使用しないコントローラを&quot;通常コントローラ&quot;と呼ぶこととします。</p>
+<p>また、セットアップするシステムの条件を下記のように決めた場合を例にして説明します。</p>
+<ul>
+<li>デュアルアームコントローラのRobot0をマスタにする</li>
+  <li>デュアルアームコントローラのRobot1と通常コントローラをスレーブにする</li>
+<li>エンコーダは、エンコーダハブの7軸に接続する</li>
+<li>コンベア番号は1を使用する</li>
+<li>デュアルアームコントローラのIPアドレスは192.168.0.1、通常コントローラのIPアドレスは192.168.0.2とする。</li>
+</ul>
+<div class="notelv5">
+<p>実際にセットアップする際は、セットアップするシステムの条件にあわせて、各設定を行ってください。</p>
+</div>
+
+<p>全体的なセットアップの手順を下記に示します。</p>
+<table>
+  <tr>
+  <th width="250">実施項目</th>
+    <th>概要</th>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+  <tr>
+    <td>
+      <p>1. <a href="#ID003412_MulticastSetting">増設LANボードを使用する場合の設定</a></p>
+    </td>
+  <td>
+      <p>増設LANボードを使用して、マスタとスレーブ(通常コントローラ)間を通信する場合、&quot;マルチキャスト.インターフェース [IP Address]&quot;というパラメータを、初期値から変更する。</p>
+  </td>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+  <tr>
+    <td>
+      <p>2. <a href="#ID003412_MasterSetting">マスタの設定</a></p>
+      <p>(デュアルアームコントローラで設定)</p>
+    </td>
+    <td>
+      <ul>
+        <li>エンコーダの軸の設定</li>
+        <li>Robot0をマスタとして設定する。</li>
+        <li>コンベアに使用するハードウェアの設定と接続確認。</li>
+        <li>コンベアとロボット(Robot0)とのキャリブレーション</li>
+        <li>カメラキャリブレーション</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+  <tr>
+    <td>
+      <p>3. <a href="#ID003412_SlaveRobot1Setting">スレーブ(Robot1)の設定</a></p>
+      <p>(デュアルアームコントローラで設定)</p>
+    </td>
+    <td>
+      <ul>
+        <li>Robot1をスレーブとして設定する。</li>
+        <li>マスタとの接続確認。</li>
+        <li>コンベアに使用するハードウェアの設定(コンベア&middot;デバイスの選択)。</li>
+        <li>コンベアとロボット(Robot1)とのキャリブレーション</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+  <tr>
+    <td>
+      <p>4. <a href="#ID003412_SlaveStandardSetting">スレーブ(通常コントローラ)の設定</a></p>
+      <p>(通常コントローラで設定)</p>
+    </td>
+    <td>
+      <ul>
+        <li>通常コントローラをスレーブとして設定する。</li>
+        <li>マスタとの接続確認。</li>
+        <li>コンベアに使用するハードウェアの設定(コンベア&middot;デバイスの選択)。</li>
+        <li>コンベアとロボット(通常コントローラのロボット)とのキャリブレーション</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+<div class="notelv4">
+  <p>スレーブの台数やコンベアの台数によっては、デュアルアームコントローラのCPU性能により十分な性能が出ない可能性があります。その場合には、スレーブの台数やコンベアの台数を減らし、システムを分離してデュアルアームコントローラのCPU負荷の低減を検討してください。もしくは、ハイスペックCPUを搭載したロボットコントローラを使用することを検討してください。</p>
+</div>
+
+<h2 id="ID003412_MulticastSetting">1. 増設LANボードを使用する場合の設定</h2>
+<p>増設LANボードを使用して、マスタとスレーブ(通常コントローラ)間を通信する場合、"マルチキャスト.インターフェース [IP Address]"というパラメータを、初期値から変更する必要があります。詳細は、<a href="018027.html" target="_blank">&quot;増設のLANボードを使用してマスタとスレーブ間を通信する場合&quot;</a>を参照してください。</p>
+
+<h2 id="ID003412_MasterSetting">2. マスタの設定 (デュアルアームコントローラで設定)</h2>
+<h6 class="step" id="ID003412_MasterStep1">1</h6>
+<p>まずは、ティーチングペンダントの設定対象をRobot0に切替えます。</p>
+<p>[ロボット選択]ボタンを押すと、[ロボット選択]ウィンドウが表示されます。[ロボット選択]リストから、Robot0(R0)を選択し、[OK]ボタンを押します。</p>
+<p><img src="img/003401/003401_1.png" alt="" /></p>
+<p>[ロボット選択]ボタンの左にあるアイコンの"R0"が、オレンジ色にマーキングされたことを確認してください(上図参照)。</p>
+
+<h6 class="step" id="ID003412_Robot0Steo2">2</h6>
+<p>エンコーダが接続されている軸の設定を行います。</p>
+<p>ユーザレベルを「メンテナ」にして、次の操作経路で操作すると、下図の[モータ設定]ウィンドウが表示されます。</p>
+<table>
+  <tr>
+    <td><p>操作経路 : [F2 アーム] - [F12 保守] - [F10 軸設定] - [F6 モータ設定]</p></td>
+  </tr>
+</table>
+<p><img src="img/003401/003401_2.png" alt="" /></p>
+<p>[軸選択]タブから軸番号(7軸の場合は&quot;J7&quot;)を選択します。7軸のモータ設定パラメータが表示されますので、下記表の内容に沿って設定します。</p>
+<table>
+  <tr>
+    <th>
+      <p>設定パラメータ</p>
+      <p>(番号 : パラメータ名)</p>
+    </th>
+    <th>
+      <p>設定値</p>
+    </th>
+  </tr>
+  <tr>
+    <td>1 : 軸有効無効設定</td>
+    <td>エンコーダのみ有効</td>
+  </tr>
+  <tr>
+    <td>2 : モータ型式番号(J7)</td>
+    <td>ENCODER E6B2-CWZ1X-1000</td>
+  </tr>
+</table>
+<p>設定の方法は、まず、各パラメータにカーソルを合わせ、[F5 値変更]を押します。[設定編集]ウィンドウが表示されるので、そこで設定したい値を選択し[OK]ボタンを押します。</p>
+<p>各パラメータを設定後、[モータ設定]ウィンドウの[OK]ボタンを押します。パラメータ設定完了のシステムメッセージが表示されますので、[OK]ボタンを押します。</p>
+<p>ロボットコントローラの電源を切る前に、Robot1の7軸の&quot;軸有効無効設定&quot;が&quot;無効&quot;になっていることを確認してください。確認方法は、まず、[ロボット選択]ボタンを押して、ティーチングペンダントの設定対象を&quot;Robot1&quot;に切替えます。その後、上記を参照して、[モータ設定]ウィンドウを表示し、7軸のモータ設定を確認します。</p>
+
+<h6 class="step">3</h6>
+<p>ロボットコントローラを再起動します。</p>
+<p>ロボットコントローラの電源を切り、その後、電源を入れてください。</p>
+<p>ロボットコントローラが立ち上ったら、ティーチングペンダントの設定対象をRobot0に切替えます。</p>
+
+<h6 class="step">4</h6>
+<p>Robot0をマスタに設定します。</p>
+<p>ユーザレベルを「メンテナ」にして、次の操作経路で操作すると、下図の[トラッキング]ウィンドウが表示されます。</p>
+<table>
+  <tr>
+    <td><p>操作経路 : [F10 トラッキング]</p></td>
+  </tr>
+</table>
+<p><img src="img/003401/003401_3.png" alt="" /></p>
+<p>[コンベア番号選択]タブから、コンベア番号1と2のタブ("1-2")を選択すると、コンベア番号1と2のコンベア設定画面が表示されます。その後、コンベア番号1の[マスタ&middot;スレーブ設定]ボタンを押して、下図の[マスタ&middot;スレーブ選択]ウィンドウを表示させます。</p>
+<p><img src="img/003399/003399_1.png" alt="" /></p>
+<p>ここでは、下記表の内容に沿って設定します。</p>
+<table>
+  <tr>
+    <th width="150">設定項目</th>
+    <th>設定値 / 設定方法</th>
+  </tr>
+  <tr>
+    <td rowspan="2">マスタ&middot;スレーブ選択</td>
+    <td>
+      <p>設定値 : マスタ</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタ&middot;スレーブ選択]ボタンの&quot;マスタ&quot;を押す(&quot;マスタ&quot;が青色でマーキングされる)。</p>
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2">スレーブ数</td>
+    <td>
+    <p>設定値 : 2</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [スレーブ数設定]ボタンを押し、[設定編集]ウィンドウから"1"を選択後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2">スレーブIPアドレス</td>
+  <td>
+      <p>設定値 : </p>
+  <ul>
+        <li>スレーブ1 : 0.0.0.0</li>
+        <li>スレーブ2 : 192.168.0.2</li>
+  </ul>
+    <p>スレーブ1はRobot1を対象とし、スレーブ2は通常コントローラを対象としています。</p>
+<p>なお、0.0.0.0を指定すると、デュアルアーム制御機能における、もう片方のロボットを指定したことになります。この例では、Robot0をマスタに設定している最中なので、もう片方のロボットとなると、Robot1を指定したことになります。</p>
+  </td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [スレーブIPアドレス設定]ボタンの中のスレーブ1またはスレーブ2を押し、[設定編集]ウィンドウでIPアドレスを入力後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+    </td>
+  </tr>
+</table>
+<p>各設定項目を設定後、[マスタ&middot;スレーブ選択]ウィンドウの[OK]ボタンを押します。システムメッセージが表示されるので[OK]ボタンを押すと、[トラッキング]ウィンドウに戻ります。</p>
+<div class="notelv5">
+<p>スレーブに設定されていたコンベアに対して、マスタに変更した場合、[マスタ&middot;スレーブ選択]ウィンドウの[OK]ボタンを押すと、システムメッセージが2回でます。2回とも[OK]ボタンを押すと、[トラッキング]ウィンドウに戻ります。</p>
+</div>
+
+<h6 class="step">5</h6>
+<p>コンベアに使用するハードウェアの設定と接続確認および、コンベアとロボット(Robot0)とのキャリブレーションを行い、その後、カメラキャリブレーションを実施します。</p>
+<p>手順は、ロボット1台のみ使用する場合と同じです。<a href="005343.html" target="_blank">&quot;ハードウェアの選択&quot;</a>、&quot;<a href="005384.html" target="_blank">ハードウェアの接続確認&quot;</a>、<a href="005359.html" target="_blank">&quot;キャリブレーション&quot;</a>、<a href="005361.html" target="_blank">&quot;カメラキャリブレーション実施手順&quot;</a>を参照ください。ただし、ティーチングペンダントの設定対象は、Robot0のまま実施してください。</p>
+
+<h6 class="step">6</h6>
+<p>コンベアを複数台使用する場合は、STEP1からSTEP5の作業をコンベアの台数分実施してください。</p>
+
+<h2 id="ID003412_SlaveRobot1Setting">3. スレーブ(Robot1)の設定 (デュアルアームコントローラで設定)</h2>
+<h6 class="step">1</h6>
+<p>まずは、ティーチングペンダントの設定対象をRobot1に切替えます。</p>
+<p>[ロボット選択]ボタンを押して切替えてください (<a href="003412.html#ID003412_MasterStep1" target="ID3412">&quot;2. マスタの設定&quot;の&quot;STEP1&quot;</a>を参考にしてください)。</p>
+<p>[ロボット選択]ボタンの左にあるアイコンの"R1"が、オレンジ色にマーキングされたことを確認してください(下図参照)。</p>
+<p><img src="img/003401/003401_5.png" alt="" /></p>
+
+<h6 class="step">2</h6>
+<p>Robot1をスレーブに設定します。</p>
+<p>ユーザレベルを「メンテナ」にして、次の操作経路で操作すると、下図の[トラッキング]ウィンドウが表示されます。</p>
+<table>
+  <tr>
+    <td><p>操作経路 : [F10 トラッキング]</p></td>
+</tr>
+</table>
+<p><img src="img/003401/003401_6.png" alt="" /></p>
+<p>[コンベア番号選択]タブから、コンベア番号1と2のタブ(&quot;1-2&quot;)を選択し、コンベア番号1の[マスタ&middot;スレーブ設定]ボタンを押します。</p>
+<p>[マスタ&middot;スレーブ選択]ウィンドウが表示されるので、[マスタ&middot;スレーブ選択]ボタンの&quot;スレーブ&quot;を押します(&quot;スレーブ&quot;が青色でマーキングされる)。</p>
+<p>その後、[マスタ&middot;スレーブ選択]ウィンドウの[OK]ボタンを押すと、システムメッセージが表示されるので、[OK]ボタンを押します。さらに、システムメッセージが表示されるので[OK]ボタンを押すと、[トラッキング]ウィンドウに戻ります。</p>
+
+<h6 class="step">3</h6>
+<p>マスタとの接続確認を行います。</p>
+<p>[トラッキング]ウィンドウ内にある、コンベア番号1の[設定]ボタンを押します。</p>
+<p><img src="img/003401/003401_7.png" alt="" /></p>
+<p>[マスタとの接続確認]ウィンドウが表示されます。</p>
+<p>このウィンドウでは、下表の内容を実施します。</p>
+<table>
+  <tr>
+    <th width="200">実施項目 / 実施手順</th>
+    <th>実施内容</th>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+<tr>
+    <td rowspan="2">1. マスタIPアドレスの設定</td>
+    <td>
+      <p>設定値 : 0.0.0.0</p>
+      <p>(0.0.0.0を指定すると、マスタに設定したロボットを指定したことになります。この例では、Robot0を指定したことになります。)</p>
+    </td>
+</tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタIPアドレス設定]ボタンを押し、[設定編集]ウィンドウで"0.0.0.0"を入力後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+
+    </td>
+  </tr>
+  <tr>
+    <td>2. マスタとの接続確認</td>
+    <td>
+      <p> [接続確認]ボタンを押し、エンコーダが接続されていることを示すシステムメッセージが表示されることを確認します。システムメッセージの[OK]ボタンを押すと、[マスタとの接続確認]ウィンドウに戻ります。</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+    </td>
+  </tr>
+  <tr>
+    <td>3. エンコーダ値の取得の確認</td>
+    <td>
+    <p>設定対象のコンベアを動作させます(この例ではコンベア番号1のコンベア)。トリガ信号が入力されるたびに、[データバッファ表示]欄の一番左の枠から順に、エンコーダ値が表示されます。</p>
+    <p>[データバッファ表示]欄の各枠に表示されたエンコーダ値がそれぞれ異なる値であれば正常です。</p>
+    <p>さらに、[現在のエンコーダ値]欄のエンコーダ値がリアルタイムに更新されていることを確認します。</p>
+  </td>
+  </tr>
+</table>
+<p>上記表の内容を全て実施したら、[次へ]ボタンを押します。[コンベア形状選択]ウィンドウが表示されます。</p>
+
+<h6 class="step">4</h6>
+<p>[コンベア形状選択]ウィンドウからは、コンベアに使用するハードウェアの設定(コンベア&middot;デバイスの選択)および、コンベアとロボット(Robot1)とのキャリブレーションとなります。</p>
+<p>手順は、ロボット1台のみ使用する場合と同じです。<a href="005344.html" target="_blank">&quot;コンベア&middot;デバイスの選択&quot;</a>、<a href="005359.html" target="_blank">&quot;キャリブレーション&quot;</a>を参照ください。ただし、ティーチングペンダントの設定対象は、Robot1のまま実施してください。</p>
+<div class="notelv5">
+  <p>スレーブでは、下記内容は不要であるため実施しません。</p>
+  <ul>
+    <li>エンコーダの軸番号の設定</li>
+    <li>I/O設定</li>
+    <li>ハードウェアの接続確認</li>
+  </ul>
+</div>
+
+<h6 class="step">5</h6>
+<p>コンベアを複数台使用する場合は、STEP1からSTEP4の作業をコンベアの台数分実施してください。</p>
+
+<h2 id="ID003412_SlaveStandardSetting">4. スレーブ(通常コントローラ)の設定 (通常コントローラで設定)</h2>
+<h6 class="step">1</h6>
+<p>通常コントローラをスレーブに設定します。</p>
+<p>ユーザレベルを「メンテナ」にして、次の操作経路で操作すると、下図の[トラッキング]ウィンドウが表示されます。</p>
+<table>
+  <tr>
+    <td><p>操作経路 : [F10 トラッキング]</p></td>
+</tr>
+</table>
+<p><img src="img/003399/003399_3.png" alt="" /></p>
+<p>[コンベア番号選択]タブから、コンベア番号1と2のタブ("1-2")を選択すると、コンベア番号1と2のコンベア設定画面が表示されます。その後、コンベア番号1の[マスタ&middot;スレーブ設定]ボタンを押して、下図の[マスタ&middot;スレーブ選択]ウィンドウを表示させます。</p>
+<p><img src="img/003399/003399_4.png" alt="" /></p>
+<p>ここでは、下記表の内容に沿って設定します。</p>
+<table>
+  <tr>
+    <th width="150">設定項目</th>
+    <th>設定値 / 設定方法</th>
+  </tr>
+  <tr>
+    <td rowspan="2">マスタ&middot;スレーブ選択</td>
+    <td>
+    <p>設定値 : スレーブ</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタ&middot;スレーブ選択]ボタンの&quot;スレーブ&quot;を押す(&quot;スレーブ&quot;が青色でマーキングされる)。</p>
+    </td>
+  </tr>
+  <tr>
+    <td rowspan="2">マスタIPアドレス</td>
+    <td>
+    <p>設定値 : 192.168.0.1</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタIPアドレス設定]ボタンを押し、[設定編集]ウィンドウでIPアドレスを入力後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+    </td>
+  </tr>
+  <tr>
+  <td rowspan="2">マスタロボット番号</td>
+  <td>
+      <p>設定値 : 0</p>
+      <p>(デュアルアームコントローラのRobot0とRobot1のどちらがマスタであるかを指定します。この例では、Robot0がマスタなので設定値は0です。 ) </p></td>
+  </tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタロボット番号設定]ボタンを押し、[設定編集]ウィンドウで&quot;0&quot;を入力後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+  </td>
+  </tr>
+</table>
+<p>各設定項目を設定後、[マスタ&middot;スレーブ選択]ウィンドウの[OK]ボタンを押します。システムメッセージが表示されるので、[OK]ボタンを押します。さらに、システムメッセージが表示されるので[OK]ボタンを押すと、[トラッキング]ウィンドウに戻ります。</p>
+
+<h6 class="step">2</h6>
+<p>マスタとの接続確認を行います。</p>
+<p>[トラッキング]ウィンドウ内にある、コンベア番号1の[設定]ボタンを押します。</p>
+<p><img src="img/003399/003399_5.png" alt="" /></p>
+<p>[マスタとの接続確認]ウィンドウが表示されます。</p>
+<p>このウィンドウでは、下表の内容を実施します。</p>
+<table>
+  <tr>
+    <th width="200">実施項目 / 実施手順</th>
+    <th>実施内容</th>
+  </tr>
+  <tr>
+    <td colspan="2"></td>
+  </tr>
+<tr>
+    <td rowspan="2">1. マスタIPアドレスの設定</td>
+    <td>
+    <p>設定値 : 192.168.0.1    </p></td>
+</tr>
+  <tr>
+    <td>
+      <p>設定方法 : [マスタIPアドレス設定]ボタンを押し、[設定編集]ウィンドウで"192.168.0.1"を入力後、[設定編集]ウィンドウの[OK]ボタンを押す。</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+    </td>
+  </tr>
+  <tr>
+    <td>2. マスタとの接続確認</td>
+    <td>
+      <p> [接続確認]ボタンを押し、エンコーダが接続されていることを示すシステムメッセージが表示されることを確認します。システムメッセージの[OK]ボタンを押すと、[マスタとの接続確認]ウィンドウに戻ります。</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+    </td>
+  </tr>
+  <tr>
+    <td>3. エンコーダ値の取得の確認</td>
+    <td>
+    <p>設定対象のコンベアを動作させます(この例ではコンベア番号1のコンベア)。トリガ信号が入力されるたびに、[データバッファ表示]欄の一番左の枠から順に、エンコーダ値が表示されます。</p>
+    <p>[データバッファ表示]欄の各枠に表示されたエンコーダ値がそれぞれ異なる値であれば正常です。</p>
+    <p>さらに、[現在のエンコーダ値]欄のエンコーダ値がリアルタイムに更新されていることを確認します。</p>
+  </td>
+  </tr>
+</table>
+<p>上記表の内容を全て実施したら、[次へ]ボタンを押します。[コンベア形状選択]ウィンドウが表示されます。</p>
+
+<h6 class="step">3</h6>
+<p>[コンベア形状選択]ウィンドウからは、コンベアに使用するハードウェアの設定(コンベア&middot;デバイスの選択)および、コンベアとロボット(通常コントローラのロボット)とのキャリブレーションとなります。</p>
+<p>手順は、ロボット1台のみ使用する場合と同じです。<a href="005344.html" target="_blank">&quot;コンベア&middot;デバイスの選択&quot;</a>、<a href="005359.html" target="_blank">&quot;キャリブレーション&quot;</a>を参照ください。</p>
+<div class="notelv5">
+  <p>スレーブでは、下記内容は不要であるため実施しません。</p>
+  <ul>
+    <li>エンコーダの軸番号の設定</li>
+    <li>I/O設定</li>
+    <li>ハードウェアの接続確認</li>
+  </ul>
+</div>
+
+<h6 class="step">4</h6>
+<p>コンベアを複数台使用する場合は、STEP1からSTEP3の作業をコンベアの台数分実施してください。</p>
+</div>
+<!-- / class="category" id="category_standard" --><p class="disp_id">ID : 3412</p>
+<p class="pre_next"><a href="003405.html">&lt;&lt; 前へ</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="018027.html">次へ &gt;&gt;</a></p>
+</div>
+
+<div id="relate">
+
+<div id="pagetop"><a href="#wrap">ページトップへ</a></div>
+</div>
+</div>
+<!-- [ /MAIN AREA ] -->
+
+
+
+</div>
+<!-- [ /CONTENT AREA ] -->
+</div><!-- /#wrap -->
+<!-- [ FOOTER AREA ] -->
+<div id="footer">
+<p>Copyright&copy; DENSO WAVE INCORPORATED. All Right Reserved.</p>
+</div>
+<!-- [ /FOOTER AREA ] -->
+</body>
+</html>

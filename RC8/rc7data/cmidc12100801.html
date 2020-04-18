@@ -1,0 +1,536 @@
+﻿<html>
+  <head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="css/contents_com.css" type="text/css" media="all">
+    <title>VISREADQR</title>
+  </head>
+  <body>
+    <div id="content">
+      <div id="paragraph">
+        <div class="cmd-name">VISREADQR<span class="comment1">
+		　（ステートメント）</span></div>
+        <br>
+        <div id="cmd-func">
+          <img src="common/cmd-func.jpg">
+          <br>
+          <div id="cmd-funcgroup">
+            <div class="p">QRコードを読み取ります。</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-format">
+          <img src="common/cmd-format.jpg">
+          <br>
+          <div id="cmd-formatgroup">
+            <div class="p">VISREADQR &lt;ウィンドウ番号&gt;，&lt;X座標&gt;，&lt;Y座標&gt;，&lt;モード&gt;［，&lt;2値下限&gt;</div>
+            <div class="p">[，&lt;2値上限&gt;] ］</div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-exp">
+          <img src="common/cmd-exp.jpg">
+          <br>
+          <div id="cmd-expgroup">
+            <div class="p">&lt;ウィンドウ番号&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> ウィンドウの番号を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;X座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">X座標を指定します。（0～511）</div>
+            </div>
+            <div class="p">&lt;Y座標&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">Y座標を指定します。（0～479）</div>
+            </div>
+            <div class="p">&lt;モード&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">2値化の方法を指定します。</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">0：自動2値化（判別分析法で処理範囲内を2値化します。）</div>
+            </div>
+            <div class="ptxt-ind10">
+              <div class="p">1：指定値で2値化（命令中の2値化レベルに基づき2値化します。）</div>
+            </div>
+            <div class="p">&lt;2値下限&gt;</div>
+            <div class="ptxt-ind5">
+              <div class="p"> 2値化する際の下限レベルを指定します。（0～254 下限 &lt; 上限）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">省略時0を指定します。</div>
+            </div>
+            <div class="p">&lt;2値上限&gt; </div>
+            <div class="ptxt-ind5">
+              <div class="p">2値化する際の上限レベルを指定します。（1～255 下限 &lt; 上限）</div>
+            </div>
+            <div class="ptxt-ind5">
+              <div class="p">省略時255を指定します。</div>
+            </div>
+            <div class="figure">
+              <img src="image/cmidc12100801_01.jpg">
+            </div>
+            <div class="p">
+            </div>
+            <div id="note">
+              <img src="common/note.jpg">
+              <div id="notegroup">
+                <div id="noteitem">
+                  <ul type="disc" class="list1">
+                    <li class="item">
+                      <div class="p">処理範囲をウィンドウで指定します。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">指定できるウィンドウの形状は矩形の角度0&deg;のみです。その他のウィンドウまたは、指定したウィンドウの位置が画面からはみ出した場合エラーになります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">処理対象はVISWORKPLNで指定した画面になります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">コードの内容はボード内のメモリに格納され、VISGETSTRで取得することが可能です。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">コードにエラーなどがあり、読み取れなかった場合、VISSTATUS（0）の結果が-1になります。</div>
+                    </li>
+                    <li class="item">
+                      <div class="p">以下は処理結果取得関数で得ることができるデータです。</div>
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">VISSTATUS (n)</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">n</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">項目</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行結果   0=正常  -1=異常</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">文字数（バイト単位）</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="top" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="top" align="left">
+                            <div class="p">実行時間</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                      <table border="1" class="frameall" cellpadding="4" cellspacing="0" align="center">
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">
+                            </div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01" colspan="4">
+                            <div class="p">VISGETNUM（a、b）</div>
+                          </th>
+                        </tr>
+                        <tr class="theadbg">
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">b</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 0</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 1</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 2</div>
+                          </th>
+                          <th valign="top" align="center" class="tablehead01">
+                            <div class="p">a = 3</div>
+                          </th>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">0</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">文字数（バイト単位）</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">1</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">X座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク1 X</div>
+                            <div class="p">座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク2 X</div>
+                            <div class="p">座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク3 X</div>
+                            <div class="p">座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">2</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">Y座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク1 Y</div>
+                            <div class="p">座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク2 Y</div>
+                            <div class="p">座標値</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">基準マーク3 Y</div>
+                            <div class="p">座標値</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">3</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">角度</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">4</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">幅</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">5</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">高さ</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">6</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">バージョン</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">7</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">セルサイズ</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">8</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">モデル識別 ［V1.4以降］</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td valign="middle" align="center">
+                            <div class="p">9</div>
+                          </td>
+                          <td valign="middle" align="left">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                          <td valign="middle" align="center">
+                            <div class="p">unknown</div>
+                          </td>
+                        </tr>
+                      </table>
+                      <br clear="left">
+                    </li>
+                    <li class="item">
+                      <div class="p">本命令はロボットコントローラではμVisionボード（オプション）が必要です。</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-ref">
+          <img src="common/cmd-ref.jpg">
+          <br>
+          <div id="cmd-refgroup">
+            <div class="p">
+              <a href="cmidc12100501.html" target="_top">WINDMAKE</a>、<a href="cmidc12100701.html" target="_top">VISWORKPLN</a>、<a href="cmidc12101101.html" target="_top">VISGETNUM</a>、<a href="cmidc12101105.html" target="_top">VISSTATUS</a>、<a href="cmidc12101102.html" target="_top">VISGETSTR</a></div>
+          </div>
+        </div>
+        <br>
+        <div id="cmd-sample">
+          <img src="common/cmd-sample.jpg">
+          <br>
+          <div id="cmd-samplegroup">
+            <table border="0" class="framenone" width="88%" align="left">
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISSCREEN 1,0,1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCLS </div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">WINDMAKE R,1,512,480,0,2</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'ウィンドウ1番を矩形ウィンドウに設定します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">CAMIN 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'カメラ映像を格納メモリに取得します。</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPLNOUT 0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISREADQR 1,0,0,0</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'QRコードの読み取り</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">I1 = VISSTATUS(0)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISPRINT I1,VISSTATUS(1)</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">IF I1 = 0 THEN</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source02">
+                    <div class="p">VISLOC 10,10</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left" colspan="2">
+                  <div class="source02">
+                    <div class="p">VISPRINT VISGETSTR(1,VISSTATUS(1))</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">END IF</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td valign="top" align="left">
+                  <div class="source01">
+                    <div class="p">VISCAMOUT 1</div>
+                  </div>
+                </td>
+                <td valign="top" align="left">
+                  <div class="source_ptxt">
+                    <div class="p">'</div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <br clear="left">
+          </div>
+        </div>
+        <br>
+        <div class="pagetop">
+          <a href="#top">このページのトップへ</a>
+        </div>
+        <div class="clear">
+          <hr>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
